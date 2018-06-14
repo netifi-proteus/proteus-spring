@@ -1,0 +1,25 @@
+plugins {
+    id 'com.gradle.build-scan' version '1.14'
+    id 'com.github.hierynomus.license' version '0.14.0'
+}
+
+buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+    publishAlways()
+}
+
+allprojects {
+    apply plugin: 'com.github.hierynomus.license'
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    // Applies license headers to source files
+    license {
+        header rootProject.file('codequality/HEADER')
+        strictCheck true
+    }
+}

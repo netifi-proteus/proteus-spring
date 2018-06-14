@@ -1,0 +1,8 @@
+rootProject.name = 'proteus-spring'
+include 'proteus-spring-webflux'
+include 'proteus-spring-boot'
+include 'proteus-spring-boot-starter'
+include 'proteus-spring-boot-demo'
+include 'proteus-spring-webflux-demo'
+include 'proteus-spring-connector'
+
