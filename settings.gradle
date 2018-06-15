@@ -1,8 +1,12 @@
 rootProject.name = 'proteus-spring'
-include 'proteus-spring-webflux'
-include 'proteus-spring-boot'
-include 'proteus-spring-boot-starter'
-include 'proteus-spring-boot-demo'
-include 'proteus-spring-webflux-demo'
-include 'proteus-spring-connector'
 
+// Dynamically includes all Gradle projects found within the root project
+fileTree('.') {
+    include '**/build.gradle'
+    exclude 'build.gradle'      // Exclude the root project
+}.collect {
+    relativePath(it.parent).replace(File.separator, ':')
+}
+.each {
+    include(it)
+}

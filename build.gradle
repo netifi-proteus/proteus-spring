@@ -13,6 +13,11 @@ allprojects {
     apply plugin: 'com.github.hierynomus.license'
     apply plugin: 'idea'
 
+    ext {
+        protobufVersion = '3.5.0'
+        proteusVersion = '0.7.1'
+    }
+
     repositories {
         jcenter()
         mavenCentral()

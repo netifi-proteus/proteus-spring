@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.8.3'
+}
+
+sourceCompatibility = 1.8
+
+dependencies {
+    compile "io.netifi.proteus:core:${proteusVersion}"
+    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+}
+
+protobuf {
+    generatedFilesBaseDir = "${projectDir}/src/generated"
+
+    plugins {
+        protoc {
+            artifact = "com.google.protobuf:protoc:${protobufVersion}"
+        }
+        proteus {
+            artifact = "io.netifi.proteus:protobuf-rpc:${proteusVersion}"
+        }
+        generateProtoTasks {
+            ofSourceSet('main')*.plugins {
+                proteus {}
+            }
+        }
+    }
+}
+
+idea {
+    module {
+        sourceDirs += file("src/generated/main/java")
+        sourceDirs += file("src/generated/main/proteus")
+
+        generatedSourceDirs += file('src/generated/main/java')
+        generatedSourceDirs += file('src/generated/main/proteus')
+    }
+}
+
+clean {
+    delete 'src/generated/main'
+}
