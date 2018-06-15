@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.spring.webflux.demo;
+package com.netifi.proteus.springwebflux;
 
-public class Main {
-
-    public static void main(String... args) {
-
-    }
+public class Dummy {
 }

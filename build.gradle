@@ -11,6 +11,7 @@ buildScan {
 
 allprojects {
     apply plugin: 'com.github.hierynomus.license'
+    apply plugin: 'idea'
 
     repositories {
         jcenter()

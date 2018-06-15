@@ -11,4 +11,7 @@ repositories {
 
 dependencies {
     compile project(':proteus-spring-connector')
+
+    compile 'org.springframework:spring-context:5.0.7.RELEASE'
+    compile 'org.springframework:spring-webflux:5.0.7.RELEASE'
 }
