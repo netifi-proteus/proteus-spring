@@ -1,7 +1,21 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+}
+
+mainClassName = 'com.netifi.proteus.demo.ingest.Application'
+sourceCompatibility = 1.8
+
+dependencyManagement {
+    imports {
+        mavenBom "io.spring.platform:platform-bom:${springbomVersion}"
+    }
 }
 
 dependencies {
     compile project(':demos:springboot-demo:ingestservice-idl')
+    
+    compile 'org.springframework.boot:spring-boot-starter'
 }
