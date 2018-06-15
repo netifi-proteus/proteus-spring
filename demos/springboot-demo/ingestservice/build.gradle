@@ -16,6 +16,6 @@ dependencyManagement {
 
 dependencies {
     compile project(':demos:springboot-demo:ingestservice-idl')
-    
+
     compile 'org.springframework.boot:spring-boot-starter'
 }
