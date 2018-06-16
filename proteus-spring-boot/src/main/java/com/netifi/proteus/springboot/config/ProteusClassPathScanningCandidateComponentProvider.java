@@ -16,8 +16,6 @@
 package com.netifi.proteus.springboot.config;
 
 import com.netifi.proteus.annotations.ProteusAnnotation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
@@ -25,7 +23,6 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
  * Scans the classpath for classes annotated with Proteus annotations.
  */
 public class ProteusClassPathScanningCandidateComponentProvider extends ClassPathScanningCandidateComponentProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProteusClassPathScanningCandidateComponentProvider.class);
 
     public ProteusClassPathScanningCandidateComponentProvider() {
         super(true);
