@@ -30,5 +30,5 @@ public @interface ProteusService {
 
     String group();
 
-    String destination();
+    String destination() default "";
 }
