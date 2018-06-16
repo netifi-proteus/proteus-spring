@@ -29,23 +29,35 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * An {@link ImportBeanDefinitionRegistrar} implementation that finds and registers Proteus bean definitions.
  */
 public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProteusImportBeanDefinitionRegistrar.class);
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        LOGGER.debug("Registering Proteus Bean Definitions...");
-
-        Set<String> basePackages = findBasePackages(importingClassMetadata);
-
         ProteusClassPathScanningCandidateComponentProvider scanner = new ProteusClassPathScanningCandidateComponentProvider();
 
-        // This will use our custom ClassPathScanningCandidateComponentProvider implementation
-//        scanner.findCandidateComponents();
+        findBasePackages(importingClassMetadata)
+                .forEach(basePackage -> {
+                    LOGGER.debug("Scanning Package for Proteus Bean Definitions: {}", basePackage);
+
+                    scanner.findCandidateComponents(basePackage)
+                            .forEach(beanDefinition -> {
+                                LOGGER.debug("Registering Proteus Bean Definition: {}", beanDefinition.getBeanClassName());
+                                registry.registerBeanDefinition(beanDefinition.getBeanClassName(), beanDefinition);
+                            });
+                });
     }
 
+    /**
+     * Discovers which base packages should be scanned for Proteus bean definitions.
+     *
+     * @param importingClassMetadata class annotated with the @Import annotation that triggered
+     *                               this bean definition registrar
+     * @return a set containing the name of each base package that should be scanned for
+     * Proteus bean definitions
+     */
     private Set<String> findBasePackages(AnnotationMetadata importingClassMetadata) {
         Set<String> basePackages = new HashSet<>();
 
