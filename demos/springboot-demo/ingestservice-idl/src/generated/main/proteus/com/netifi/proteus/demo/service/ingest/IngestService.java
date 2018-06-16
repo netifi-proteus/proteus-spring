@@ -1,5 +1,9 @@
 package com.netifi.proteus.demo.service.ingest;
 
+import com.netifi.proteus.annotations.ProteusService;
+
+import javax.inject.Singleton;
+
 /**
  */
 @javax.annotation.Generated(

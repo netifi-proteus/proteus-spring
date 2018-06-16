@@ -17,5 +17,8 @@ dependencyManagement {
 dependencies {
     compile project(':demos:springboot-demo:vowelcountservice-idl')
 
-    compile 'org.springframework.boot:spring-boot-starter'
+    compile project(':proteus-spring-boot-starter')
+//    compile project(':proteus-spring-boot-connector')
+//
+//    compile 'org.springframework.boot:spring-boot-starter'
 }

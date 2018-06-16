@@ -1,14 +1,18 @@
-group 'com.netifi.proteus'
-version '0.1.0'
-
-apply plugin: 'java'
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+}
 
 sourceCompatibility = 1.8
 
-repositories {
-    mavenCentral()
+dependencyManagement {
+    imports {
+        mavenBom "io.spring.platform:platform-bom:${springbomVersion}"
+    }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile project(':proteus-annotations')
+
+    compile 'org.springframework:spring-context'
 }

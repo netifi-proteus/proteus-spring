@@ -15,10 +15,12 @@
  */
 package com.netifi.proteus.demo.ingest;
 
+import com.netifi.proteus.springboot.annotation.EnableProteus;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@EnableProteus
 public class Application {
 
     public static void main(String... args) {

@@ -15,10 +15,14 @@
  */
 package com.netifi.proteus.demo.app;
 
+import com.netifi.proteus.springboot.annotation.EnableProteus;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.reactive.config.EnableWebFlux;
 
 @SpringBootApplication
+@EnableWebFlux
+@EnableProteus
 public class Application {
 
     public static void main(String... args) {

@@ -6,28 +6,29 @@ plugins {
 sourceCompatibility = 1.8
 
 dependencies {
+    compile project(':proteus-annotations')
+
     compile "io.netifi.proteus:core:${proteusVersion}"
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
-    compile 'javax.inject:javax.inject:1'
 }
 
-protobuf {
-    generatedFilesBaseDir = "${projectDir}/src/generated"
-
-    plugins {
-        protoc {
-            artifact = "com.google.protobuf:protoc:${protobufVersion}"
-        }
-        proteus {
-            artifact = "io.netifi.proteus:protobuf-rpc:${proteusVersion}"
-        }
-        generateProtoTasks {
-            ofSourceSet('main')*.plugins {
-                proteus {}
-            }
-        }
-    }
-}
+//protobuf {
+//    generatedFilesBaseDir = "${projectDir}/src/generated"
+//
+//    plugins {
+//        protoc {
+//            artifact = "com.google.protobuf:protoc:${protobufVersion}"
+//        }
+//        proteus {
+//            artifact = "io.netifi.proteus:protobuf-rpc:${proteusVersion}"
+//        }
+//        generateProtoTasks {
+//            ofSourceSet('main')*.plugins {
+//                proteus {}
+//            }
+//        }
+//    }
+//}
 
 idea {
     module {
@@ -39,6 +40,6 @@ idea {
     }
 }
 
-clean {
-    delete 'src/generated/main'
-}
+//clean {
+//    delete 'src/generated/main'
+//}

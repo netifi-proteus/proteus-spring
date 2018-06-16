@@ -13,8 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.spring.annotation;
+package com.netifi.proteus.springboot.annotation;
 
-public @interface ProteusAnnotation {
+import com.netifi.proteus.annotations.ProteusAnnotation;
+import org.springframework.context.annotation.ComponentScan;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ *
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@ComponentScan(
+        includeFilters = @ComponentScan.Filter(ProteusAnnotation.class))
+public @interface EnableProteus {
 
 }

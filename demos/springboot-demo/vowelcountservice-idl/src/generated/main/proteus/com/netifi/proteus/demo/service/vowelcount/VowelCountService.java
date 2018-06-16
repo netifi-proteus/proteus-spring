@@ -1,5 +1,7 @@
 package com.netifi.proteus.demo.service.vowelcount;
 
+import com.netifi.proteus.annotations.ProteusService;
+
 /**
  */
 @javax.annotation.Generated(
