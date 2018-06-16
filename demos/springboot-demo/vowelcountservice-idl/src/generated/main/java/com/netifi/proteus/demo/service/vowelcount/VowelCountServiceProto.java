@@ -36,13 +36,13 @@ public final class VowelCountServiceProto {
       "\n\020vowelcount.proto\022*com.netifi.proteus.d" +
       "emo.service.vowelcount\"$\n\021VowelCountRequ" +
       "est\022\017\n\007message\030\001 \001(\t\"&\n\022VowelCountRespon" +
-      "se\022\020\n\010vowelCnt\030\001 \001(\0032\244\001\n\021VowelCountServi" +
-      "ce\022\216\001\n\013CountVowels\022=.com.netifi.proteus." +
+      "se\022\020\n\010vowelCnt\030\001 \001(\0032\250\001\n\021VowelCountServi" +
+      "ce\022\222\001\n\013CountVowels\022=.com.netifi.proteus." +
       "demo.service.vowelcount.VowelCountReques" +
       "t\032>.com.netifi.proteus.demo.service.vowe" +
-      "lcount.VowelCountResponse\"\000BF\n*com.netif" +
-      "i.proteus.demo.service.vowelcountB\026Vowel" +
-      "CountServiceProtoP\001b\006proto3"
+      "lcount.VowelCountResponse\"\000(\0010\001BF\n*com.n" +
+      "etifi.proteus.demo.service.vowelcountB\026V" +
+      "owelCountServiceProtoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

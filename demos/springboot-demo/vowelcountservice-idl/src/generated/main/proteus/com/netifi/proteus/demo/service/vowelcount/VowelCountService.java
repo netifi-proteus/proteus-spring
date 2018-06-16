@@ -1,7 +1,5 @@
 package com.netifi.proteus.demo.service.vowelcount;
 
-import com.netifi.proteus.annotations.ProteusService;
-
 /**
  */
 @javax.annotation.Generated(
@@ -14,5 +12,5 @@ public interface VowelCountService {
 
   /**
    */
-  reactor.core.publisher.Mono<com.netifi.proteus.demo.service.vowelcount.VowelCountResponse> countVowels(com.netifi.proteus.demo.service.vowelcount.VowelCountRequest message, io.netty.buffer.ByteBuf metadata);
+  reactor.core.publisher.Flux<com.netifi.proteus.demo.service.vowelcount.VowelCountResponse> countVowels(org.reactivestreams.Publisher<com.netifi.proteus.demo.service.vowelcount.VowelCountRequest> messages, io.netty.buffer.ByteBuf metadata);
 }

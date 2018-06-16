@@ -17,20 +17,27 @@ public final class VowelCountServiceClient implements VowelCountService {
     this.countVowels = io.netifi.proteus.metrics.ProteusMetrics.timed(registry, "proteus.client", "namespace", "com.netifi.proteus.demo.service.vowelcount", "service", "VowelCountService", "method", "countVowels");
   }
 
-  public reactor.core.publisher.Mono<com.netifi.proteus.demo.service.vowelcount.VowelCountResponse> countVowels(com.netifi.proteus.demo.service.vowelcount.VowelCountRequest message) {
-    return countVowels(message, io.netty.buffer.Unpooled.EMPTY_BUFFER);
+  public reactor.core.publisher.Flux<com.netifi.proteus.demo.service.vowelcount.VowelCountResponse> countVowels(org.reactivestreams.Publisher<com.netifi.proteus.demo.service.vowelcount.VowelCountRequest> messages) {
+    return countVowels(messages, io.netty.buffer.Unpooled.EMPTY_BUFFER);
   }
 
   @java.lang.Override
-  public reactor.core.publisher.Mono<com.netifi.proteus.demo.service.vowelcount.VowelCountResponse> countVowels(com.netifi.proteus.demo.service.vowelcount.VowelCountRequest message, io.netty.buffer.ByteBuf metadata) {
-    return reactor.core.publisher.Mono.defer(new java.util.function.Supplier<reactor.core.publisher.Mono<io.rsocket.Payload>>() {
-      @java.lang.Override
-      public reactor.core.publisher.Mono<io.rsocket.Payload> get() {
-        final io.netty.buffer.ByteBuf metadataBuf = io.netifi.proteus.frames.ProteusMetadata.encode(io.netty.buffer.ByteBufAllocator.DEFAULT, VowelCountService.NAMESPACE_ID, VowelCountService.SERVICE_ID, VowelCountService.METHOD_COUNT_VOWELS, metadata);
-        io.netty.buffer.ByteBuf data = serialize(message);
-        return rSocket.requestResponse(io.rsocket.util.ByteBufPayload.create(data, metadataBuf));
-      }
-    }).map(deserializer(com.netifi.proteus.demo.service.vowelcount.VowelCountResponse.parser())).transform(countVowels);
+  public reactor.core.publisher.Flux<com.netifi.proteus.demo.service.vowelcount.VowelCountResponse> countVowels(org.reactivestreams.Publisher<com.netifi.proteus.demo.service.vowelcount.VowelCountRequest> messages, io.netty.buffer.ByteBuf metadata) {
+    return rSocket.requestChannel(reactor.core.publisher.Flux.from(messages).map(
+      new java.util.function.Function<com.google.protobuf.MessageLite, io.rsocket.Payload>() {
+        private final java.util.concurrent.atomic.AtomicBoolean once = new java.util.concurrent.atomic.AtomicBoolean(false);
+
+        @java.lang.Override
+        public io.rsocket.Payload apply(com.google.protobuf.MessageLite message) {
+          io.netty.buffer.ByteBuf data = serialize(message);
+          if (once.compareAndSet(false, true)) {
+            final io.netty.buffer.ByteBuf metadataBuf = io.netifi.proteus.frames.ProteusMetadata.encode(io.netty.buffer.ByteBufAllocator.DEFAULT, VowelCountService.NAMESPACE_ID, VowelCountService.SERVICE_ID, VowelCountService.METHOD_COUNT_VOWELS, metadata);
+            return io.rsocket.util.ByteBufPayload.create(data, metadataBuf);
+          } else {
+            return io.rsocket.util.ByteBufPayload.create(data);
+          }
+        }
+      })).map(deserializer(com.netifi.proteus.demo.service.vowelcount.VowelCountResponse.parser())).transform(countVowels);
   }
 
   private static io.netty.buffer.ByteBuf serialize(final com.google.protobuf.MessageLite message) {
