@@ -1,9 +1,5 @@
 package com.netifi.proteus.demo.service.ingest;
 
-import com.netifi.proteus.annotations.ProteusService;
-
-import javax.inject.Singleton;
-
 /**
  */
 @javax.annotation.Generated(
@@ -12,9 +8,9 @@ import javax.inject.Singleton;
 public interface IngestService {
   int NAMESPACE_ID = 1408208831;
   int SERVICE_ID = 2036268172;
-  int METHOD_INGEST_MESSAGE = -1485601629;
+  int METHOD_PROCESS = -387747791;
 
   /**
    */
-  reactor.core.publisher.Flux<com.netifi.proteus.demo.service.ingest.TotalVowelsResponse> ingestMessage(org.reactivestreams.Publisher<com.netifi.proteus.demo.service.ingest.ProcessMessageRequest> messages, io.netty.buffer.ByteBuf metadata);
+  reactor.core.publisher.Flux<com.netifi.proteus.demo.service.ingest.TotalVowelsResponse> process(org.reactivestreams.Publisher<com.netifi.proteus.demo.service.ingest.ProcessMessageRequest> messages, io.netty.buffer.ByteBuf metadata);
 }

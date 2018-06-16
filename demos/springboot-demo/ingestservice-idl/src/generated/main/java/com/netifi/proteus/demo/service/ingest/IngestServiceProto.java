@@ -36,13 +36,13 @@ public final class IngestServiceProto {
       "\n\014ingest.proto\022&com.netifi.proteus.demo." +
       "service.ingest\"(\n\025ProcessMessageRequest\022" +
       "\017\n\007message\030\001 \001(\t\",\n\023TotalVowelsResponse\022" +
-      "\025\n\rtotalVowelCnt\030\001 \001(\0032\243\001\n\rIngestService" +
-      "\022\221\001\n\rIngestMessage\022=.com.netifi.proteus." +
-      "demo.service.ingest.ProcessMessageReques" +
-      "t\032;.com.netifi.proteus.demo.service.inge" +
-      "st.TotalVowelsResponse\"\000(\0010\001B>\n&com.neti" +
-      "fi.proteus.demo.service.ingestB\022IngestSe" +
-      "rviceProtoP\001b\006proto3"
+      "\025\n\rtotalVowelCnt\030\001 \001(\0032\235\001\n\rIngestService" +
+      "\022\213\001\n\007Process\022=.com.netifi.proteus.demo.s" +
+      "ervice.ingest.ProcessMessageRequest\032;.co" +
+      "m.netifi.proteus.demo.service.ingest.Tot" +
+      "alVowelsResponse\"\000(\0010\001B>\n&com.netifi.pro" +
+      "teus.demo.service.ingestB\022IngestServiceP" +
+      "rotoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

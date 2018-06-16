@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.demo.app.handler;
+package com.netifi.proteus.demo;
 
+import com.netifi.proteus.demo.service.ingest.IngestServiceClient;
+import com.netifi.proteus.demo.service.ingest.IngestServiceClientProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.socket.WebSocketHandler;
-import org.springframework.web.reactive.socket.WebSocketSession;
-import reactor.core.publisher.Mono;
 
 @Component
-public class DemoWebSocketHandler implements WebSocketHandler {
+public class MessageGenerator implements CommandLineRunner {
+
+    @Autowired
+    private IngestServiceClientProvider ingestServiceClientProvider;
 
     @Override
-    public Mono<Void> handle(WebSocketSession session) {
-        return null;
+    public void run(String... args) throws Exception {
+        IngestServiceClient client = ingestServiceClientProvider.get();
+        boolean test = true;
     }
 }

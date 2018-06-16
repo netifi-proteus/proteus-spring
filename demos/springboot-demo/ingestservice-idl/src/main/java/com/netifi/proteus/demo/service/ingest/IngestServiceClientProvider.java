@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.springboot.annotation;
+package com.netifi.proteus.demo.service.ingest;
 
-import com.netifi.proteus.springboot.config.ProteusImportBeanDefinitionRegistrar;
-import org.springframework.context.annotation.Import;
+import com.netifi.proteus.annotations.ProteusClientProvider;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.inject.Provider;
 
-/**
- *
- */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Import(ProteusImportBeanDefinitionRegistrar.class)
-public @interface EnableProteus {
+@ProteusClientProvider
+public class IngestServiceClientProvider implements Provider<IngestServiceClient> {
 
+    @Override
+    public IngestServiceClient get() {
+        return new IngestServiceClient(null);
+    }
 }

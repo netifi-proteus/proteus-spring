@@ -5,16 +5,16 @@ package com.netifi.proteus.demo.service.ingest;
     comments = "Source: ingest.proto")
 public final class IngestServiceServer extends io.netifi.proteus.AbstractProteusService {
   private final IngestService service;
-  private final java.util.function.Function<? super org.reactivestreams.Publisher<io.rsocket.Payload>, ? extends org.reactivestreams.Publisher<io.rsocket.Payload>> ingestMessage;
+  private final java.util.function.Function<? super org.reactivestreams.Publisher<io.rsocket.Payload>, ? extends org.reactivestreams.Publisher<io.rsocket.Payload>> process;
 
   public IngestServiceServer(IngestService service) {
     this.service = service;
-    this.ingestMessage = java.util.function.Function.identity();
+    this.process = java.util.function.Function.identity();
   }
 
   public IngestServiceServer(IngestService service, io.micrometer.core.instrument.MeterRegistry registry) {
     this.service = service;
-    this.ingestMessage = io.netifi.proteus.metrics.ProteusMetrics.timed(registry, "proteus.server", "namespace", "com.netifi.proteus.demo.service.ingest", "service", "IngestService", "method", "ingestMessage");
+    this.process = io.netifi.proteus.metrics.ProteusMetrics.timed(registry, "proteus.server", "namespace", "com.netifi.proteus.demo.service.ingest", "service", "IngestService", "method", "process");
   }
 
   @java.lang.Override
@@ -47,10 +47,10 @@ public final class IngestServiceServer extends io.netifi.proteus.AbstractProteus
     try {
       io.netty.buffer.ByteBuf metadata = payload.sliceMetadata();
       switch(io.netifi.proteus.frames.ProteusMetadata.methodId(metadata)) {
-        case IngestService.METHOD_INGEST_MESSAGE: {
+        case IngestService.METHOD_PROCESS: {
           reactor.core.publisher.Flux<com.netifi.proteus.demo.service.ingest.ProcessMessageRequest> messages =
             publisher.map(deserializer(com.netifi.proteus.demo.service.ingest.ProcessMessageRequest.parser()));
-          return service.ingestMessage(messages, metadata).map(serializer).transform(ingestMessage);
+          return service.process(messages, metadata).map(serializer).transform(process);
         }
         default: {
           return reactor.core.publisher.Flux.error(new UnsupportedOperationException());

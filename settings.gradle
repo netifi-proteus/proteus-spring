@@ -10,5 +10,3 @@ fileTree('.') {
 .each {
     include(it)
 }
-include 'proteus-spring-boot'
-

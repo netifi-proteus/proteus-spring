@@ -7,7 +7,7 @@ option java_outer_classname = "IngestServiceProto";
 option java_multiple_files = true;
 
 service IngestService {
-  rpc IngestMessage (stream ProcessMessageRequest) returns (stream TotalVowelsResponse) {}
+  rpc Process (stream ProcessMessageRequest) returns (stream TotalVowelsResponse) {}
 }
 
 message ProcessMessageRequest {
