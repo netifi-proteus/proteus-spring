@@ -28,4 +28,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProteusService {
 
+    String group();
+
+    String destination();
 }
