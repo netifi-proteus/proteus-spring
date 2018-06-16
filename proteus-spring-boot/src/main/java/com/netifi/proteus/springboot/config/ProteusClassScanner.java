@@ -17,6 +17,6 @@ package com.netifi.proteus.springboot.config;
 
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 
-public class ProteusClassPathScanningCandidateComponentProvider extends ClassPathScanningCandidateComponentProvider {
+public class ProteusClassScanner extends ClassPathScanningCandidateComponentProvider {
 
 }

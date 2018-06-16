@@ -30,5 +30,9 @@ public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitio
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         System.out.println(importingClassMetadata);
+        ProteusClassScanner scanner = new ProteusClassScanner();
+
+        // This will use our custom ClassPathScanningCandidateComponentProvider implementation
+//        scanner.findCandidateComponents();
     }
 }
