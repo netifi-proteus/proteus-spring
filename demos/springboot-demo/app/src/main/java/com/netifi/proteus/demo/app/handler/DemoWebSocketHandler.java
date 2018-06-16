@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.demo.app;
+package com.netifi.proteus.demo.app.handler;
 
-import com.netifi.proteus.springboot.annotation.EnableProteus;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketSession;
+import reactor.core.publisher.Mono;
 
-@SpringBootApplication
-@EnableProteus
-public class Application {
+@Component
+public class DemoWebSocketHandler implements WebSocketHandler {
 
-    public static void main(String... args) {
-        SpringApplication.run(Application.class, args);
+    @Override
+    public Mono<Void> handle(WebSocketSession session) {
+        return null;
     }
 }

@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.demo.app;
+package com.netifi.proteus.demo.app.config;
 
-import com.netifi.proteus.springboot.annotation.EnableProteus;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
 
-@SpringBootApplication
-@EnableProteus
-public class Application {
+@Configuration
+public class DemoConfiguration {
 
-    public static void main(String... args) {
-        SpringApplication.run(Application.class, args);
-    }
 }
