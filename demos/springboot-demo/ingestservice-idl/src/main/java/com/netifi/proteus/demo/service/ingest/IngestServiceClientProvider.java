@@ -16,9 +16,11 @@
 package com.netifi.proteus.demo.service.ingest;
 
 import com.netifi.proteus.annotations.ProteusClientProvider;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Provider;
 
+//@Component
 @ProteusClientProvider
 public class IngestServiceClientProvider implements Provider<IngestServiceClient> {
 

@@ -15,8 +15,13 @@
  */
 package com.netifi.proteus.springboot.config;
 
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 
-public class ProteusClassScanner extends ClassPathScanningCandidateComponentProvider {
+public class ProteusClassPathScanningCandidateComponentProvider extends ClassPathScanningCandidateComponentProvider {
 
+    @Override
+    protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
+        return super.isCandidateComponent(beanDefinition);
+    }
 }

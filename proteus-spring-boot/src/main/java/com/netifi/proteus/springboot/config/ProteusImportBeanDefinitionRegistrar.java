@@ -18,8 +18,15 @@ package com.netifi.proteus.springboot.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.util.ClassUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -29,10 +36,38 @@ public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitio
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        System.out.println(importingClassMetadata);
-        ProteusClassScanner scanner = new ProteusClassScanner();
+        LOGGER.debug("Registering Proteus Bean Definitions...");
+
+        Set<String> basePackages = findBasePackages(importingClassMetadata);
+
+        ProteusClassPathScanningCandidateComponentProvider scanner = new ProteusClassPathScanningCandidateComponentProvider();
 
         // This will use our custom ClassPathScanningCandidateComponentProvider implementation
 //        scanner.findCandidateComponents();
+    }
+
+    private Set<String> findBasePackages(AnnotationMetadata importingClassMetadata) {
+        Set<String> basePackages = new HashSet<>();
+
+        // Default base package scanning to the package of the importing class
+        basePackages.add(ClassUtils.getPackageName(importingClassMetadata.getClassName()));
+
+        // Check for package scanning directives on the SpringBootApplication annotation
+        if (importingClassMetadata.hasAnnotation(SpringBootApplication.class.getName())) {
+            Map<String, Object> annotationValues = importingClassMetadata.getAnnotationAttributes(SpringBootApplication.class.getName());
+
+            // Getting any packages defined by the "scanBasePackages" attribute
+            if (annotationValues.containsKey("scanBasePackages")) {
+                basePackages.addAll(Arrays.asList((String[]) annotationValues.get("scanBasePackages")));
+            }
+
+            // Getting any packages defined by the "scanBasePackageClasses" attribute
+            if (annotationValues.containsKey("scanBasePackageClasses")) {
+                Arrays.asList((Class<?>[]) annotationValues.get("scanBasePackageClasses"))
+                        .forEach(clazz -> basePackages.add(ClassUtils.getPackageName(clazz)));
+            }
+        }
+
+        return basePackages;
     }
 }
