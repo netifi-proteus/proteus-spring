@@ -17,16 +17,38 @@ package com.netifi.proteus.demo.isvowel.service;
 
 import com.netifi.proteus.annotations.ProteusService;
 import io.netty.buffer.ByteBuf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import proteus.demo.service.isvowel.IsVowelRequest;
 import proteus.demo.service.isvowel.IsVowelResponse;
 import proteus.demo.service.isvowel.IsVowelService;
 import reactor.core.publisher.Mono;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @ProteusService(group = "com.netifi.proteus.demo.isvowel")
 public class DefaultIsVowelService implements IsVowelService {
-    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultIsVowelService.class);
+
+    private final Set<String> VOWELS = new HashSet<>();
+
+    public DefaultIsVowelService() {
+        VOWELS.add("A");
+        VOWELS.add("E");
+        VOWELS.add("I");
+        VOWELS.add("O");
+        VOWELS.add("U");
+    }
+
     @Override
     public Mono<IsVowelResponse> isVowel(IsVowelRequest message, ByteBuf metadata) {
-        return null;
+        return Mono.fromSupplier(() -> {
+            LOGGER.info("Received character: {}", message.getCharacter());
+
+            return IsVowelResponse.newBuilder()
+                    .setIsVowel(VOWELS.contains(message.getCharacter()))
+                    .build();
+        });
     }
 }
