@@ -10,7 +10,7 @@ dependencyManagement {
 }
 
 dependencies {
-    compile project(':proteus-spring-boot')
+    compile project(':proteus-spring-boot-autoconfigure')
 
     compile 'org.springframework.boot:spring-boot-starter'
 }
