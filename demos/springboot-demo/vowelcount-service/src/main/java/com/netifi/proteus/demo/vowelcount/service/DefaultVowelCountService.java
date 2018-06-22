@@ -16,18 +16,49 @@
 package com.netifi.proteus.demo.vowelcount.service;
 
 import com.netifi.proteus.annotations.ProteusService;
+import io.netifi.proteus.rsocket.ProteusSocket;
 import io.netty.buffer.ByteBuf;
 import org.reactivestreams.Publisher;
+import proteus.demo.service.isvowel.IsVowelRequest;
+import proteus.demo.service.isvowel.IsVowelResponse;
+import proteus.demo.service.isvowel.IsVowelServiceClient;
 import proteus.demo.service.vowelcount.VowelCountRequest;
 import proteus.demo.service.vowelcount.VowelCountResponse;
 import proteus.demo.service.vowelcount.VowelCountService;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
+
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 @ProteusService(group = "com.netifi.proteus.demo.vowelcount")
 public class DefaultVowelCountService implements VowelCountService {
+    private final AtomicLong totalVowels = new AtomicLong(0);
+    private final IsVowelServiceClient isVowelClient;
+
+    public DefaultVowelCountService(final ProteusSocket isVowelConn) {
+        this.isVowelClient = new IsVowelServiceClient(isVowelConn);
+    }
 
     @Override
-    public Mono<VowelCountResponse> countVowels(Publisher<VowelCountRequest> messages, ByteBuf metadata) {
-        return null;
-    }
+    public Flux<VowelCountResponse> countVowels(Publisher<VowelCountRequest> messages, ByteBuf metadata) {
+        return Flux.from(s ->
+                Flux.from(messages)
+                        // Split each incoming random string into a stream of individual characters
+                        .flatMap(vowelCountRequest -> Flux.just(vowelCountRequest.getMessage().split("(?<!^)")))
+                        // For each individual character create an IsVowelRequest
+                        .map(c -> IsVowelRequest.newBuilder().setCharacter(c).build())
+                        // Send each IsVowelRequest to the IsVowel service
+                        .flatMap((Function<IsVowelRequest, Publisher<IsVowelResponse>>) isVowelClient::isVowel)
+                        .doOnNext(isVowelResponse -> {
+                            if (isVowelResponse.getIsVowel()) {
+                                // For every vowel found by the IsVowel service, increment the vowel count and send the
+                                // current vowel count to the client
+                                s.onNext(VowelCountResponse.newBuilder()
+                                        .setVowelCnt(totalVowels.incrementAndGet())
+                                        .build());
+                            }
+                        })
+                        .doOnComplete(s::onComplete)
+                        .subscribe()
+        );    }
 }

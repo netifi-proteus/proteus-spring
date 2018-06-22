@@ -14,6 +14,7 @@ dependencyManagement {
 dependencies {
     compile project(':proteus-annotations')
 
+    compile "io.netifi.proteus:client:${proteusVersion}"
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'org.springframework.boot:spring-boot-autoconfigure'
 }
