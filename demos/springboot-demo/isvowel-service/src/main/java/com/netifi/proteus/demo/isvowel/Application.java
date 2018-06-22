@@ -15,21 +15,59 @@
  */
 package com.netifi.proteus.demo.isvowel;
 
+import com.netifi.proteus.demo.isvowel.service.IsVowelServiceServer;
 import com.netifi.proteus.springboot.annotation.EnableProteus;
+import com.netifi.proteus.springboot.config.ProteusSettings;
+import io.netifi.proteus.Proteus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import java.util.Set;
 
 @SpringBootApplication
 @EnableProteus
-public class Application implements CommandLineRunner {
+public class Application {
 
     public static void main(String... args) {
         SpringApplication.run(Application.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        Thread.currentThread().join();
+    @Autowired
+    @Bean
+    public Proteus proteus(IsVowelServiceServer isVowelServiceServer, ProteusSettings settings) {
+        Proteus proteus = Proteus.builder()
+                .group("com.netifi.proteus.demo.isvowel")
+                .destination("isvowel")
+                .accessKey(settings.getAccessKey())
+                .accessToken(settings.getAccessToken())
+                .host(settings.getBrokerHostname())
+                .port(settings.getBrokerPort())
+                .build();
+
+        proteus.addService(isVowelServiceServer);
+
+        return proteus;
+    }
+
+    @Bean
+    public ProteusRunner proteusRunner(Set<Proteus> proteuses) {
+        return new ProteusRunner(proteuses);
+    }
+
+    public class ProteusRunner implements CommandLineRunner {
+
+        Set<Proteus> proteuses;
+
+        public ProteusRunner(Set<Proteus> proteuses) {
+            this.proteuses = proteuses;
+        }
+
+        @Override
+        public void run(String... args) throws Exception {
+            Thread.currentThread().join();
+        }
     }
 }

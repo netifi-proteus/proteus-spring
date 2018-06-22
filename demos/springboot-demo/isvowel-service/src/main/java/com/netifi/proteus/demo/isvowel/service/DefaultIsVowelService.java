@@ -19,9 +19,6 @@ import com.netifi.proteus.annotations.ProteusService;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import proteus.demo.service.isvowel.IsVowelRequest;
-import proteus.demo.service.isvowel.IsVowelResponse;
-import proteus.demo.service.isvowel.IsVowelService;
 import reactor.core.publisher.Mono;
 
 import java.util.HashSet;

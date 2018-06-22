@@ -15,7 +15,9 @@
  */
 package com.netifi.proteus.springboot.annotation;
 
+import com.netifi.proteus.springboot.config.ProteusBeanDefinitionRegistryPostProcessor;
 import com.netifi.proteus.springboot.config.ProteusImportBeanDefinitionRegistrar;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -28,7 +30,10 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(ProteusImportBeanDefinitionRegistrar.class)
+@Import({
+        ProteusImportBeanDefinitionRegistrar.class,
+        ProteusBeanDefinitionRegistryPostProcessor.class
+})
 public @interface EnableProteus {
 
 }

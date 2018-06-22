@@ -23,3 +23,11 @@ dependencies {
 //
 //    compile 'org.springframework.boot:spring-boot-starter'
 }
+
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            substitute module('com.google.guava:guava') with module('com.google.guava:guava:22.0')
+        }
+    }
+}

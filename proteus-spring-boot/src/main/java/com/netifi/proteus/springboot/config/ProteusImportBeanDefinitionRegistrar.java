@@ -15,6 +15,7 @@
  */
 package com.netifi.proteus.springboot.config;
 
+import com.netifi.proteus.springboot.annotation.EnableProteus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -33,20 +34,15 @@ import java.util.Set;
  */
 public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProteusImportBeanDefinitionRegistrar.class);
+    private static final String PROTEUS_SPRINGBOOT_BASE_PACKAGE = "com.netifi.proteus.springboot";
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        ProteusClassPathScanningCandidateComponentProvider scanner = new ProteusClassPathScanningCandidateComponentProvider();
-
         findBasePackages(importingClassMetadata)
                 .forEach(basePackage -> {
                     LOGGER.debug("Scanning Package for Proteus Bean Definitions: {}", basePackage);
 
-                    scanner.findCandidateComponents(basePackage)
-                            .forEach(beanDefinition -> {
-                                LOGGER.debug("Registering Proteus Bean Definition: {}", beanDefinition.getBeanClassName());
-                                registry.registerBeanDefinition(beanDefinition.getBeanClassName(), beanDefinition);
-                            });
+                    registerProteusServices(basePackage, registry);
                 });
     }
 
@@ -63,6 +59,8 @@ public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitio
 
         // Default base package scanning to the package of the importing class
         basePackages.add(ClassUtils.getPackageName(importingClassMetadata.getClassName()));
+
+        basePackages.add(PROTEUS_SPRINGBOOT_BASE_PACKAGE);
 
         // Check for package scanning directives on the SpringBootApplication annotation
         if (importingClassMetadata.hasAnnotation(SpringBootApplication.class.getName())) {
@@ -81,5 +79,15 @@ public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitio
         }
 
         return basePackages;
+    }
+
+    private void registerProteusServices(String basePackage, BeanDefinitionRegistry registry) {
+        ProteusServiceScanner serviceScanner = new ProteusServiceScanner();
+
+        serviceScanner.findCandidateComponents(basePackage)
+                .forEach(beanDefinition -> {
+                    LOGGER.debug("Registering Proteus Bean: {}", beanDefinition.getBeanClassName());
+                    registry.registerBeanDefinition(beanDefinition.getBeanClassName(), beanDefinition);
+                });
     }
 }

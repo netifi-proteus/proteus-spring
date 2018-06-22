@@ -18,3 +18,11 @@ dependencies {
     compile project(':demos:springboot-demo:isvowel-idl')
     compile project(':proteus-spring-boot-starter')
 }
+
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            substitute module('com.google.guava:guava') with module('com.google.guava:guava:22.0')
+        }
+    }
+}

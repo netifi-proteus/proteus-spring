@@ -16,15 +16,12 @@
 package com.netifi.proteus.demo.vowelcount.service;
 
 import com.netifi.proteus.annotations.ProteusService;
+import com.netifi.proteus.demo.isvowel.service.IsVowelRequest;
+import com.netifi.proteus.demo.isvowel.service.IsVowelResponse;
+import com.netifi.proteus.demo.isvowel.service.IsVowelServiceClient;
 import io.netifi.proteus.rsocket.ProteusSocket;
 import io.netty.buffer.ByteBuf;
 import org.reactivestreams.Publisher;
-import proteus.demo.service.isvowel.IsVowelRequest;
-import proteus.demo.service.isvowel.IsVowelResponse;
-import proteus.demo.service.isvowel.IsVowelServiceClient;
-import proteus.demo.service.vowelcount.VowelCountRequest;
-import proteus.demo.service.vowelcount.VowelCountResponse;
-import proteus.demo.service.vowelcount.VowelCountService;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -60,5 +57,6 @@ public class DefaultVowelCountService implements VowelCountService {
                         })
                         .doOnComplete(s::onComplete)
                         .subscribe()
-        );    }
+        );
+    }
 }

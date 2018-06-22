@@ -15,21 +15,22 @@
  */
 package com.netifi.proteus.springboot.config;
 
-import com.netifi.proteus.annotations.ProteusAnnotation;
+import com.netifi.proteus.annotations.ProteusService;
+import io.netifi.proteus.AbstractProteusService;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 
-/**
- * Scans the classpath for classes annotated with Proteus annotations.
- */
-public class ProteusClassPathScanningCandidateComponentProvider extends ClassPathScanningCandidateComponentProvider {
+public class ProteusServiceScanner extends ClassPathScanningCandidateComponentProvider {
 
-    public ProteusClassPathScanningCandidateComponentProvider() {
+    public ProteusServiceScanner() {
         super(true);
     }
 
     @Override
     protected void registerDefaultFilters() {
-        addIncludeFilter(new AnnotationTypeFilter(ProteusAnnotation.class));
+        super.registerDefaultFilters();
+        addIncludeFilter(new AssignableTypeFilter(AbstractProteusService.class));
+        addIncludeFilter(new AnnotationTypeFilter(ProteusService.class));
     }
 }
