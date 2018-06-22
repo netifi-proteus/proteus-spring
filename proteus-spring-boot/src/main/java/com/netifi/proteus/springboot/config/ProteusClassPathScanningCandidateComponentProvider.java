@@ -21,9 +21,9 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
-public class ProteusServiceScanner extends ClassPathScanningCandidateComponentProvider {
+public class ProteusClassPathScanningCandidateComponentProvider extends ClassPathScanningCandidateComponentProvider {
 
-    public ProteusServiceScanner() {
+    public ProteusClassPathScanningCandidateComponentProvider() {
         super(true);
     }
 

@@ -15,7 +15,6 @@
  */
 package com.netifi.proteus.springboot.config;
 
-import com.netifi.proteus.springboot.annotation.EnableProteus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -60,6 +59,7 @@ public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitio
         // Default base package scanning to the package of the importing class
         basePackages.add(ClassUtils.getPackageName(importingClassMetadata.getClassName()));
 
+        // Make sure proteus classes are scanned
         basePackages.add(PROTEUS_SPRINGBOOT_BASE_PACKAGE);
 
         // Check for package scanning directives on the SpringBootApplication annotation
@@ -82,7 +82,7 @@ public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitio
     }
 
     private void registerProteusServices(String basePackage, BeanDefinitionRegistry registry) {
-        ProteusServiceScanner serviceScanner = new ProteusServiceScanner();
+        ProteusClassPathScanningCandidateComponentProvider serviceScanner = new ProteusClassPathScanningCandidateComponentProvider();
 
         serviceScanner.findCandidateComponents(basePackage)
                 .forEach(beanDefinition -> {
