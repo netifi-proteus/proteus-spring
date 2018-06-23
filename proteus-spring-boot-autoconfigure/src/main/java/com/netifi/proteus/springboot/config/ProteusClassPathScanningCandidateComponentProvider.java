@@ -25,7 +25,7 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 import java.io.IOException;
 
 /**
- *
+ * Classpath scanner that handles discovery of Proteus classes.
  */
 public class ProteusClassPathScanningCandidateComponentProvider extends ClassPathScanningCandidateComponentProvider {
 

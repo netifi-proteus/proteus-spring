@@ -21,6 +21,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
+/**
+ * Proteus configuration options that can be set via the application properties files or system properties.
+ */
 @ConfigurationProperties
 public class ProteusSettings {
 

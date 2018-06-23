@@ -90,6 +90,12 @@ public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitio
         return basePackages;
     }
 
+    /**
+     * Find Proteus services and their server implementations and adds them to the bean registry.
+     *
+     * @param basePackage base package to start classpath scanning
+     * @param registry bean registry
+     */
     private void registerProteusServices(String basePackage, BeanDefinitionRegistry registry) {
         ProteusClassPathScanningCandidateComponentProvider serviceScanner = new ProteusClassPathScanningCandidateComponentProvider();
 

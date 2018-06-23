@@ -26,7 +26,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 /**
- *
+ * Handles post processing of custom Proteus bean definitions.
  */
 public class ProteusBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProteusBeanDefinitionRegistryPostProcessor.class);
@@ -42,6 +42,8 @@ public class ProteusBeanDefinitionRegistryPostProcessor implements BeanDefinitio
                     ProteusGenerated proteusGeneratedAnnotation = clazz.getAnnotation(ProteusGenerated.class);
                     Class<?> idlClazz = proteusGeneratedAnnotation.idlClass();
 
+                    // Remove any AbstractProteusService beans that do not have an implementation of their
+                    // underlying service in the bean registry.
                     if(beanFactory.getBeanNamesForType(idlClazz).length <= 0) {
                         LOGGER.info("Removing {} because no IDL implementation for {} was found", serviceServerBeanName, idlClazz.getCanonicalName());
                         registry.removeBeanDefinition(serviceServerBeanName);
