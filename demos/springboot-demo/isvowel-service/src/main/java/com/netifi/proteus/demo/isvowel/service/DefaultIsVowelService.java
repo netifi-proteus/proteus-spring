@@ -15,7 +15,7 @@
  */
 package com.netifi.proteus.demo.isvowel.service;
 
-import com.netifi.proteus.annotations.ProteusService;
+import io.netifi.proteus.annotations.ProteusService;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

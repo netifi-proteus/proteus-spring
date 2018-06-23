@@ -16,6 +16,7 @@
 package com.netifi.proteus.springboot.annotation;
 
 import com.netifi.proteus.springboot.config.ProteusAutoConfiguration;
+import com.netifi.proteus.springboot.config.ProteusBeanDefinitionRegistryPostProcessor;
 import com.netifi.proteus.springboot.config.ProteusImportBeanDefinitionRegistrar;
 import org.springframework.context.annotation.Import;
 
@@ -31,6 +32,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
         ProteusImportBeanDefinitionRegistrar.class,
+        ProteusBeanDefinitionRegistryPostProcessor.class,
         ProteusAutoConfiguration.class
 })
 public @interface EnableProteus {

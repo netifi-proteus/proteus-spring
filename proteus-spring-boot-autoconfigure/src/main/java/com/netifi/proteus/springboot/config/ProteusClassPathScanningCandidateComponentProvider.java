@@ -15,12 +15,18 @@
  */
 package com.netifi.proteus.springboot.config;
 
-import com.netifi.proteus.annotations.ProteusService;
+import io.netifi.proteus.annotations.ProteusService;
 import io.netifi.proteus.AbstractProteusService;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
+import java.io.IOException;
+
+/**
+ *
+ */
 public class ProteusClassPathScanningCandidateComponentProvider extends ClassPathScanningCandidateComponentProvider {
 
     public ProteusClassPathScanningCandidateComponentProvider() {
@@ -29,7 +35,6 @@ public class ProteusClassPathScanningCandidateComponentProvider extends ClassPat
 
     @Override
     protected void registerDefaultFilters() {
-        super.registerDefaultFilters();
         addIncludeFilter(new AssignableTypeFilter(AbstractProteusService.class));
         addIncludeFilter(new AnnotationTypeFilter(ProteusService.class));
     }

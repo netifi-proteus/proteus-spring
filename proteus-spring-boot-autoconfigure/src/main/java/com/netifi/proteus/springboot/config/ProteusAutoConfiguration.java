@@ -15,7 +15,7 @@
  */
 package com.netifi.proteus.springboot.config;
 
-import com.netifi.proteus.annotations.ProteusService;
+import io.netifi.proteus.annotations.ProteusService;
 import com.netifi.proteus.springboot.ProteusRunner;
 import io.netifi.proteus.AbstractProteusService;
 import io.netifi.proteus.Proteus;

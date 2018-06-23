@@ -4,24 +4,26 @@ package com.netifi.proteus.demo.isvowel.service;
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: isvowel.proto")
 @io.netifi.proteus.annotations.internal.ProteusGenerated(
-    idlClass = IsVowelService.class)
-public final class IsVowelServiceServer extends io.netifi.proteus.AbstractProteusService {
-  private final IsVowelService service;
+    idlClass = BlockingIsVowelService.class)
+public final class BlockingIsVowelServiceServer extends io.netifi.proteus.AbstractProteusService {
+  private final BlockingIsVowelService service;
+  private final reactor.core.scheduler.Scheduler scheduler;
   private final java.util.function.Function<? super org.reactivestreams.Publisher<io.rsocket.Payload>, ? extends org.reactivestreams.Publisher<io.rsocket.Payload>> isVowel;
   @javax.inject.Inject
-  public IsVowelServiceServer(IsVowelService service, java.util.Optional<io.micrometer.core.instrument.MeterRegistry> registry) {
+  public BlockingIsVowelServiceServer(BlockingIsVowelService service, java.util.Optional<reactor.core.scheduler.Scheduler> scheduler, java.util.Optional<io.micrometer.core.instrument.MeterRegistry> registry) {
+    this.scheduler = scheduler.orElse(reactor.core.scheduler.Schedulers.elastic());
     this.service = service;
     if (!registry.isPresent()) {
       this.isVowel = java.util.function.Function.identity();
     } else {
-      this.isVowel = io.netifi.proteus.metrics.ProteusMetrics.timed(registry.get(), "proteus.server", "service", IsVowelService.SERVICE, "method", IsVowelService.METHOD_IS_VOWEL);
+      this.isVowel = io.netifi.proteus.metrics.ProteusMetrics.timed(registry.get(), "proteus.server", "service", BlockingIsVowelService.SERVICE_ID, "method", BlockingIsVowelService.METHOD_IS_VOWEL);
     }
 
   }
 
   @java.lang.Override
   public String getService() {
-    return IsVowelService.SERVICE;
+    return BlockingIsVowelService.SERVICE_ID;
   }
 
   @java.lang.Override
@@ -41,7 +43,8 @@ public final class IsVowelServiceServer extends io.netifi.proteus.AbstractProteu
       switch(io.netifi.proteus.frames.ProteusMetadata.getMethod(metadata)) {
         case IsVowelService.METHOD_IS_VOWEL: {
           com.google.protobuf.CodedInputStream is = com.google.protobuf.CodedInputStream.newInstance(payload.getData());
-          return service.isVowel(com.netifi.proteus.demo.isvowel.service.IsVowelRequest.parseFrom(is), metadata).map(serializer).transform(isVowel);
+          com.netifi.proteus.demo.isvowel.service.IsVowelRequest message = com.netifi.proteus.demo.isvowel.service.IsVowelRequest.parseFrom(is);
+          return reactor.core.publisher.Mono.fromSupplier(() -> service.isVowel(message, metadata)).map(serializer).transform(isVowel).subscribeOn(scheduler);
         }
         default: {
           return reactor.core.publisher.Mono.error(new UnsupportedOperationException());

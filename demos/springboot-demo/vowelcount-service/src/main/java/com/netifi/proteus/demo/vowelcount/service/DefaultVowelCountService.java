@@ -15,7 +15,7 @@
  */
 package com.netifi.proteus.demo.vowelcount.service;
 
-import com.netifi.proteus.annotations.ProteusService;
+import io.netifi.proteus.annotations.ProteusService;
 import com.netifi.proteus.demo.isvowel.service.IsVowelRequest;
 import com.netifi.proteus.demo.isvowel.service.IsVowelResponse;
 import com.netifi.proteus.demo.isvowel.service.IsVowelServiceClient;

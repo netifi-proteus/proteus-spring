@@ -3,18 +3,20 @@ package com.netifi.proteus.demo.vowelcount.service;
 @javax.annotation.Generated(
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: vowelcount.proto")
+@io.netifi.proteus.annotations.internal.ProteusGenerated(
+    idlClass = VowelCountService.class)
 public final class VowelCountServiceServer extends io.netifi.proteus.AbstractProteusService {
   private final VowelCountService service;
   private final java.util.function.Function<? super org.reactivestreams.Publisher<io.rsocket.Payload>, ? extends org.reactivestreams.Publisher<io.rsocket.Payload>> countVowels;
-
-  public VowelCountServiceServer(VowelCountService service) {
+  @javax.inject.Inject
+  public VowelCountServiceServer(VowelCountService service, java.util.Optional<io.micrometer.core.instrument.MeterRegistry> registry) {
     this.service = service;
-    this.countVowels = java.util.function.Function.identity();
-  }
+    if (!registry.isPresent()) {
+      this.countVowels = java.util.function.Function.identity();
+    } else {
+      this.countVowels = io.netifi.proteus.metrics.ProteusMetrics.timed(registry.get(), "proteus.server", "service", VowelCountService.SERVICE, "method", VowelCountService.METHOD_COUNT_VOWELS);
+    }
 
-  public VowelCountServiceServer(VowelCountService service, io.micrometer.core.instrument.MeterRegistry registry) {
-    this.service = service;
-    this.countVowels = io.netifi.proteus.metrics.ProteusMetrics.timed(registry, "proteus.server", "service", VowelCountService.SERVICE, "method", VowelCountService.METHOD_COUNT_VOWELS);
   }
 
   @java.lang.Override

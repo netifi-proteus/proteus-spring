@@ -1,16 +1,16 @@
-package com.netifi.proteus.demo.vowelcount.service.blocking;
+package com.netifi.proteus.demo.vowelcount.service;
 
 @javax.annotation.Generated(
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: vowelcount.proto")
-public final class VowelCountServiceClient implements VowelCountService {
+public final class BlockingVowelCountServiceClient implements BlockingVowelCountService {
   private final com.netifi.proteus.demo.vowelcount.service.VowelCountServiceClient delegate;
 
-  public VowelCountServiceClient(io.rsocket.RSocket rSocket) {
+  public BlockingVowelCountServiceClient(io.rsocket.RSocket rSocket) {
     this.delegate = new com.netifi.proteus.demo.vowelcount.service.VowelCountServiceClient(rSocket);
   }
 
-  public VowelCountServiceClient(io.rsocket.RSocket rSocket, io.micrometer.core.instrument.MeterRegistry registry) {
+  public BlockingVowelCountServiceClient(io.rsocket.RSocket rSocket, io.micrometer.core.instrument.MeterRegistry registry) {
     this.delegate = new com.netifi.proteus.demo.vowelcount.service.VowelCountServiceClient(rSocket, registry);
   }
 

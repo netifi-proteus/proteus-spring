@@ -6,8 +6,6 @@ plugins {
 sourceCompatibility = 1.8
 
 dependencies {
-    compile project(':proteus-annotations')
-
     compile "io.netifi.proteus:core:${proteusVersion}"
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
 }

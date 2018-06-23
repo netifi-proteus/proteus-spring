@@ -1,12 +1,12 @@
-package com.netifi.proteus.demo.vowelcount.service.blocking;
+package com.netifi.proteus.demo.vowelcount.service;
 
 /**
  */
 @javax.annotation.Generated(
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: vowelcount.proto")
-public interface VowelCountService {
-  String SERVICE_ID = "com.netifi.proteus.demo.vowelcount.serviceVowelCountService";
+public interface BlockingVowelCountService {
+  String SERVICE_ID = "com.netifi.proteus.demo.vowelcount.service.VowelCountService";
   String METHOD_COUNT_VOWELS = "CountVowels";
 
   /**

@@ -1,41 +1,29 @@
-package com.netifi.proteus.demo.vowelcount.service.blocking;
+package com.netifi.proteus.demo.vowelcount.service;
 
 @javax.annotation.Generated(
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: vowelcount.proto")
-public final class VowelCountServiceServer extends io.netifi.proteus.AbstractProteusService {
-  private final VowelCountService service;
+@io.netifi.proteus.annotations.internal.ProteusGenerated(
+    idlClass = BlockingVowelCountService.class)
+public final class BlockingVowelCountServiceServer extends io.netifi.proteus.AbstractProteusService {
+  private final BlockingVowelCountService service;
   private final reactor.core.scheduler.Scheduler scheduler;
   private final java.util.function.Function<? super org.reactivestreams.Publisher<io.rsocket.Payload>, ? extends org.reactivestreams.Publisher<io.rsocket.Payload>> countVowels;
-
-  public VowelCountServiceServer(VowelCountService service, reactor.core.scheduler.Scheduler scheduler) {
-    this.scheduler = scheduler;
+  @javax.inject.Inject
+  public BlockingVowelCountServiceServer(BlockingVowelCountService service, java.util.Optional<reactor.core.scheduler.Scheduler> scheduler, java.util.Optional<io.micrometer.core.instrument.MeterRegistry> registry) {
+    this.scheduler = scheduler.orElse(reactor.core.scheduler.Schedulers.elastic());
     this.service = service;
-    this.countVowels = java.util.function.Function.identity();
-  }
+    if (!registry.isPresent()) {
+      this.countVowels = java.util.function.Function.identity();
+    } else {
+      this.countVowels = io.netifi.proteus.metrics.ProteusMetrics.timed(registry.get(), "proteus.server", "service", BlockingVowelCountService.SERVICE_ID, "method", BlockingVowelCountService.METHOD_COUNT_VOWELS);
+    }
 
-
-  public VowelCountServiceServer(VowelCountService service) {
-    this.scheduler = reactor.core.scheduler.Schedulers.elastic();
-    this.service = service;
-    this.countVowels = java.util.function.Function.identity();
-  }
-
-  public VowelCountServiceServer(VowelCountService service, io.micrometer.core.instrument.MeterRegistry registry) {
-    this.scheduler = reactor.core.scheduler.Schedulers.elastic();
-    this.service = service;
-    this.countVowels = io.netifi.proteus.metrics.ProteusMetrics.timed(registry, "proteus.server", "namespace", "com.netifi.proteus.demo.vowelcount.service.blocking", "service", "VowelCountService", "method", "countVowels");
-  }
-
-  public VowelCountServiceServer(VowelCountService service, reactor.core.scheduler.Scheduler scheduler, io.micrometer.core.instrument.MeterRegistry registry) {
-    this.scheduler = scheduler;
-    this.service = service;
-    this.countVowels = io.netifi.proteus.metrics.ProteusMetrics.timed(registry, "proteus.server", "namespace", "com.netifi.proteus.demo.vowelcount.service.blocking", "service", "VowelCountService", "method", "countVowels");
   }
 
   @java.lang.Override
   public String getService() {
-    return VowelCountService.SERVICE_ID;
+    return BlockingVowelCountService.SERVICE_ID;
   }
 
   @java.lang.Override
@@ -63,7 +51,7 @@ public final class VowelCountServiceServer extends io.netifi.proteus.AbstractPro
     try {
       io.netty.buffer.ByteBuf metadata = payload.sliceMetadata();
       switch(io.netifi.proteus.frames.ProteusMetadata.getMethod(metadata)) {
-        case VowelCountService.METHOD_COUNT_VOWELS: {
+        case BlockingVowelCountService.METHOD_COUNT_VOWELS: {
           reactor.core.publisher.Flux<com.netifi.proteus.demo.vowelcount.service.VowelCountRequest> messages =
             publisher.map(deserializer(com.netifi.proteus.demo.vowelcount.service.VowelCountRequest.parser()));
           return reactor.core.publisher.Flux.defer(() -> reactor.core.publisher.Flux.fromIterable(service.countVowels(messages.toIterable(), metadata)).map(serializer).transform(countVowels)).subscribeOn(scheduler);
