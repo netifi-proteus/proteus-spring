@@ -33,16 +33,16 @@ public class ProteusBeanDefinitionRegistryPostProcessor implements BeanDefinitio
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) registry;
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) registry;
 
-        for (String serviceServerBeanName : defaultListableBeanFactory.getBeanNamesForType(AbstractProteusService.class)) {
+        for (String serviceServerBeanName : beanFactory.getBeanNamesForType(AbstractProteusService.class)) {
             try {
                 Class<?> clazz = Class.forName(registry.getBeanDefinition(serviceServerBeanName).getBeanClassName());
                 if (clazz.isAnnotationPresent(ProteusGenerated.class)) {
                     ProteusGenerated proteusGeneratedAnnotation = clazz.getAnnotation(ProteusGenerated.class);
                     Class<?> idlClazz = proteusGeneratedAnnotation.idlClass();
 
-                    if(defaultListableBeanFactory.getBeanNamesForType(idlClazz).length <= 0) {
+                    if(beanFactory.getBeanNamesForType(idlClazz).length <= 0) {
                         LOGGER.info("Removing {} because no IDL implementation for {} was found", serviceServerBeanName, idlClazz.getCanonicalName());
                         registry.removeBeanDefinition(serviceServerBeanName);
                     }
