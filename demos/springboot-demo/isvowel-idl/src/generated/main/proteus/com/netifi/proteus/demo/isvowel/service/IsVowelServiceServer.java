@@ -1,25 +1,32 @@
 package com.netifi.proteus.demo.isvowel.service;
 
+import java.util.Optional;
+
 @javax.annotation.Generated(
-    value = "by Proteus proto compiler (version 0.7.13)",
+    value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: isvowel.proto")
 public final class IsVowelServiceServer extends io.netifi.proteus.AbstractProteusService {
   private final IsVowelService service;
   private final java.util.function.Function<? super org.reactivestreams.Publisher<io.rsocket.Payload>, ? extends org.reactivestreams.Publisher<io.rsocket.Payload>> isVowel;
 
-  public IsVowelServiceServer(IsVowelService service) {
+  @javax.inject.Inject
+  public IsVowelServiceServer(IsVowelService service, Optional<io.micrometer.core.instrument.MeterRegistry> registry) {
     this.service = service;
-    this.isVowel = java.util.function.Function.identity();
-  }
-
-  public IsVowelServiceServer(IsVowelService service, io.micrometer.core.instrument.MeterRegistry registry) {
-    this.service = service;
-    this.isVowel = io.netifi.proteus.metrics.ProteusMetrics.timed(registry, "proteus.server", "service", IsVowelService.SERVICE, "method", IsVowelService.METHOD_IS_VOWEL);
+    if (registry.isPresent()) {
+      this.isVowel = io.netifi.proteus.metrics.ProteusMetrics.timed(registry.get(), "proteus.server", "service", IsVowelService.SERVICE, "method", IsVowelService.METHOD_IS_VOWEL);
+    } else {
+      this.isVowel = java.util.function.Function.identity();
+    }
   }
 
   @java.lang.Override
   public String getService() {
     return IsVowelService.SERVICE;
+  }
+
+  @java.lang.Override
+  public Class<?> getServiceClass() {
+    return service.getClass();
   }
 
   @java.lang.Override

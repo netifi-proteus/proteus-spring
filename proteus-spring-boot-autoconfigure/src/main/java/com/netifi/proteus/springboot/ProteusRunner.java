@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.demo.isvowel;
+package com.netifi.proteus.springboot;
 
-import com.netifi.proteus.springboot.annotation.EnableProteus;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.netifi.proteus.Proteus;
+import org.springframework.boot.CommandLineRunner;
 
-@SpringBootApplication
-@EnableProteus
-public class Application {
+import java.util.Set;
 
-    public static void main(String... args) {
-        SpringApplication.run(Application.class, args);
+public class ProteusRunner implements CommandLineRunner {
+    private final Set<Proteus> connections;
+
+    public ProteusRunner(Set<Proteus> connections) {
+        this.connections = connections;
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+
+        Thread.currentThread().join();
     }
 }

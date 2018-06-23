@@ -1,7 +1,7 @@
 package com.netifi.proteus.demo.vowelcount.service;
 
 @javax.annotation.Generated(
-    value = "by Proteus proto compiler (version 0.7.13)",
+    value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: vowelcount.proto")
 public final class VowelCountServiceClient implements VowelCountService {
   private final io.rsocket.RSocket rSocket;

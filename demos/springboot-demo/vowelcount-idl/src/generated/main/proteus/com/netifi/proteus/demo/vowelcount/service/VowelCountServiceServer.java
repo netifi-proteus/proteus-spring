@@ -1,7 +1,7 @@
 package com.netifi.proteus.demo.vowelcount.service;
 
 @javax.annotation.Generated(
-    value = "by Proteus proto compiler (version 0.7.13)",
+    value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: vowelcount.proto")
 public final class VowelCountServiceServer extends io.netifi.proteus.AbstractProteusService {
   private final VowelCountService service;
@@ -20,6 +20,11 @@ public final class VowelCountServiceServer extends io.netifi.proteus.AbstractPro
   @java.lang.Override
   public String getService() {
     return VowelCountService.SERVICE;
+  }
+
+  @java.lang.Override
+  public Class<?> getServiceClass() {
+    return service.getClass();
   }
 
   @java.lang.Override

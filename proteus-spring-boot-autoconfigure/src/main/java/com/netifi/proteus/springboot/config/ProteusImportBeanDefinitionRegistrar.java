@@ -15,11 +15,16 @@
  */
 package com.netifi.proteus.springboot.config;
 
+import io.netifi.proteus.Proteus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 
@@ -31,9 +36,16 @@ import java.util.Set;
 /**
  * An {@link ImportBeanDefinitionRegistrar} implementation that finds and registers Proteus bean definitions.
  */
-public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+public class ProteusImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProteusImportBeanDefinitionRegistrar.class);
     private static final String PROTEUS_SPRINGBOOT_BASE_PACKAGE = "com.netifi.proteus.springboot";
+
+    private Environment environment;
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {

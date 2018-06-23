@@ -18,12 +18,10 @@ package com.netifi.proteus.springboot.config;
 import com.netifi.proteus.springboot.exception.MissingAccessKeyException;
 import com.netifi.proteus.springboot.exception.MissingAccessTokenException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 
-@Component
-@Validated
+@ConfigurationProperties
 public class ProteusSettings {
 
     @Value("${netifi.proteus.broker.hostname:localhost}")

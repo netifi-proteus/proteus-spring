@@ -3,7 +3,7 @@ package com.netifi.proteus.demo.isvowel.service;
 /**
  */
 @javax.annotation.Generated(
-    value = "by Proteus proto compiler (version 0.7.13)",
+    value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: isvowel.proto")
 public interface IsVowelService {
   String SERVICE = "com.netifi.proteus.demo.isvowel.service.IsVowelService";
