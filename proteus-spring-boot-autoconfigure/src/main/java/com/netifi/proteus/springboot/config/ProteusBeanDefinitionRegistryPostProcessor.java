@@ -15,20 +15,15 @@
  */
 package com.netifi.proteus.springboot.config;
 
-import io.netifi.proteus.annotations.ProteusService;
 import io.netifi.proteus.AbstractProteusService;
 import io.netifi.proteus.annotations.internal.ProteusGenerated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
@@ -40,18 +35,6 @@ public class ProteusBeanDefinitionRegistryPostProcessor implements BeanDefinitio
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) registry;
 
-//        // Get metadata for all classes annotated with ProteusService
-//        Set<Class<?>> proteusServiceClasses = new HashSet<>();
-//        for (String serviceBeanName : defaultListableBeanFactory.getBeanNamesForAnnotation(ProteusService.class)) {
-//            String beanClassName = registry.getBeanDefinition(serviceBeanName).getBeanClassName();
-//
-//            try {
-//                proteusServiceClasses.add(Class.forName(beanClassName));
-//            } catch (ClassNotFoundException e) {
-//                LOGGER.error("Error during post processing of Proteus beans", e);
-//            }
-//        }
-
         for (String serviceServerBeanName : defaultListableBeanFactory.getBeanNamesForType(AbstractProteusService.class)) {
             try {
                 Class<?> clazz = Class.forName(registry.getBeanDefinition(serviceServerBeanName).getBeanClassName());
@@ -60,6 +43,7 @@ public class ProteusBeanDefinitionRegistryPostProcessor implements BeanDefinitio
                     Class<?> idlClazz = proteusGeneratedAnnotation.idlClass();
 
                     if(defaultListableBeanFactory.getBeanNamesForType(idlClazz).length <= 0) {
+                        LOGGER.info("Removing {} because no IDL implementation for {} was found", serviceServerBeanName, idlClazz.getCanonicalName());
                         registry.removeBeanDefinition(serviceServerBeanName);
                     }
                 }
