@@ -21,6 +21,9 @@ import org.springframework.core.env.MissingRequiredPropertiesException;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Exception thrown when no Proteus access token has been defined.
+ */
 public class MissingAccessTokenException extends MissingRequiredPropertiesException {
 
     @Override
