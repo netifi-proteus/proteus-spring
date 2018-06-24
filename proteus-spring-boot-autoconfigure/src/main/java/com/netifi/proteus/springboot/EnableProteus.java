@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Enables Netifi Proteus support in the Spring project.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -32,14 +32,17 @@ import java.lang.annotation.Target;
 public @interface EnableProteus {
 
     /**
+     * The group to register this service as in the Proteus broker.
      *
-     * @return
+     * @return proteus group name
      */
     String group();
 
     /**
+     * The destination to register this service as in the Proteus Broker. If not specified, Proteus will automatically
+     * generate a globally unique name for you.
      *
-     * @return
+     * @return proteus destination name
      */
     String destination() default "";
 }
