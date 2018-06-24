@@ -19,9 +19,6 @@ dependencies {
     compile project(':demos:springboot-demo:vowelcount-idl')
 
     compile project(':proteus-spring-boot-starter')
-//    compile project(':proteus-spring-boot-connector')
-//
-//    compile 'org.springframework.boot:spring-boot-starter'
 }
 
 configurations.all {

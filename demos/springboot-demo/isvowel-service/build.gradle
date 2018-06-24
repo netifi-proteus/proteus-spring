@@ -17,8 +17,6 @@ dependencyManagement {
 dependencies {
     compile project(':demos:springboot-demo:isvowel-idl')
     compile project(':proteus-spring-boot-starter')
-
-    //compile('org.springframework.boot:spring-boot-starter-actuator')
 }
 
 configurations.all {
