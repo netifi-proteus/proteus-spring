@@ -28,9 +28,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({
-        ProteusAutoConfiguration.class
-})
+@Import(ProteusAutoConfiguration.class)
 public @interface EnableProteus {
 
     /**
