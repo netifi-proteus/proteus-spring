@@ -5,6 +5,8 @@ package com.netifi.proteus.demo.vowelcount.service;
     comments = "Source: vowelcount.proto")
 @io.netifi.proteus.annotations.internal.ProteusGenerated(
     idlClass = VowelCountService.class)
+@javax.inject.Named(
+    value ="VowelCountServiceServer")
 public final class VowelCountServiceServer extends io.netifi.proteus.AbstractProteusService {
   private final VowelCountService service;
   private final java.util.function.Function<? super org.reactivestreams.Publisher<io.rsocket.Payload>, ? extends org.reactivestreams.Publisher<io.rsocket.Payload>> countVowels;

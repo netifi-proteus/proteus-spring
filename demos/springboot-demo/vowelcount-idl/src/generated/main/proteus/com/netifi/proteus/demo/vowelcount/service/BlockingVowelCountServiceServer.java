@@ -5,6 +5,8 @@ package com.netifi.proteus.demo.vowelcount.service;
     comments = "Source: vowelcount.proto")
 @io.netifi.proteus.annotations.internal.ProteusGenerated(
     idlClass = BlockingVowelCountService.class)
+@javax.inject.Named(
+    value ="BlockingVowelCountServiceServer")
 public final class BlockingVowelCountServiceServer extends io.netifi.proteus.AbstractProteusService {
   private final BlockingVowelCountService service;
   private final reactor.core.scheduler.Scheduler scheduler;

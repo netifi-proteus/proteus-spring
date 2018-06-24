@@ -15,16 +15,17 @@
  */
 package com.netifi.proteus.demo.isvowel.service;
 
-import io.netifi.proteus.annotations.ProteusService;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
 
-@ProteusService(group = "com.netifi.proteus.demo.isvowel")
+@Component
 public class DefaultIsVowelService implements IsVowelService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultIsVowelService.class);
 

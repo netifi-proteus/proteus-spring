@@ -15,66 +15,59 @@
  */
 package com.netifi.proteus.springboot.config;
 
-import io.netifi.proteus.annotations.ProteusService;
+import com.netifi.proteus.springboot.EnableProteus;
 import com.netifi.proteus.springboot.ProteusRunner;
 import io.netifi.proteus.AbstractProteusService;
 import io.netifi.proteus.Proteus;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportAware;
+import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Configuration
+@ComponentScan(basePackages = { "com.netifi.proteus.springboot" })
 @EnableConfigurationProperties(ProteusSettings.class)
-public class ProteusAutoConfiguration {
+public class ProteusAutoConfiguration implements ImportAware {
 
-    private final ProteusSettings settings;
+    protected final ProteusSettings settings;
+    protected AnnotationAttributes enableProteus;
 
     public ProteusAutoConfiguration(ProteusSettings settings) {
         this.settings = settings;
     }
 
+    @Override
+    public void setImportMetadata(AnnotationMetadata importMetadata) {
+        this.enableProteus = AnnotationAttributes.fromMap(
+                importMetadata.getAnnotationAttributes(EnableProteus.class.getName(), false));
+    }
+
     @Bean
     @ConditionalOnMissingBean
-    public Set<Proteus> proteusConnections(Set<AbstractProteusService> services) {
-        Set<Proteus> connections = new HashSet<>();
+    public Proteus proteus(Set<AbstractProteusService> proteusServices) {
+        Proteus.Builder builder = Proteus.builder();
 
-        services.forEach(service -> {
-            ProteusService annotation = service.getServiceClass().getAnnotation(ProteusService.class);
+        if (!StringUtils.isEmpty(enableProteus.getString("destination"))) {
+            builder.destination(enableProteus.getString("destination"));
+        }
 
-            if (StringUtils.isEmpty(annotation.destination())) {
-                Proteus proteus = Proteus.builder()
-                        .group(annotation.group())
-                        .accessKey(settings.getAccessKey())
-                        .accessToken(settings.getAccessToken())
-                        .host(settings.getBrokerHostname())
-                        .port(settings.getBrokerPort())
-                        .build();
+        Proteus proteus = builder.accessKey(settings.getAccessKey())
+                .group(enableProteus.getString("group"))
+                .accessToken(settings.getAccessToken())
+                .host(settings.getBrokerHostname())
+                .port(settings.getBrokerPort())
+                .build();
 
-                proteus.addService(service);
+        proteusServices.forEach(proteus::addService);
 
-                connections.add(proteus);
-            } else {
-                Proteus proteus = Proteus.builder()
-                        .group(annotation.group())
-                        .destination(annotation.destination())
-                        .accessKey(settings.getAccessKey())
-                        .accessToken(settings.getAccessToken())
-                        .host(settings.getBrokerHostname())
-                        .port(settings.getBrokerPort())
-                        .build();
-
-                proteus.addService(service);
-
-                connections.add(proteus);
-            }
-        });
-
-        return connections;
+        return proteus;
     }
 
     @Bean

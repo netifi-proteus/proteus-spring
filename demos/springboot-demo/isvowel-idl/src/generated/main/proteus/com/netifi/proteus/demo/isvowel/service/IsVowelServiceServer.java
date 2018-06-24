@@ -5,6 +5,8 @@ package com.netifi.proteus.demo.isvowel.service;
     comments = "Source: isvowel.proto")
 @io.netifi.proteus.annotations.internal.ProteusGenerated(
     idlClass = IsVowelService.class)
+@javax.inject.Named(
+    value ="IsVowelServiceServer")
 public final class IsVowelServiceServer extends io.netifi.proteus.AbstractProteusService {
   private final IsVowelService service;
   private final java.util.function.Function<? super org.reactivestreams.Publisher<io.rsocket.Payload>, ? extends org.reactivestreams.Publisher<io.rsocket.Payload>> isVowel;

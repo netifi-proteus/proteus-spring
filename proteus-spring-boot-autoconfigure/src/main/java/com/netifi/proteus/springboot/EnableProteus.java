@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.springboot.annotation;
+package com.netifi.proteus.springboot;
 
 import com.netifi.proteus.springboot.config.ProteusAutoConfiguration;
-import com.netifi.proteus.springboot.config.ProteusBeanDefinitionRegistryPostProcessor;
-import com.netifi.proteus.springboot.config.ProteusImportBeanDefinitionRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -31,10 +29,19 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-        ProteusImportBeanDefinitionRegistrar.class,
-        ProteusBeanDefinitionRegistryPostProcessor.class,
         ProteusAutoConfiguration.class
 })
 public @interface EnableProteus {
 
+    /**
+     *
+     * @return
+     */
+    String group();
+
+    /**
+     *
+     * @return
+     */
+    String destination() default "";
 }

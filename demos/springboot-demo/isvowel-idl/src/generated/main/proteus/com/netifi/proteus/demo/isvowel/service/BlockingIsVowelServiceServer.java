@@ -5,6 +5,8 @@ package com.netifi.proteus.demo.isvowel.service;
     comments = "Source: isvowel.proto")
 @io.netifi.proteus.annotations.internal.ProteusGenerated(
     idlClass = BlockingIsVowelService.class)
+@javax.inject.Named(
+    value ="BlockingIsVowelServiceServer")
 public final class BlockingIsVowelServiceServer extends io.netifi.proteus.AbstractProteusService {
   private final BlockingIsVowelService service;
   private final reactor.core.scheduler.Scheduler scheduler;

@@ -15,6 +15,7 @@
  */
 package com.netifi.proteus.demo.vowelcount.service;
 
+import io.netifi.proteus.annotations.ProteusClient;
 import io.netifi.proteus.annotations.ProteusService;
 import com.netifi.proteus.demo.isvowel.service.IsVowelRequest;
 import com.netifi.proteus.demo.isvowel.service.IsVowelResponse;
@@ -22,19 +23,19 @@ import com.netifi.proteus.demo.isvowel.service.IsVowelServiceClient;
 import io.netifi.proteus.rsocket.ProteusSocket;
 import io.netty.buffer.ByteBuf;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
-@ProteusService(group = "com.netifi.proteus.demo.vowelcount")
+@Component
 public class DefaultVowelCountService implements VowelCountService {
     private final AtomicLong totalVowels = new AtomicLong(0);
-    private final IsVowelServiceClient isVowelClient;
 
-    public DefaultVowelCountService(final ProteusSocket isVowelConn) {
-        this.isVowelClient = new IsVowelServiceClient(isVowelConn);
-    }
+    @ProteusClient(group = "com.netifi.proteus.demo.isvowel")
+    private IsVowelServiceClient isVowelClient;
 
     @Override
     public Flux<VowelCountResponse> countVowels(Publisher<VowelCountRequest> messages, ByteBuf metadata) {
