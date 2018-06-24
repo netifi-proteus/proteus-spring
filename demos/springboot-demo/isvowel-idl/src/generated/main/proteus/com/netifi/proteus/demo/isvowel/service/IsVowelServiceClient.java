@@ -3,6 +3,9 @@ package com.netifi.proteus.demo.isvowel.service;
 @javax.annotation.Generated(
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: isvowel.proto")
+@io.netifi.proteus.annotations.internal.ProteusGenerated(
+    type = io.netifi.proteus.annotations.internal.ProteusResourceType.CLIENT,
+    idlClass = IsVowelService.class)
 public final class IsVowelServiceClient implements IsVowelService {
   private final io.rsocket.RSocket rSocket;
   private final java.util.function.Function<? super org.reactivestreams.Publisher<com.netifi.proteus.demo.isvowel.service.IsVowelResponse>, ? extends org.reactivestreams.Publisher<com.netifi.proteus.demo.isvowel.service.IsVowelResponse>> isVowel;

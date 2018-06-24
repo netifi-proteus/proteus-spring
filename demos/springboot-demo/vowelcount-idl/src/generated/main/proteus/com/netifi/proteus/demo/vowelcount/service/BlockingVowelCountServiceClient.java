@@ -3,6 +3,9 @@ package com.netifi.proteus.demo.vowelcount.service;
 @javax.annotation.Generated(
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: vowelcount.proto")
+@io.netifi.proteus.annotations.internal.ProteusGenerated(
+    type = io.netifi.proteus.annotations.internal.ProteusResourceType.CLIENT,
+    idlClass = BlockingVowelCountService.class)
 public final class BlockingVowelCountServiceClient implements BlockingVowelCountService {
   private final com.netifi.proteus.demo.vowelcount.service.VowelCountServiceClient delegate;
 

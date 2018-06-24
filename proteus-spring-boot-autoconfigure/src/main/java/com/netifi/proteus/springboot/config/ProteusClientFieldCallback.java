@@ -16,12 +16,15 @@
 package com.netifi.proteus.springboot.config;
 
 import io.netifi.proteus.annotations.ProteusClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 
 public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProteusClientFieldCallback.class);
 
     private ConfigurableListableBeanFactory beanFactory;
     private Object bean;
@@ -36,6 +39,9 @@ public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback
         if (!field.isAnnotationPresent(ProteusClient.class)) {
             return;
         }
+
+        ReflectionUtils.makeAccessible(field);
+
 
         boolean test = true;
     }

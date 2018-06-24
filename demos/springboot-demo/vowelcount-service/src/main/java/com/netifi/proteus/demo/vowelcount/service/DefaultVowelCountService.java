@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
+import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 

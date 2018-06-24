@@ -3,6 +3,9 @@ package com.netifi.proteus.demo.vowelcount.service;
 @javax.annotation.Generated(
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: vowelcount.proto")
+@io.netifi.proteus.annotations.internal.ProteusGenerated(
+    type = io.netifi.proteus.annotations.internal.ProteusResourceType.CLIENT,
+    idlClass = VowelCountService.class)
 public final class VowelCountServiceClient implements VowelCountService {
   private final io.rsocket.RSocket rSocket;
   private final java.util.function.Function<? super org.reactivestreams.Publisher<com.netifi.proteus.demo.vowelcount.service.VowelCountResponse>, ? extends org.reactivestreams.Publisher<com.netifi.proteus.demo.vowelcount.service.VowelCountResponse>> countVowels;

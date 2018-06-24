@@ -4,6 +4,7 @@ package com.netifi.proteus.demo.isvowel.service;
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: isvowel.proto")
 @io.netifi.proteus.annotations.internal.ProteusGenerated(
+    type = io.netifi.proteus.annotations.internal.ProteusResourceType.SERVICE,
     idlClass = IsVowelService.class)
 @javax.inject.Named(
     value ="IsVowelServiceServer")

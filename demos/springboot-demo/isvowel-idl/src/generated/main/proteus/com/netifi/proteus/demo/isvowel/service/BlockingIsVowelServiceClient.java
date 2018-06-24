@@ -3,6 +3,9 @@ package com.netifi.proteus.demo.isvowel.service;
 @javax.annotation.Generated(
     value = "by Proteus proto compiler (version 0.7.14-SNAPSHOT)",
     comments = "Source: isvowel.proto")
+@io.netifi.proteus.annotations.internal.ProteusGenerated(
+    type = io.netifi.proteus.annotations.internal.ProteusResourceType.CLIENT,
+    idlClass = BlockingIsVowelService.class)
 public final class BlockingIsVowelServiceClient implements BlockingIsVowelService {
   private final com.netifi.proteus.demo.isvowel.service.IsVowelServiceClient delegate;
 

@@ -23,9 +23,11 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+/**
+ * Handles post-processing of {@link io.netifi.proteus.annotations.ProteusClient} annotated fields.
+ */
 @Component
 public class ProteusClientAnnotationProcessor implements BeanPostProcessor {
-
     private ConfigurableListableBeanFactory beanFactory;
 
     @Autowired
@@ -35,12 +37,12 @@ public class ProteusClientAnnotationProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        scanProteusClientAnnotation(bean, beanName);
         return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        scanProteusClientAnnotation(bean, beanName);
         return bean;
     }
 
