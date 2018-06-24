@@ -15,5 +15,19 @@
  */
 package com.netifi.proteus.springboot.exception;
 
-public class MissingAccessTokenException extends RuntimeException {
+import com.netifi.proteus.springboot.config.ProteusSettings;
+import org.springframework.core.env.MissingRequiredPropertiesException;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class MissingAccessTokenException extends MissingRequiredPropertiesException {
+
+    @Override
+    public Set<String> getMissingRequiredProperties() {
+        Set<String> missingProps = new HashSet<>();
+        missingProps.add(ProteusSettings.PROTEUS_ACCESSTOKEN_PROPERTY);
+
+        return missingProps;
+    }
 }

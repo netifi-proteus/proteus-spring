@@ -19,6 +19,7 @@ import com.netifi.proteus.springboot.exception.MissingAccessKeyException;
 import com.netifi.proteus.springboot.exception.MissingAccessTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.MissingRequiredPropertiesException;
 import org.springframework.util.StringUtils;
 
 /**
@@ -26,6 +27,10 @@ import org.springframework.util.StringUtils;
  */
 @ConfigurationProperties
 public class ProteusSettings {
+    public static final String BROKER_HOSTNAME_PROPERTY = "netifi.proteus.broker.hostname";
+    public static final String BROKER_PORT_PROPERTY = "netifi.proteus.broker.port";
+    public static final String PROTEUS_ACCESSKEY_PROPERTY = "netifi.proteus.accesskey";
+    public static final String PROTEUS_ACCESSTOKEN_PROPERTY = "netifi.proteus.accesstoken";
 
     @Value("${netifi.proteus.broker.hostname:localhost}")
     private String brokerHostname;
@@ -57,7 +62,9 @@ public class ProteusSettings {
 
     public String getAccessToken() {
         if (StringUtils.isEmpty(accessToken)) {
-            throw new MissingAccessTokenException();
+            //throw new MissingAccessTokenException();
+
+            throw new MissingRequiredPropertiesException();
         }
 
         return accessToken;
