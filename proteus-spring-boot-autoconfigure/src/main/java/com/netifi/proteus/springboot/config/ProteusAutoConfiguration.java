@@ -29,6 +29,7 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.StringUtils;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Configuration
@@ -51,7 +52,7 @@ public class ProteusAutoConfiguration implements ImportAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public Proteus proteus(Set<AbstractProteusService> proteusServices) {
+    public Proteus proteus(Optional<Set<AbstractProteusService>> proteusServices) {
         Proteus.Builder builder = Proteus.builder();
 
         if (!StringUtils.isEmpty(enableProteus.getString("destination"))) {
@@ -65,7 +66,7 @@ public class ProteusAutoConfiguration implements ImportAware {
                 .port(settings.getBrokerPort())
                 .build();
 
-        proteusServices.forEach(proteus::addService);
+        proteusServices.ifPresent(s -> s.forEach(proteus::addService));
 
         return proteus;
     }

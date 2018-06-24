@@ -16,16 +16,48 @@
 package com.netifi.proteus.demo;
 
 import com.netifi.proteus.demo.core.RandomString;
+import com.netifi.proteus.demo.vowelcount.service.VowelCountRequest;
+import com.netifi.proteus.demo.vowelcount.service.VowelCountService;
+import com.netifi.proteus.demo.vowelcount.service.VowelCountServiceClient;
+import io.netifi.proteus.annotations.ProteusClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
+
+@Component
 public class DemoRunner implements CommandLineRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DemoRunner.class);
 
     @Autowired
     private RandomString randomString;
 
+    @ProteusClient(group = "com.netifi.proteus.demo.vowelcount")
+    private VowelCountServiceClient client;
+
     @Override
     public void run(String... args) throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
 
+        // Generate stream of random strings
+        Flux<VowelCountRequest> requests = Flux.range(1, 100)
+                .map(cnt -> VowelCountRequest.newBuilder()
+                        .setMessage(randomString.next(10, ThreadLocalRandom.current()))
+                        .build());
+
+        // Send stream of random strings to vowel count service
+        client.countVowels(requests)
+                .onBackpressureDrop()
+                .doOnComplete(latch::countDown)
+                .subscribe(response -> {
+                    LOGGER.info("Total Vowels: {}", response.getVowelCnt());
+                });
+
+        latch.await();
     }
 }
