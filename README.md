@@ -1,5 +1,5 @@
 # proteus-spring
-A simple and easy mechanism for integrating all of the power of [Netifi Proteus](https://www.netifi.com) into your [Spring Boot](https://spring.io/projects/spring-boot) applications.
+A simple and easy mechanism for integrating the power of [Netifi Proteus](https://www.netifi.com) into your [Spring Boot](https://spring.io/projects/spring-boot) applications.
 
 ## Examples
 Please see the included [demo projects](demos) for examples on how to configure and use Proteus with Spring applications.
