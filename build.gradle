@@ -14,8 +14,8 @@ allprojects {
     apply plugin: 'idea'
 
     ext {
-        protobufVersion = '3.5.0'
-        proteusVersion = '0.7.14-SNAPSHOT'
+        protobufVersion = '3.6.0'
+        proteusVersion = '0.7.14'
         springbomVersion = 'Cairo-SR1'
     }
 
