@@ -1,9 +1,11 @@
 plugins {
-    id 'java'
     id 'io.spring.dependency-management' version '1.0.5.RELEASE'
 }
 
-sourceCompatibility = 1.8
+ext.artifactName = 'proteus-spring-boot-autoconfigure'
+
+apply from: file('../gradle/release.gradle')
+apply from: file('../gradle/java.gradle')
 
 dependencyManagement {
     imports {

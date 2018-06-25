@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
+    }
+}
+
 plugins {
     id 'com.gradle.build-scan' version '1.14'
     id 'com.github.hierynomus.license' version '0.14.0'

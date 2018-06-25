@@ -1,0 +1,44 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+    baseName = "${project.ext.artifactName}"
+    version = "${project.version}"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+    baseName = "${project.ext.artifactName}"
+    version = "${project.version}"
+}
+
+// add javadoc/source jar tasks as artifacts
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+jar {
+    baseName = "${artifactName}"
+    version = "${project.version}"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            artifactId "${artifactName}"
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
