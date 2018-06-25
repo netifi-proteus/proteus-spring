@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Processes custom dependency injection for fields marked with the {@link ProteusClient} annotation.
+ */
 public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProteusClientFieldCallback.class);
 
@@ -62,6 +65,12 @@ public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback
         field.set(bean, beanInstance);
     }
 
+    /**
+     * Generates a unique bean name for the field.
+     *
+     * @param field field metadata
+     * @return bean name
+     */
     private String getBeanName(Field field) {
         if (field.isAnnotationPresent(ProteusClient.class)) {
             String group = field.getAnnotation(ProteusClient.class).group();
@@ -79,6 +88,15 @@ public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback
         }
     }
 
+    /**
+     * Creates an instance of the correct Proteus client for injection into an annotated field.
+     *
+     * @param beanName name of bean to inject
+     * @param clientClass proteus client class
+     * @param group proteus client group
+     * @param destination proteus client destination
+     * @return an instance of a Proteus client
+     */
     private Object getBeanInstance(final String beanName, final Class<?> clientClass, final String group, final String destination) {
         if (!beanFactory.containsBean(beanName)) {
             Proteus proteus = beanFactory.getBean(Proteus.class);
