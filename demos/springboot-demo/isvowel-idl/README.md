@@ -34,6 +34,7 @@ Let's take a look at this service's contract.
 The isvowel-service is responsible for taking in a character and then returning a boolean value indicating whether or not the 
 character is a vowel.
 
+### Service Metadata
 In the contract above we first see some metadata about the java packaging we would like for the generated services and clients.
 
     syntax = "proto3";
@@ -43,7 +44,8 @@ In the contract above we first see some metadata about the java packaging we wou
     option java_package = "com.netifi.proteus.demo.isvowel.service";
     option java_outer_classname = "IsVowelServiceProto";
     option java_multiple_files = true;
-    
+
+### Service Definition
 Next, we see the most important part. The definition of the service.
 
     service IsVowelService {
@@ -52,6 +54,7 @@ Next, we see the most important part. The definition of the service.
     
 As you can see, `IsVowelService` exposes a single method `IsVowel` that takes an `IsVowelRequest` and returns an `IsVowelResponse`.
 
+### Message Definitions
 The definitions of `IsVowelRequest` and `IsVowelResponse` are defined directly below the service.
 
     message IsVowelRequest {
