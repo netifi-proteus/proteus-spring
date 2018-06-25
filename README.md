@@ -1,4 +1,6 @@
 # proteus-spring
+[![Build Status](https://travis-ci.org/netifi-proteus/proteus-spring.svg?branch=master)](https://travis-ci.org/netifi-proteus/proteus-spring)
+
 A simple and easy mechanism for integrating the power of [Netifi Proteus](https://www.netifi.com) into your [Spring Boot](https://spring.io/projects/spring-boot) applications.
 
 ## Examples
