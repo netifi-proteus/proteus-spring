@@ -5,7 +5,7 @@ A simple and easy mechanism for integrating the power of [Netifi Proteus](https:
 Please see the included [demo projects](demos) for examples on how to configure and use Proteus with Spring applications.
 
 ## Bugs and Feedback
-For bugs, questions, and discussions please use the [Github Issues](https://github.com/gregwhitaker/proteus-spring/issues).
+For bugs, questions, and discussions please use the [Github Issues](https://github.com/netifi-proteus/proteus-spring/issues).
 
 ## License
 Copyright 2018 Netifi Inc.

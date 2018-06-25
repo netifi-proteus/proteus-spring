@@ -16,3 +16,6 @@ This example requires a running Proteus Broker.
 
 ## Running the Example
 TODO
+
+## Bugs and Feedback
+For bugs, questions, and discussions please use the [Github Issues](https://github.com/netifi-proteus/proteus-spring/issues).
