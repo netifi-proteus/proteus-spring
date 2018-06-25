@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
 

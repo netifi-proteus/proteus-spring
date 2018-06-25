@@ -15,19 +15,15 @@
  */
 package com.netifi.proteus.demo.vowelcount.service;
 
-import io.netifi.proteus.annotations.ProteusClient;
-import io.netifi.proteus.annotations.ProteusService;
 import com.netifi.proteus.demo.isvowel.service.IsVowelRequest;
 import com.netifi.proteus.demo.isvowel.service.IsVowelResponse;
 import com.netifi.proteus.demo.isvowel.service.IsVowelServiceClient;
-import io.netifi.proteus.rsocket.ProteusSocket;
+import io.netifi.proteus.annotations.ProteusClient;
 import io.netty.buffer.ByteBuf;
 import org.reactivestreams.Publisher;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
-import javax.annotation.Resource;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 

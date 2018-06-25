@@ -16,7 +16,6 @@
 package com.netifi.proteus.springboot.config;
 
 import com.netifi.proteus.springboot.exception.MissingAccessKeyException;
-import com.netifi.proteus.springboot.exception.MissingAccessTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.MissingRequiredPropertiesException;

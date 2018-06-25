@@ -17,7 +17,6 @@ package com.netifi.proteus.demo;
 
 import com.netifi.proteus.demo.core.RandomString;
 import com.netifi.proteus.demo.vowelcount.service.VowelCountRequest;
-import com.netifi.proteus.demo.vowelcount.service.VowelCountService;
 import com.netifi.proteus.demo.vowelcount.service.VowelCountServiceClient;
 import io.netifi.proteus.annotations.ProteusClient;
 import org.slf4j.Logger;
