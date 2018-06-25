@@ -11,6 +11,15 @@ The example works as follows:
 
 ![architectural diagram](diagram.png)
 
+## Project Structure
+This example project is structured as follows:
+
+* [client](client) - Client that streams random strings to VowelCount service
+* [isvowel-idl](isvowel-idl) - Service contract exposed by the IsVowel service
+* [isvowel-service](isvowel-service) - IsVowel service implementation
+* [vowelcount-idl](vowelcount-idl) - Service contract exposed by the VowelCount service
+* [vowelcount-service](vowelcount-service) - VowelCount service implementation
+
 ## Prerequisites
 This example requires a running Proteus Broker.
 
