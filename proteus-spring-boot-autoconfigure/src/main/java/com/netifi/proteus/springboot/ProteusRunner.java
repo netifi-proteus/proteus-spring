@@ -15,21 +15,19 @@
  */
 package com.netifi.proteus.springboot;
 
-import io.netifi.proteus.Proteus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 
-import java.util.Set;
-
+/**
+ * An implementation of {@link CommandLineRunner} that blocks the main thread of execution
+ * when serving long-running Proteus services outside of a web container to keep the JVM up and running.
+ */
 public class ProteusRunner implements CommandLineRunner {
-    private final Set<Proteus> connections;
-
-    public ProteusRunner(Set<Proteus> connections) {
-        this.connections = connections;
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProteusRunner.class);
 
     @Override
     public void run(String... args) throws Exception {
-
         Thread.currentThread().join();
     }
 }

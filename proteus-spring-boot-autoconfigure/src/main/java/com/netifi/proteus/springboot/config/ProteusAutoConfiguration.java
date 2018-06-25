@@ -73,7 +73,7 @@ public class ProteusAutoConfiguration implements ImportAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProteusRunner proteusRunner(Set<Proteus> connections) {
-        return new ProteusRunner(connections);
+    public ProteusRunner proteusRunner() {
+        return new ProteusRunner();
     }
 }
