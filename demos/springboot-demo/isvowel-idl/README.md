@@ -49,3 +49,15 @@ Next, we see the most important part. The definition of the service.
     service IsVowelService {
       rpc IsVowel (IsVowelRequest) returns (IsVowelResponse) {}
     }
+    
+As you can see, `IsVowelService` exposes a single method `IsVowel` that takes an `IsVowelRequest` and returns an `IsVowelResponse`.
+
+The definitions of `IsVowelRequest` and `IsVowelResponse` are defined directly below the service.
+
+    message IsVowelRequest {
+      string character = 1;
+    }
+    
+    message IsVowelResponse {
+      bool isVowel = 1;
+    }
