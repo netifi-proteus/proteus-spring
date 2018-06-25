@@ -1,5 +1,5 @@
 # isvowel-idl
-This is the Proteus service contract exposed by isvowel-service.
+This is the Proteus service contract exposed by [isvowel-service](../isvowel-service).
 
 ## How does this work?
 Proteus services are created by first defining their contract as a proto file. Once you have defined the contract, Proteus 
