@@ -1,5 +1,5 @@
 # springboot-demo
-An example of how easy it is to orchestrate interactions between multiple microservices with [Netifi Proteus](https://www.netifi.com).
+An example of how easy it is to orchestrate interactions between multiple [Spring Boot](https://spring.io/projects/spring-boot) microservices using [Netifi Proteus](https://www.netifi.com).
 
 The example works as follows:
 
@@ -10,3 +10,9 @@ The example works as follows:
 5. If a vowel was identified by the isvowel microservice, the vowelcount microservice increments its internal vowel counter and streams a message to the client with the latest vowel count.
 
 ![architectural diagram](diagram.png)
+
+## Prerequisites
+This example requires a running Proteus Broker.
+
+## Running the Example
+TODO
