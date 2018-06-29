@@ -50,7 +50,7 @@ jobs:
     <<: *container_config
     steps:
       - attach_workspace:
-        at: *workspace
+          at: *workspace
       - run:
           name: Deploy
           command: './gradlew -PreleaseType=release -PbintrayUser="${bintrayUser}" -PbintrayKey="${bintrayKey}" bintrayUpload --stacktrace'
