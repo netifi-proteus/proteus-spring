@@ -17,16 +17,20 @@ references:
         sudo add-apt-repository ppa:maarten-fonville/protobuf -y
         sudo apt-get update -y
         sudo apt-get install libprotobuf-dev libprotoc-dev protobuf-compiler -y --allow-unauthenticated
+  setup_date: &setup_date
+    run:
+      name: "setup date file"
+      command: date +%D > /tmp/todaysdate
+  restore_cache: &restore_cache
+    restore_cache:
+      key: *cache_key
 
 jobs:
   build:
     <<: *container_config
     steps:
-      - run:
-          name: "setup date file"
-          command: date +%D > /tmp/todaysdate
-      - restore_cache:
-          key: *cache_key
+      - *setup_date
+      - *restore_cache
       - *install_protoc
       - checkout
       - run:
@@ -49,8 +53,8 @@ jobs:
   deploy:
     <<: *container_config
     steps:
-      - restore_cache:
-          key: *cache_key
+      - *setup_date
+      - *restore_cache
       - attach_workspace:
           at: *workspace
       - run:
