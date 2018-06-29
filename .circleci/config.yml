@@ -49,6 +49,8 @@ jobs:
   deploy:
     <<: *container_config
     steps:
+      - restore_cache:
+          key: *cache_key
       - attach_workspace:
           at: *workspace
       - run:
