@@ -1,29 +1,40 @@
 version: 2
-
-references:
+references_project_specific:
   workspace: &workspace
     /tmp/proteus-spring
   cache_key: &cache_key
     v1-proteus-spring-{{ checksum "/tmp/todaysdate" }}
+references:
+  attach_full_workspace: &attach_full_workspace
+    attach_workspace:
+      at: *workspace
   container_config: &container_config
-    working_directory: *workspace
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
-  install_protoc: &install_protoc
+      - image: netifi/cc-openjdk-8-protoc
+    working_directory: *workspace
+  persist_full_workspace: &persist_full_workspace
+    persist_to_workspace:
+      paths:
+        - "."
+      root: *workspace
+  remove_gradle_lock: &remove_gradle_lock
     run:
-      name: "Install Protoc"
-      command: |
-        sudo apt-get update -y; sudo apt-get install software-properties-common -y
-        sudo add-apt-repository ppa:maarten-fonville/protobuf -y
-        sudo apt-get update -y
-        sudo apt-get install libprotobuf-dev libprotoc-dev protobuf-compiler -y --allow-unauthenticated
-  setup_date: &setup_date
-    run:
-      name: "setup date file"
-      command: date +%D > /tmp/todaysdate
+      command: "rm -f $HOME/.gradle/caches/modules-2/modules-2.lock"
+      name: remove_gradle_lock
   restore_cache: &restore_cache
     restore_cache:
       key: *cache_key
+  save_gradle_cache: &save_gradle_cache
+    save_cache:
+      key: *cache_key
+      paths:
+        - ~/.gradle/caches/
+        - ~/.gradle/wrapper/
+        - ~/.m2"
+  setup_date: &setup_date
+    run:
+      command: "date +%D > /tmp/todaysdate"
+      name: setup_date
 
 jobs:
   build:
@@ -31,32 +42,19 @@ jobs:
     steps:
       - *setup_date
       - *restore_cache
-      - *install_protoc
       - checkout
       - run:
           name: Build
           command: './gradlew clean build'
-      - run:
-          name: ensure no gradle lock
-          command: |
-            rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-      - save_cache:
-          key: *cache_key
-          paths:
-              - ~/.gradle/caches/
-              - ~/.gradle/wrapper/
-              - ~/.m2"
-      - persist_to_workspace:
-          root: *workspace
-          paths:
-            - .
+      - *remove_gradle_lock
+      - *save_gradle_cache
+      - *persist_full_workspace
   deploy:
     <<: *container_config
     steps:
       - *setup_date
       - *restore_cache
-      - attach_workspace:
-          at: *workspace
+      - *attach_full_workspace
       - run:
           name: Deploy
           command: './gradlew -PreleaseType=release -PbintrayUser="${bintrayUser}" -PbintrayKey="${bintrayKey}" bintrayUpload --stacktrace'
