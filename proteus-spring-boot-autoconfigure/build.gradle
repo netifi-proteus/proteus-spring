@@ -17,6 +17,7 @@ dependencies {
     compile "io.netifi.proteus:client:${proteusVersion}"
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'org.springframework.boot:spring-boot-autoconfigure'
+    compile 'javax.validation:validation-api:2.0.1.Final'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }

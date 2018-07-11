@@ -15,56 +15,81 @@
  */
 package com.netifi.proteus.springboot.config;
 
-import com.netifi.proteus.springboot.exception.MissingAccessKeyException;
-import com.netifi.proteus.springboot.exception.MissingAccessTokenException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.env.MissingRequiredPropertiesException;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * Proteus configuration options that can be set via the application properties files or system properties.
  */
-@ConfigurationProperties
+@Component
+@ConfigurationProperties("netifi.proteus")
 public class ProteusSettings {
-    public static final String BROKER_HOSTNAME_PROPERTY = "netifi.proteus.broker.hostname";
-    public static final String BROKER_PORT_PROPERTY = "netifi.proteus.broker.port";
-    public static final String PROTEUS_ACCESSKEY_PROPERTY = "netifi.proteus.accesskey";
-    public static final String PROTEUS_ACCESSTOKEN_PROPERTY = "netifi.proteus.accesstoken";
+    public static final String PROTEUS_BROKERHOSTNAME_PROPERTY = "netifi.proteus.brokerHostname";
+    public static final String PROTEUS_BROKERPORT_PROPERTY = "netifi.proteus.brokerPort";
+    public static final String PROTEUS_ACCESSKEY_PROPERTY = "netifi.proteus.accessKey";
+    public static final String PROTEUS_ACCESSTOKEN_PROPERTY = "netifi.proteus.accessToken";
 
-    @Value("${netifi.proteus.broker.hostname:localhost}")
+    public static final String DEFAULT_BROKER_HOSTNAME = "localhost";
+    public static final Integer DEFAULT_BROKER_PORT = 8001;
+
     private String brokerHostname;
 
-    @Value("${netifi.proteus.broker.port:8001}")
+    @Min(value = 0)
+    @Max(value = 65_535)
     private Integer brokerPort;
 
-    @Value("${netifi.proteus.accesskey}")
+    @NotNull
     private Long accessKey;
 
-    @Value("${netifi.proteus.accesstoken}")
+    @NotNull
     private String accessToken;
+
+    @PostConstruct
+    public void init() {
+        if (StringUtils.isEmpty(brokerHostname)) {
+            brokerHostname = DEFAULT_BROKER_HOSTNAME;
+        }
+
+        if (brokerPort == null) {
+            brokerPort = DEFAULT_BROKER_PORT;
+        }
+    }
 
     public String getBrokerHostname() {
         return brokerHostname;
+    }
+
+    public void setBrokerHostname(String brokerHostname) {
+        this.brokerHostname = brokerHostname;
     }
 
     public Integer getBrokerPort() {
         return brokerPort;
     }
 
-    public Long getAccessKey() {
-        if (accessKey == null) {
-            throw new MissingAccessKeyException();
-        }
+    public void setBrokerPort(Integer brokerPort) {
+        this.brokerPort = brokerPort;
+    }
 
+    public Long getAccessKey() {
         return accessKey;
     }
 
-    public String getAccessToken() {
-        if (StringUtils.isEmpty(accessToken)) {
-            throw new MissingAccessTokenException();
-        }
+    public void setAccessKey(Long accessKey) {
+        this.accessKey = accessKey;
+    }
 
+    public String getAccessToken() {
         return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }

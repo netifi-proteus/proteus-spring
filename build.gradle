@@ -10,6 +10,7 @@ buildscript {
 }
 
 plugins {
+    id 'java'
     id 'com.gradle.build-scan' version '1.14'
     id 'com.github.hierynomus.license' version '0.14.0'
 }
@@ -26,7 +27,7 @@ allprojects {
 
     ext {
         protobufVersion = '3.6.0'
-        proteusVersion = '0.7.15'
+        proteusVersion = '0.7.18'
         springbomVersion = 'Cairo-SR1'
     }
 
