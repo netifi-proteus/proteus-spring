@@ -58,6 +58,10 @@ public class ProteusAutoConfiguration implements ImportAware {
             builder.destination(enableProteus.getString("destination"));
         }
 
+        if (settings.getPoolSize() != null) {
+            builder.poolSize(settings.getPoolSize());
+        }
+
         Proteus proteus = builder.accessKey(settings.getAccessKey())
                 .group(enableProteus.getString("group"))
                 .accessToken(settings.getAccessToken())

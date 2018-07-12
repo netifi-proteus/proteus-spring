@@ -30,11 +30,14 @@ import javax.validation.constraints.NotNull;
 @Component
 @ConfigurationProperties("netifi.proteus")
 public class ProteusSettings {
+    // Property Names
     public static final String PROTEUS_BROKERHOSTNAME_PROPERTY = "netifi.proteus.brokerHostname";
     public static final String PROTEUS_BROKERPORT_PROPERTY = "netifi.proteus.brokerPort";
     public static final String PROTEUS_ACCESSKEY_PROPERTY = "netifi.proteus.accessKey";
     public static final String PROTEUS_ACCESSTOKEN_PROPERTY = "netifi.proteus.accessToken";
+    public static final String PROTEUS_POOLSIZE_PROPERTY = "netifi.proteus.poolSize";
 
+    // Default Property Values
     public static final String DEFAULT_BROKER_HOSTNAME = "localhost";
     public static final Integer DEFAULT_BROKER_PORT = 8001;
 
@@ -49,6 +52,9 @@ public class ProteusSettings {
 
     @NotNull
     private String accessToken;
+
+    @Min(value = 1)
+    private Integer poolSize;
 
     @PostConstruct
     public void init() {
@@ -91,5 +97,13 @@ public class ProteusSettings {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public Integer getPoolSize() {
+        return poolSize;
+    }
+
+    public void setPoolSize(Integer poolSize) {
+        this.poolSize = poolSize;
     }
 }
