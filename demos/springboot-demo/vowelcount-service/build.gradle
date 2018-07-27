@@ -19,8 +19,9 @@ dependencies {
     compile project(':demos:springboot-demo:vowelcount-idl')
     compile project(':proteus-spring-boot-starter')
 
-    compile "io.netifi.proteus:metrics-micrometer:${proteusVersion}"
-    compile "io.netifi.proteus:tracing:${proteusVersion}"
+    // These can be turned on to show integration with Prometheus and OpenTracing
+    //compile "io.netifi.proteus:metrics-micrometer:${proteusVersion}"
+    //compile "io.netifi.proteus:tracing:${proteusVersion}"
 }
 
 configurations.all {
