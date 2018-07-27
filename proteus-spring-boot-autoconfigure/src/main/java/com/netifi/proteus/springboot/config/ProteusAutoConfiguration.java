@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Configuration
-@ComponentScan(basePackages = { "com.netifi.proteus.springboot" })
+@ComponentScan(basePackages = { "com.netifi.proteus.springboot", "io.netifi.proteus" })
 public class ProteusAutoConfiguration implements ImportAware {
 
     protected final ProteusSettings settings;
