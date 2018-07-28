@@ -18,13 +18,9 @@ package com.netifi.proteus.demo.vowelcount.service;
 import com.netifi.proteus.demo.isvowel.service.IsVowelRequest;
 import com.netifi.proteus.demo.isvowel.service.IsVowelResponse;
 import com.netifi.proteus.demo.isvowel.service.IsVowelServiceClient;
-import com.netifi.proteus.springboot.config.MeterRegistrySupplierCondition;
-import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.annotations.ProteusClient;
 import io.netty.buffer.ByteBuf;
-import io.opentracing.Tracer;
 import org.reactivestreams.Publisher;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 

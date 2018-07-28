@@ -18,26 +18,19 @@ package com.netifi.proteus.springboot.config;
 import com.netifi.proteus.springboot.EnableProteus;
 import com.netifi.proteus.springboot.ProteusRunner;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.netifi.proteus.AbstractProteusService;
 import io.netifi.proteus.Proteus;
 import io.opentracing.Tracer;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.StringUtils;
 
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 @Configuration
