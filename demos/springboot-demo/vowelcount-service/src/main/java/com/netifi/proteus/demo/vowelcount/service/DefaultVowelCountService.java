@@ -36,9 +36,6 @@ public class DefaultVowelCountService implements VowelCountService {
     @ProteusClient(group = "com.netifi.proteus.demo.isvowel")
     private IsVowelServiceClient isVowelClient;
 
-    @Autowired
-    private MeterRegistry meterRegistry;
-
     @Override
     public Flux<VowelCountResponse> countVowels(Publisher<VowelCountRequest> messages, ByteBuf metadata) {
         return Flux.from(s ->
