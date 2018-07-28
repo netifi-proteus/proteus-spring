@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebAppli
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Lazy;
@@ -79,11 +80,13 @@ public class ProteusAutoConfiguration implements ImportAware {
     }
 
     @Bean
+    @Conditional(MeterRegistrySupplierCondition.class)
     public MeterRegistry meterRegistry(Supplier<MeterRegistry> supplier) {
         return supplier.get();
     }
 
     @Bean
+    @Conditional(TracerSupplierCondition.class)
     public Tracer tracer(Supplier<Tracer> supplier) {
         return supplier.get();
     }
