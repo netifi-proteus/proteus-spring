@@ -23,38 +23,26 @@ import io.netty.buffer.ByteBuf;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
-
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
+import reactor.core.publisher.Mono;
 
 @Component
 public class DefaultVowelCountService implements VowelCountService {
-    private final AtomicLong totalVowels = new AtomicLong(0);
+  @ProteusClient(group = "com.netifi.proteus.demo.isvowel")
+  private IsVowelServiceClient isVowelClient;
 
-    @ProteusClient(group = "com.netifi.proteus.demo.isvowel")
-    private IsVowelServiceClient isVowelClient;
-
-    @Override
-    public Flux<VowelCountResponse> countVowels(Publisher<VowelCountRequest> messages, ByteBuf metadata) {
-        return Flux.from(s ->
-                Flux.from(messages)
-                        // Split each incoming random string into a stream of individual characters
-                        .flatMap(vowelCountRequest -> Flux.just(vowelCountRequest.getMessage().split("(?<!^)")))
-                        // For each individual character create an IsVowelRequest
-                        .map(c -> IsVowelRequest.newBuilder().setCharacter(c).build())
-                        // Send each IsVowelRequest to the IsVowel service
-                        .flatMap((Function<IsVowelRequest, Publisher<IsVowelResponse>>) isVowelClient::isVowel)
-                        .doOnNext(isVowelResponse -> {
-                            if (isVowelResponse.getIsVowel()) {
-                                // For every vowel found by the IsVowel service, increment the vowel count and send the
-                                // current vowel count to the client
-                                s.onNext(VowelCountResponse.newBuilder()
-                                        .setVowelCnt(totalVowels.incrementAndGet())
-                                        .build());
-                            }
-                        })
-                        .doOnComplete(s::onComplete)
-                        .subscribe()
-        );
-    }
+  @Override
+  public Mono<VowelCountResponse> countVowels(
+      Publisher<VowelCountRequest> messages, ByteBuf metadata) {
+    return Flux.from(messages)
+        .flatMap(
+            request ->
+                Flux.fromArray(request.getMessage().split("(?<!^)"))
+                    .flatMap(
+                        s ->
+                            isVowelClient
+                                .isVowel(IsVowelRequest.newBuilder().setCharacter(s).build())
+                                .filter(IsVowelResponse::getIsVowel)))
+        .count()
+        .map(count -> VowelCountResponse.newBuilder().setVowelCnt(count).build());
+  }
 }

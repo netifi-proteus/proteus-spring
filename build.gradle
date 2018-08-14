@@ -27,7 +27,7 @@ allprojects {
 
     ext {
         protobufVersion = '3.6.0'
-        proteusVersion = '0.8.5'
+        proteusVersion = '0.8.9'
         springbomVersion = 'Cairo-SR1'
     }
 
