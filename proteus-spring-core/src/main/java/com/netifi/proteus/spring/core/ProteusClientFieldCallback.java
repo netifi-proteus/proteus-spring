@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.springboot.config;
+package com.netifi.proteus.spring.core;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.Proteus;
-import io.netifi.proteus.annotations.ProteusClient;
 import io.netifi.proteus.rsocket.ProteusSocket;
 import io.opentracing.Tracer;
 import io.rsocket.RSocket;
+import io.rsocket.rpc.annotations.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * Processes custom dependency injection for fields marked with the {@link ProteusClient} annotation.
+ * Processes custom dependency injection for fields marked with the {@link Client} annotation.
  */
 public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProteusClientFieldCallback.class);
@@ -50,7 +50,7 @@ public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback
 
     @Override
     public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-        if (!field.isAnnotationPresent(ProteusClient.class)) {
+        if (!field.isAnnotationPresent(Client.class)) {
             return;
         }
 
@@ -58,8 +58,8 @@ public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback
 
         ReflectionUtils.makeAccessible(field);
 
-        final String group = field.getAnnotation(ProteusClient.class).group();
-        final String destination = field.getAnnotation(ProteusClient.class).destination();
+        final String group = field.getAnnotation(Client.class).group();
+        final String destination = field.getAnnotation(Client.class).destination();
         final String beanName = getBeanName(field);
         final Object beanInstance = getBeanInstance(beanName, field.getType(), group, destination);
 
@@ -73,9 +73,9 @@ public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback
      * @return bean name
      */
     private String getBeanName(Field field) {
-        if (field.isAnnotationPresent(ProteusClient.class)) {
-            String group = field.getAnnotation(ProteusClient.class).group();
-            String destination = field.getAnnotation(ProteusClient.class).destination();
+        if (field.isAnnotationPresent(Client.class)) {
+            String group = field.getAnnotation(Client.class).group();
+            String destination = field.getAnnotation(Client.class).destination();
 
             String beanName = field.getType().getSimpleName() + "_" + group;
 

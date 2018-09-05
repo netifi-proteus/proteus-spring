@@ -26,9 +26,10 @@ allprojects {
     apply plugin: 'idea'
 
     ext {
-        protobufVersion = '3.6.0'
-        proteusVersion = '0.8.9'
-        springbomVersion = 'Cairo-SR1'
+        rsocketRpcVersion = "0.1.2"
+        protobufVersion = '3.6.1'
+        proteusVersion = '0.8.10'
+        springBootDependenciesVersion = '2.0.4.RELEASE'
     }
 
     repositories {

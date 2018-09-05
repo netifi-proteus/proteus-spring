@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.springboot.config;
+package com.netifi.proteus.springboot;
 
 import io.opentracing.Tracer;
 import org.springframework.context.annotation.Condition;

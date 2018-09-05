@@ -6,7 +6,7 @@ plugins {
 sourceCompatibility = 1.8
 
 dependencies {
-    compile "io.netifi.proteus:core:${proteusVersion}"
+    compile "io.rsocket.rpc:core:${rsocketRpcVersion}"
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
 }
 
@@ -18,12 +18,12 @@ protobuf {
     }
 
     plugins {
-        proteus {
-            artifact = "io.netifi.proteus:protobuf-rpc:${proteusVersion}"
+        rsocketRpc {
+            artifact = "io.rsocket.rpc:protobuf-rpc:${rsocketRpcVersion}"
         }
         generateProtoTasks {
             ofSourceSet('main')*.plugins {
-                proteus {}
+                rsocketRpc {}
             }
         }
     }
@@ -32,10 +32,10 @@ protobuf {
 idea {
     module {
         sourceDirs += file("src/generated/main/java")
-        sourceDirs += file("src/generated/main/proteus")
+        sourceDirs += file("src/generated/main/rsocketRpc")
 
         generatedSourceDirs += file('src/generated/main/java')
-        generatedSourceDirs += file('src/generated/main/proteus')
+        generatedSourceDirs += file('src/generated/main/rsocketRpc')
     }
 }
 

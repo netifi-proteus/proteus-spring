@@ -15,19 +15,19 @@
  */
 package com.netifi.proteus.springboot;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.type.AnnotatedTypeMetadata;
 
-/**
- * An implementation of {@link CommandLineRunner} that blocks the main thread of execution
- * when serving long-running Proteus services outside of a web container to keep the JVM up and running.
- */
-public class ProteusRunner implements CommandLineRunner {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProteusRunner.class);
+import java.util.function.Supplier;
+
+public class MeterRegistrySupplierCondition implements Condition {
 
     @Override
-    public void run(String... args) throws Exception {
-        Thread.currentThread().join();
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        String[] beanNames = context.getBeanFactory().getBeanNamesForType(ResolvableType.forClassWithGenerics(Supplier.class, MeterRegistry.class));
+        return beanNames.length > 0;
     }
 }
