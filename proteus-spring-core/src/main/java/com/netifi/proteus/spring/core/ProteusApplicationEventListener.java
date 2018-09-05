@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.springboot.config;
+package com.netifi.proteus.spring.core;
 
-import io.netifi.proteus.AbstractProteusService;
+import java.util.Map;
+
 import io.netifi.proteus.Proteus;
+import io.rsocket.rpc.AbstractRSocketService;
+
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-import java.util.Set;
-
-@Component
 public class ProteusApplicationEventListener {
-    private final Proteus proteus;
-    private final Optional<Set<AbstractProteusService>> proteusServices;
-
-    public ProteusApplicationEventListener(Proteus proteus, Optional<Set<AbstractProteusService>> proteusServices) {
+    private final Proteus                                     proteus;
+    public ProteusApplicationEventListener(Proteus proteus) {
         this.proteus = proteus;
-        this.proteusServices = proteusServices;
     }
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        proteusServices.ifPresent(s -> s.forEach(proteus::addService));
+        ApplicationContext context = event.getApplicationContext();
+        Map<String, AbstractRSocketService> abstractRSocketServiceMap =
+            context.getBeansOfType(AbstractRSocketService.class);
+
+        abstractRSocketServiceMap.values()
+                                 .forEach(proteus::addService);
     }
 }

@@ -13,36 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.springboot;
-
-import com.netifi.proteus.springboot.config.ProteusAutoConfiguration;
-import org.springframework.context.annotation.Import;
+package com.netifi.proteus.spring.core.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.netifi.proteus.spring.core.config.ProteusConfiguration;
+
+import org.springframework.context.annotation.Import;
+
 /**
  * Enables Netifi Proteus support in the Spring project.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(ProteusAutoConfiguration.class)
-public @interface EnableProteus {
-
-    /**
-     * The group to register this service as in the Proteus broker.
-     *
-     * @return proteus group name
-     */
-    String group();
-
-    /**
-     * The destination to register this service as in the Proteus Broker. If not specified, Proteus will automatically
-     * generate a globally unique name for you.
-     *
-     * @return proteus destination name
-     */
-    String destination() default "";
-}
+@Import(ProteusConfiguration.class)
+public @interface EnableProteus { }

@@ -10,7 +10,7 @@ sourceCompatibility = 1.8
 
 dependencyManagement {
     imports {
-        mavenBom "io.spring.platform:platform-bom:${springbomVersion}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}"
     }
 }
 

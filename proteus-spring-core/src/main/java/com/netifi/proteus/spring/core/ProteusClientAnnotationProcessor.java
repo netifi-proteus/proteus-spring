@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netifi.proteus.springboot.config;
+package com.netifi.proteus.spring.core;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Handles post-processing of {@link io.netifi.proteus.annotations.ProteusClient} annotated fields.
+ * Handles post-processing of {@link io.rsocket.rpc.annotations.Client} annotated fields.
  */
-@Component
 public class ProteusClientAnnotationProcessor implements BeanPostProcessor {
     private ConfigurableListableBeanFactory beanFactory;
 
-    @Autowired
-    public ProteusClientAnnotationProcessor(DefaultListableBeanFactory beanFactory) {
+    public ProteusClientAnnotationProcessor(ConfigurableListableBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 

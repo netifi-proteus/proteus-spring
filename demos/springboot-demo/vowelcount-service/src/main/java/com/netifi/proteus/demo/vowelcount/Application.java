@@ -15,12 +15,10 @@
  */
 package com.netifi.proteus.demo.vowelcount;
 
-import com.netifi.proteus.springboot.EnableProteus;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@EnableProteus(group = "com.netifi.proteus.demo.vowelcount")
 public class Application {
 
     public static void main(String... args) {

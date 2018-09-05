@@ -18,16 +18,17 @@ package com.netifi.proteus.demo.vowelcount.service;
 import com.netifi.proteus.demo.isvowel.service.IsVowelRequest;
 import com.netifi.proteus.demo.isvowel.service.IsVowelResponse;
 import com.netifi.proteus.demo.isvowel.service.IsVowelServiceClient;
-import io.netifi.proteus.annotations.ProteusClient;
 import io.netty.buffer.ByteBuf;
+import io.rsocket.rpc.annotations.Client;
 import org.reactivestreams.Publisher;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import org.springframework.stereotype.Component;
+
 @Component
 public class DefaultVowelCountService implements VowelCountService {
-  @ProteusClient(group = "com.netifi.proteus.demo.isvowel")
+  @Client(group = "com.netifi.proteus.demo.isvowel")
   private IsVowelServiceClient isVowelClient;
 
   @Override
