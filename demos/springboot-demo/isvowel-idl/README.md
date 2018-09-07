@@ -13,9 +13,9 @@ Let's take a look at this service's contract.
 
     syntax = "proto3";
     
-    package com.netifi.proteus.demo.isvowel.service;
+    package io.netifi.proteus.demo.isvowel.service;
     
-    option java_package = "com.netifi.proteus.demo.isvowel.service";
+    option java_package = "io.netifi.proteus.demo.isvowel.service";
     option java_outer_classname = "IsVowelServiceProto";
     option java_multiple_files = true;
     
@@ -39,9 +39,9 @@ In the contract above we first see some metadata about the java packaging we wou
 
     syntax = "proto3";
     
-    package com.netifi.proteus.demo.isvowel.service;
+    package io.netifi.proteus.demo.isvowel.service;
     
-    option java_package = "com.netifi.proteus.demo.isvowel.service";
+    option java_package = "io.netifi.proteus.demo.isvowel.service";
     option java_outer_classname = "IsVowelServiceProto";
     option java_multiple_files = true;
 

@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package com.netifi.proteus.demo.isvowel.service;
+package io.netifi.proteus.demo.isvowel.service;
 
-option java_package = "com.netifi.proteus.demo.isvowel.service";
+option java_package = "io.netifi.proteus.demo.isvowel.service";
 option java_outer_classname = "IsVowelServiceProto";
 option java_multiple_files = true;
 
