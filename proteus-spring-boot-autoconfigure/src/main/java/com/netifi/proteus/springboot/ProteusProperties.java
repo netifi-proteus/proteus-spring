@@ -52,10 +52,17 @@ public class ProteusProperties {
     private String destination;
 
     @Valid
+    private SslProperties ssl = new SslProperties();
+
+    @Valid
     private AccessProperties access = new AccessProperties();
 
     @Valid
     private BrokerProperties broker = new BrokerProperties();
+
+    public SslProperties getSsl() {
+        return ssl;
+    }
 
     public AccessProperties getAccess() {
         return access;
@@ -71,6 +78,10 @@ public class ProteusProperties {
 
     public String getGroup() {
         return group;
+    }
+
+    public void setSsl(SslProperties ssl) {
+        this.ssl = ssl;
     }
 
     public void setAccess(AccessProperties access) {
@@ -97,6 +108,18 @@ public class ProteusProperties {
         this.poolSize = poolSize;
     }
 
+    public static final class SslProperties {
+        @NotNull
+        private Boolean disabled = false;
+
+        public Boolean isDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(Boolean disabled) {
+            this.disabled = disabled;
+        }
+    }
 
     public static final class AccessProperties {
 

@@ -26,16 +26,14 @@ allprojects {
     apply plugin: 'idea'
 
     ext {
-        rsocketRpcVersion = "0.1.2"
+        rsocketRpcVersion = '0.2.0'
         protobufVersion = '3.6.1'
-        proteusVersion = '0.8.10'
+        proteusVersion = '0.9.0'
         springBootDependenciesVersion = '2.0.4.RELEASE'
     }
 
     repositories {
-        mavenLocal()
         jcenter()
-        mavenCentral()
         maven {
             url  "https://dl.bintray.com/netifi/netifi-oss"
         }

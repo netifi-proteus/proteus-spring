@@ -91,6 +91,7 @@ public class ProteusAutoConfiguration {
 
 
     static Proteus configureProteus(ProteusProperties proteusProperties) {
+        ProteusProperties.SslProperties ssl = proteusProperties.getSsl();
         ProteusProperties.AccessProperties access = proteusProperties.getAccess();
         ProteusProperties.BrokerProperties broker = proteusProperties.getBroker();
 
@@ -101,6 +102,7 @@ public class ProteusAutoConfiguration {
         }
 
         return builder
+                .sslDisabled(ssl.isDisabled())
                 .accessKey(access.getKey())
                 .accessToken(access.getToken())
                 .group(proteusProperties.getGroup())

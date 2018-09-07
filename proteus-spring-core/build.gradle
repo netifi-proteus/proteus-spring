@@ -14,7 +14,7 @@ dependencyManagement {
 }
 
 dependencies {
-    compile "io.netifi.proteus:client:${proteusVersion}"
+    compile "io.netifi.proteus:proteus-client:${proteusVersion}"
     compile 'org.slf4j:slf4j-api'
     compile 'org.springframework:spring-core'
     compile 'org.springframework:spring-context'

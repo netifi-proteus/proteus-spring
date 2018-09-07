@@ -1,12 +1,6 @@
 language: java
 sudo: required
-jdk:
-- oraclejdk8
-install: true
-before_install:
-- sudo add-apt-repository ppa:maarten-fonville/protobuf -y
-- sudo apt-get update -y
-- sudo apt-get install libprotobuf-dev libprotoc-dev protobuf-compiler -y
+jdk: oraclejdk8
 script: "./buildtravis.sh"
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock

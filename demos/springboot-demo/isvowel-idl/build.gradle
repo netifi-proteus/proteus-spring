@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'com.google.protobuf' version '0.8.3'
+    id 'com.google.protobuf' version '0.8.5'
 }
 
 sourceCompatibility = 1.8
 
 dependencies {
-    compile "io.rsocket.rpc:core:${rsocketRpcVersion}"
+    compile "io.rsocket.rpc:rsocket-rpc-core:${rsocketRpcVersion}"
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
 }
 
@@ -19,7 +19,7 @@ protobuf {
     
     plugins {
         rsocketRpc {
-            artifact = "io.rsocket.rpc:protobuf-rpc:${rsocketRpcVersion}"
+            artifact = "io.rsocket.rpc:rsocket-rpc-protobuf:${rsocketRpcVersion}"
         }
         generateProtoTasks {
             ofSourceSet('main')*.plugins {

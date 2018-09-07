@@ -25,7 +25,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
 public class ProteusApplicationEventListener {
-    private final Proteus                                     proteus;
+    private final Proteus proteus;
     public ProteusApplicationEventListener(Proteus proteus) {
         this.proteus = proteus;
     }
