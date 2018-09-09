@@ -21,8 +21,8 @@ dependencies {
     compile 'org.slf4j:slf4j-api'
     compile 'org.springframework.boot:spring-boot-autoconfigure'
     compile 'org.springframework.boot:spring-boot-starter-validation'
-    compile 'io.opentracing:opentracing-api'
-    compile 'io.micrometer:micrometer-core'
+    compile 'io.opentracing:opentracing-api:0.31.0'
+    compile 'io.micrometer:micrometer-core:1.0.6'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
