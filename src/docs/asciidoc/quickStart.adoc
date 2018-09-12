@@ -1,0 +1,33 @@
+= Quick Start with Proteus Spring module
+
+
+In this section we are going to learn how to bootstrap Proteus Spring Boot Application.
+
+As the first step of any applications setup is generating the base application. For
+that purpose we may use http://start.spring.io[start.spring.io].
+
+Once the base application is generated or there is an existing one, use the following
+dependency on the Proteus Spring Boot Starter:
+
+[subs=attributes+]
+----
+dependencies {
+   ...
+   compile "io.netifi.proteus:proteus-spring-boot-starter:{appversion}"
+}
+----
+
+The above code-snippet shows how we may bring required dependencies in to our Gradle
+based Spring Boot Application.
+
+In the case of the Maven build-tool, the dependency on the starter is the following:
+
+[subs=attributes+]
+----
+<dependency>
+    <groupId>io.netifi.proteus</groupId>
+    <artifactId>proteus-spring-boot-starter</artifactId>
+    <version>{appversion}</version>
+</dependency>
+----
+

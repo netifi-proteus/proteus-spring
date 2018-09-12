@@ -1,0 +1,5 @@
+= First Application
+
+In the previous section we covered, how to import required dependencies in order to set
+up quickly Proteus Spring Boot Application. In this section we are going to cover how
+to create a complete Spring Boot based Proteus application.

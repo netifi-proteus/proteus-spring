@@ -1,0 +1,31 @@
+configure(rootProject) {
+  apply plugin: 'org.asciidoctor.convert'
+
+  asciidoctor {
+	sources {
+	  include "index.adoc"
+	}
+	backends = ['html5', 'pdf']
+	logDocuments = true
+	options = [
+			doctype: 'book'
+	]
+	attributes docinfo: '',
+			   toc2: '',
+			   'compat-mode': '',
+			   'allow-uri-read': '',
+			   appversion: version,
+			   'source-highlighter': 'coderay'
+
+	doLast {
+	  file("$outputDir/pdf/index.pdf").renameTo ("$outputDir/pdf/reactor-core-reference-guide-${version}.pdf")
+	}
+  }
+
+//  task docsZip(type: Zip, dependsOn: asciidoctor) {
+//	baseName = 'reactor-core-docs'
+//	from("$buildDir/reactor-code/build/asciidoc/pdf/reactor-core-reference-guide-${version}.pdf") { into ("docs/") }
+//	from("$buildDir/reactor-code/build/asciidoc/html5/index.html") { into("docs/") }
+//	from("$buildDir/reactor-code/build/asciidoc/html5/images") { into("images/") }
+//  }
+}
