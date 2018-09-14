@@ -5,7 +5,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.6.RELEASE'
 }
 
-mainClassName = 'io.netifi.proteus.demo.ClientApplication'
+mainClassName = 'io.netifi.proteus.demo.Application'
 sourceCompatibility = 1.8
 
 dependencyManagement {
