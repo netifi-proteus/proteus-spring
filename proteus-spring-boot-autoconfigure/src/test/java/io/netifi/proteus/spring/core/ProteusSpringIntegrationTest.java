@@ -1,0 +1,93 @@
+/**
+ * Copyright 2018 Netifi Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.netifi.proteus.spring.core;
+
+import io.netifi.proteus.Proteus;
+import io.netifi.proteus.broker.info.BrokerInfoService;
+import io.netifi.proteus.broker.info.BrokerInfoServiceClient;
+import io.netifi.proteus.spring.DefaultExternalIdlClient;
+import io.netifi.proteus.spring.core.annotation.Broadcast;
+import io.netifi.proteus.spring.core.annotation.Destination;
+import io.netifi.proteus.spring.core.annotation.Group;
+import io.netifi.proteus.spring.core.config.EnableProteus;
+import io.netifi.proteus.spring.core.config.ProteusConfiguration;
+import io.netifi.proteus.springboot.ProteusAutoConfiguration;
+import io.rsocket.rpc.metrics.om.MetricsSnapshotHandler;
+import io.rsocket.rpc.metrics.om.MetricsSnapshotHandlerClient;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = ProteusSpringIntegrationTest.TestConfiguration.class)
+@ImportAutoConfiguration({
+    ProteusAutoConfiguration.class,
+    ProteusConfiguration.class,
+    ProteusSpringIntegrationTest.TestConfiguration.class
+})
+public class ProteusSpringIntegrationTest {
+
+    @Autowired
+    ConfigurableListableBeanFactory beanFactory;
+
+    @Broadcast("test")
+    TestIdl clientTestIdl;
+
+    @Group("test")
+    MetricsSnapshotHandler metricsSnapshotHandlerClient;
+
+    @Group("test")
+    BrokerInfoService brokerInfoServiceClient;
+
+    @Destination(group = "test", destination = "test")
+    DefaultExternalIdlClient defaultExternalIdlClient;
+
+    @Autowired
+    TestIdl serviceImpl;
+
+
+    @Test
+    public void shouldFindOneGeneratedBean() {
+        Assertions.assertEquals(DefaultClientTestIdl.class, clientTestIdl.getClass());
+        Assertions.assertEquals(MetricsSnapshotHandlerClient.class, metricsSnapshotHandlerClient.getClass());
+        Assertions.assertEquals(BrokerInfoServiceClient.class, brokerInfoServiceClient.getClass());
+        Assertions.assertEquals(TestIdlImpl.class, serviceImpl.getClass());
+        Assertions.assertNotNull(defaultExternalIdlClient);
+    }
+
+
+    @org.springframework.boot.test.context.TestConfiguration
+    static class TestConfiguration {
+
+        @Bean
+        public Proteus proteus() {
+            return Mockito.mock(Proteus.class);
+        }
+    }
+}

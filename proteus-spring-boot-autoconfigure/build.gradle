@@ -25,4 +25,9 @@ dependencies {
     compile 'io.micrometer:micrometer-core:1.0.6'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.mockito:mockito-core'
+    testCompile 'org.junit.jupiter:junit-jupiter-api'
+    testCompile 'org.junit.jupiter:junit-jupiter-engine'
 }

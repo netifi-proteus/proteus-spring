@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.netifi.proteus.spring.core;
+package io.netifi.proteus.spring.core.annotation;
+
+import java.lang.reflect.Constructor;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.Proteus;
@@ -23,91 +27,49 @@ import io.rsocket.RSocket;
 import io.rsocket.rpc.annotations.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.core.ResolvableType;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.function.Supplier;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.core.ResolvableType;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * Processes custom dependency injection for fields marked with the {@link Client} annotation.
  */
-public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProteusClientFieldCallback.class);
+public class ProteusClientStaticFactory {
 
-    private ConfigurableListableBeanFactory beanFactory;
-    private Object bean;
-
-    public ProteusClientFieldCallback(final ConfigurableListableBeanFactory beanFactory, final Object bean) {
-        this.beanFactory = beanFactory;
-        this.bean = bean;
-    }
-
-    @Override
-    public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-        if (!field.isAnnotationPresent(Client.class)) {
-            return;
-        }
-
-        LOGGER.debug("Postprocessing field '{}' annotated with @ProteusClient", field);
-
-        ReflectionUtils.makeAccessible(field);
-
-        final String group = field.getAnnotation(Client.class).group();
-        final String destination = field.getAnnotation(Client.class).destination();
-        final String beanName = getBeanName(field);
-        final Object beanInstance = getBeanInstance(beanName, field.getType(), group, destination);
-
-        field.set(bean, beanInstance);
-    }
-
-    /**
-     * Generates a unique bean name for the field.
-     *
-     * @param field field metadata
-     * @return bean name
-     */
-    private String getBeanName(Field field) {
-        if (field.isAnnotationPresent(Client.class)) {
-            String group = field.getAnnotation(Client.class).group();
-            String destination = field.getAnnotation(Client.class).destination();
-
-            String beanName = field.getType().getSimpleName() + "_" + group;
-
-            if (!StringUtils.isEmpty(destination)) {
-                beanName += "_" + destination;
-            }
-
-            return beanName;
-        } else {
-            return field.getType().getSimpleName();
-        }
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProteusClientStaticFactory.class);
 
     /**
      * Creates an instance of the correct Proteus client for injection into an annotated field.
      *
-     * @param beanName name of bean to inject
      * @param clientClass proteus client class
-     * @param group proteus client group
-     * @param destination proteus client destination
      * @return an instance of a Proteus client
      */
-    private Object getBeanInstance(final String beanName, final Class<?> clientClass, final String group, final String destination) {
+    public static Object getBeanInstance(
+        final DefaultListableBeanFactory beanFactory,
+        final Class<?> clientClass,
+        final ProteusClient proteusClientAnnotation
+    ) {
+        final String beanName = getBeanName(proteusClientAnnotation, clientClass);
+
         if (!beanFactory.containsBean(beanName)) {
             Proteus proteus = beanFactory.getBean(Proteus.class);
 
             // Creating ProteusSocket Instance
             ProteusSocket proteusSocket = null;
-            if (StringUtils.isEmpty(destination)) {
-                proteusSocket = proteus.group(group);
-            } else {
-                proteusSocket = proteus.destination(destination, group);
+
+            switch (proteusClientAnnotation.type()) {
+                case BROADCAST:
+                    proteusSocket = proteus.broadcast(proteusClientAnnotation.group());
+                    break;
+                case GROUP:
+                    proteusSocket = proteus.group(proteusClientAnnotation.group());
+                    break;
+                case DESTINATION:
+                    proteusSocket = proteus.destination(proteusClientAnnotation.destination(), proteusClientAnnotation.group());
+                    break;
             }
 
             Object toRegister = null;
@@ -181,5 +143,27 @@ public class ProteusClientFieldCallback implements ReflectionUtils.FieldCallback
             LOGGER.debug("Bean named '{}' already exists, using as current bean reference.", beanName);
             return beanFactory.getBean(beanName);
         }
+    }
+
+    /**
+     * Generates a unique bean name for the field.
+     *
+     * @param field field metadata
+     * @return bean name
+     */
+    private static String getBeanName(
+            ProteusClient proteusClientAnnotation,
+            Class<?> clazz
+    ) {
+        Assert.hasText(proteusClientAnnotation.group(), "@ProteusClient.group() must be specified");
+
+        String beanName =
+                clazz.getSimpleName() + "_" + proteusClientAnnotation.type().toString().toLowerCase() + "_" + proteusClientAnnotation.group();
+
+        if (!StringUtils.isEmpty(proteusClientAnnotation.destination())) {
+            beanName += "_" + proteusClientAnnotation.destination();
+        }
+
+        return beanName;
     }
 }

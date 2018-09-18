@@ -1,5 +1,15 @@
 = First Application
 
 In the previous section we covered, how to import required dependencies in order to set
-up quickly Proteus Spring Boot Application. In this section we are going to cover how
-to create a complete Spring Boot based Proteus application.
+up quickly Proteus Spring Boot Application. In turn, we have seen what mandatory
+properties are in the Proteus Spring Boot Starter.
+
+In this section we are going to cover how to create a complete Spring Boot based
+Proteus application.
+
+Assume we have a configured dependencies on the Proteus Spring Boot Starter, so now we
+are going to configure a server that drains data from the remote server.
+
+Also, assume that we have a configured IDL service, so we may use interfaces from it.
+
+== Client Configuration

@@ -17,24 +17,27 @@ package io.netifi.proteus.springboot;
 
 import java.util.function.Supplier;
 
-import io.netifi.proteus.spring.core.config.ProteusConfiguration;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.Proteus;
+import io.netifi.proteus.spring.core.config.ProteusConfiguration;
 import io.opentracing.Tracer;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Import;
 import org.springframework.util.StringUtils;
 
 @SpringBootConfiguration
 @EnableConfigurationProperties(ProteusProperties.class)
-@Import(ProteusConfiguration.class)
+@AutoConfigureBefore(ProteusConfiguration.class)
 public class ProteusAutoConfiguration {
 
     @Bean
@@ -47,6 +50,11 @@ public class ProteusAutoConfiguration {
     @Conditional(TracerSupplierCondition.class)
     public Tracer tracer(Supplier<Tracer> supplier) {
         return supplier.get();
+    }
+
+    @Bean(name = "internalScanClassPathBeanDefinitionRegistryPostProcessor")
+    public BeanDefinitionRegistryPostProcessor scanClassPathBeanDefinitionRegistryPostProcessor(ApplicationContext applicationContext) throws BeansException {
+        return new ScanClassPathBeanDefinitionRegistryPostProcessor();
     }
 
     @SpringBootConfiguration

@@ -17,39 +17,39 @@ package io.netifi.proteus.spring.core.config;
 
 import java.util.Optional;
 
-import io.netifi.proteus.spring.core.ProteusApplicationEventListener;
-import io.netifi.proteus.spring.core.ProteusBeanDefinitionRegistryPostProcessor;
-import io.netifi.proteus.spring.core.ProteusClientAnnotationProcessor;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.Proteus;
 import io.netifi.proteus.broker.info.BlockingBrokerInfoService;
+import io.netifi.proteus.broker.info.BlockingBrokerInfoServiceClient;
 import io.netifi.proteus.broker.info.BlockingBrokerInfoServiceServer;
 import io.netifi.proteus.broker.info.BrokerInfoService;
+import io.netifi.proteus.broker.info.BrokerInfoServiceClient;
 import io.netifi.proteus.broker.info.BrokerInfoServiceServer;
+import io.netifi.proteus.spring.core.ProteusApplicationEventListener;
+import io.netifi.proteus.spring.core.annotation.ProteusBeanDefinitionRegistryPostProcessor;
 import io.opentracing.Tracer;
 import io.rsocket.rpc.metrics.om.BlockingMetricsSnapshotHandler;
+import io.rsocket.rpc.metrics.om.BlockingMetricsSnapshotHandlerClient;
 import io.rsocket.rpc.metrics.om.BlockingMetricsSnapshotHandlerServer;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandler;
+import io.rsocket.rpc.metrics.om.MetricsSnapshotHandlerClient;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandlerServer;
 import reactor.core.scheduler.Scheduler;
 
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ProteusConfiguration {
+public class ProteusConfiguration implements ApplicationContextAware {
 
     @Bean(name = "internalProteusBeanDefinitionRegistryPostProcessor")
     public ProteusBeanDefinitionRegistryPostProcessor proteusBeanDefinitionRegistryPostProcessor() {
         return new ProteusBeanDefinitionRegistryPostProcessor();
-    }
-
-    @Bean(name = "internalProteusClientAnnotationProcessor")
-    public ProteusClientAnnotationProcessor proteusClientAnnotationProcessor(
-        ConfigurableListableBeanFactory beanFactory
-    ) {
-        return new ProteusClientAnnotationProcessor(beanFactory);
     }
 
     @Bean
@@ -93,5 +93,20 @@ public class ProteusConfiguration {
         Optional<MeterRegistry> registry
     ) {
         return new BlockingMetricsSnapshotHandlerServer(blockingMetricsSnapshotHandler, scheduler, registry);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+        DefaultListableBeanFactory factory =
+                (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+        AnnotatedBeanDefinitionReader reader = new AnnotatedBeanDefinitionReader(factory);
+
+        reader.register(
+                BlockingMetricsSnapshotHandlerClient.class,
+                MetricsSnapshotHandlerClient.class,
+                BlockingBrokerInfoServiceClient.class,
+                BrokerInfoServiceClient.class
+        );
     }
 }

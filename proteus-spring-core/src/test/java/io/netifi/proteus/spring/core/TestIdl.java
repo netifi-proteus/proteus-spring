@@ -13,22 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.netifi.proteus.spring.core.config;
+package io.netifi.proteus.spring.core;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public interface TestIdl {
 
-import org.springframework.context.annotation.Import;
-
-/**
- * Enables Netifi Proteus support in the Spring project.
- */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Import({
-    ProteusConfiguration.class,
-    GeneratedBeansImporter.class
-})
-public @interface EnableProteus { }
+}

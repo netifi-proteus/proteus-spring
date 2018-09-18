@@ -15,20 +15,21 @@
  */
 package io.netifi.proteus.demo;
 
+import java.time.Duration;
+import java.util.concurrent.ThreadLocalRandom;
+
 import io.netifi.proteus.demo.core.RandomString;
 import io.netifi.proteus.demo.vowelcount.service.VowelCountRequest;
-import io.netifi.proteus.demo.vowelcount.service.VowelCountResponse;
-import io.netifi.proteus.demo.vowelcount.service.VowelCountServiceClient;
-import io.rsocket.rpc.annotations.Client;
+import io.netifi.proteus.demo.vowelcount.service.VowelCountService;
+import io.netifi.proteus.spring.core.annotation.Group;
+import io.netty.buffer.Unpooled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-
-import java.time.Duration;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class DemoRunner implements CommandLineRunner {
@@ -36,8 +37,8 @@ public class DemoRunner implements CommandLineRunner {
 
   @Autowired private RandomString randomString;
 
-  @Client(group = "io.netifi.proteus.demo.vowelcount")
-  private VowelCountServiceClient client;
+  @Group("io.netifi.proteus.demo.vowelcount")
+  private VowelCountService client;
 
   @Override
   public void run(String... args) throws Exception {
@@ -61,7 +62,8 @@ public class DemoRunner implements CommandLineRunner {
  */
   
     // Send stream of random strings to vowel count service
-    client.countVowels(requests).doOnError(Throwable::printStackTrace).subscribe(response -> LOGGER.info("Total Vowels: {}", response.getVowelCnt()));
+    byte[] byteArray1;
+    client.countVowels(requests, Unpooled.EMPTY_BUFFER).doOnError(Throwable::printStackTrace).subscribe(response -> LOGGER.info("Total Vowels: {}", response.getVowelCnt()));
   
   }
 }

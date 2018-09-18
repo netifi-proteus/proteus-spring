@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.netifi.proteus.spring.core.config;
+package io.netifi.proteus.spring.core;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import io.rsocket.rpc.AbstractRSocketService;
 
-import org.springframework.context.annotation.Import;
+@javax.annotation.Generated(
+        value = "by RSocket RPC proto compiler (version 0.2.2)",
+        comments = "Source: isvowel.proto")
+@io.rsocket.rpc.annotations.internal.Generated(
+        type = io.rsocket.rpc.annotations.internal.ResourceType.SERVICE,
+        idlClass = TestIdl.class)
+@javax.inject.Named(
+        value ="TestIdlServiceServer")
+public class TestIdlServiceServer extends AbstractRSocketService {
 
-/**
- * Enables Netifi Proteus support in the Spring project.
- */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Import({
-    ProteusConfiguration.class,
-    GeneratedBeansImporter.class
-})
-public @interface EnableProteus { }
+    @Override
+    public Class<?> getServiceClass() {
+        return TestIdl.class;
+    }
+}

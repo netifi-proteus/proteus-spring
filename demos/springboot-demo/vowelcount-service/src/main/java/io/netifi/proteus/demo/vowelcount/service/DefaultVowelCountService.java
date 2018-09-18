@@ -17,9 +17,11 @@ package io.netifi.proteus.demo.vowelcount.service;
 
 import io.netifi.proteus.demo.isvowel.service.IsVowelRequest;
 import io.netifi.proteus.demo.isvowel.service.IsVowelResponse;
+import io.netifi.proteus.demo.isvowel.service.IsVowelService;
 import io.netifi.proteus.demo.isvowel.service.IsVowelServiceClient;
+import io.netifi.proteus.spring.core.annotation.Group;
 import io.netty.buffer.ByteBuf;
-import io.rsocket.rpc.annotations.Client;
+import io.netty.buffer.Unpooled;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,8 +30,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DefaultVowelCountService implements VowelCountService {
-  @Client(group = "io.netifi.proteus.demo.isvowel")
-  private IsVowelServiceClient isVowelClient;
+
+  private final IsVowelService isVowelClient;
+
+  public DefaultVowelCountService(
+        @Group("io.netifi.proteus.demo.isvowel") IsVowelServiceClient client
+  ) {
+    isVowelClient = client;
+  }
 
   @Override
   public Mono<VowelCountResponse> countVowels(
@@ -41,7 +49,10 @@ public class DefaultVowelCountService implements VowelCountService {
                     .flatMap(
                         s ->
                             isVowelClient
-                                .isVowel(IsVowelRequest.newBuilder().setCharacter(s).build())
+                                .isVowel(
+                                      IsVowelRequest.newBuilder().setCharacter(s).build(),
+                                      Unpooled.EMPTY_BUFFER
+                                )
                                 .filter(IsVowelResponse::getIsVowel)))
         .count()
         .map(count -> VowelCountResponse.newBuilder().setVowelCnt(count).build());
