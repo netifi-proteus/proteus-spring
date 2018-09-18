@@ -27,6 +27,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
@@ -43,7 +44,7 @@ public class DemoRunner implements CommandLineRunner {
 
     // Generate stream of random strings
     Flux<VowelCountRequest> requests =
-        Flux.range(1, 100)
+        Flux.interval(Duration.ofMillis(100))
             .map(
                 cnt ->
                     VowelCountRequest.newBuilder()
