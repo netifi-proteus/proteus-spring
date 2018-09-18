@@ -45,7 +45,13 @@ public class ProteusSpringIntegrationTest {
     ConfigurableListableBeanFactory beanFactory;
 
     @Broadcast("test")
-    TestIdl clientTestIdl;
+    TestIdl broadcastTestIdlClient;
+
+    @Group("test")
+    TestIdl groupTestIdlClient;
+
+    @Destination(group = "test", destination = "test")
+    TestIdl destinationTestIdaClient;
 
     @Group("test")
     MetricsSnapshotHandler metricsSnapshotHandlerClient;
@@ -59,10 +65,11 @@ public class ProteusSpringIntegrationTest {
     @Autowired
     TestIdl serviceImpl;
 
-
     @Test
     public void shouldFindOneGeneratedBean() {
-        Assertions.assertEquals(DefaultClientTestIdl.class, clientTestIdl.getClass());
+        Assertions.assertEquals(DefaultClientTestIdl.class, broadcastTestIdlClient.getClass());
+        Assertions.assertEquals(DefaultClientTestIdl.class, groupTestIdlClient.getClass());
+        Assertions.assertEquals(DefaultClientTestIdl.class, destinationTestIdaClient.getClass());
         Assertions.assertEquals(MetricsSnapshotHandlerClient.class, metricsSnapshotHandlerClient.getClass());
         Assertions.assertEquals(BrokerInfoServiceClient.class, brokerInfoServiceClient.getClass());
         Assertions.assertEquals(TestIdlImpl.class, serviceImpl.getClass());
