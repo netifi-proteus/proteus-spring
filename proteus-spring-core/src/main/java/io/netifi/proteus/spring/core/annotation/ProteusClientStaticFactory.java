@@ -24,7 +24,6 @@ import io.netifi.proteus.Proteus;
 import io.netifi.proteus.rsocket.ProteusSocket;
 import io.opentracing.Tracer;
 import io.rsocket.RSocket;
-import io.rsocket.rpc.annotations.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Processes custom dependency injection for fields marked with the {@link Client} annotation.
+ * Processes custom dependency injection for fields marked with the {@link ProteusClient} annotation.
  */
 public class ProteusClientStaticFactory {
 
