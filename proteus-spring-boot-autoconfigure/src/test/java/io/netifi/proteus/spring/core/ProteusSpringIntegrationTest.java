@@ -78,7 +78,7 @@ public class ProteusSpringIntegrationTest {
     TestIdl serviceImpl;
 
     @Test
-    public void shouldFindOneGeneratedBean() {
+    public void shouldFindGeneratedBean() {
         Assertions.assertEquals(DefaultClientTestIdl.class, broadcastTestIdlClient.getClass());
         Assertions.assertEquals(DefaultClientTestIdl.class, groupTestIdlClient.getClass());
         Assertions.assertEquals(DefaultClientTestIdl.class, destinationTestIdaClient.getClass());

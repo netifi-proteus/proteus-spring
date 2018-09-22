@@ -31,3 +31,10 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api'
     testCompile 'org.junit.jupiter:junit-jupiter-engine'
 }
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    useJUnitPlatform()
+}

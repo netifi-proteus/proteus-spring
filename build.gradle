@@ -47,4 +47,11 @@ allprojects {
         header rootProject.file('codequality/HEADER')
         strictCheck true
     }
+
+    test {
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+        useJUnitPlatform()
+    }
 }

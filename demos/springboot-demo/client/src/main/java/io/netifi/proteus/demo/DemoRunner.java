@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import io.netifi.proteus.demo.core.RandomString;
 import io.netifi.proteus.demo.vowelcount.service.VowelCountRequest;
-import io.netifi.proteus.demo.vowelcount.service.VowelCountService;
+import io.netifi.proteus.demo.vowelcount.service.VowelCountServiceClient;
 import io.netifi.proteus.spring.core.annotation.Group;
 import io.netty.buffer.Unpooled;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class DemoRunner implements CommandLineRunner {
   @Autowired private RandomString randomString;
 
   @Group("io.netifi.proteus.demo.vowelcount")
-  private VowelCountService client;
+  private VowelCountServiceClient client;
 
   @Override
   public void run(String... args) throws Exception {
