@@ -41,15 +41,15 @@ Start the Proteus Broker by running the following command:
 ## Running the Example
 Follow the steps below to run the example:
 
-1. Start the `vowelcount-service` by running the following command in a new terminal window:
+1. Start the `vowelcount-service` by running the following command in a new terminal window (from this directory):
 
         ../../gradlew :demos:springboot-demo:vowelcount-service:bootRun
         
-2. Start the `isvowel-service` by running the following command in a new terminal window:
+2. Start the `isvowel-service` by running the following command in a new terminal window (from this directory):
 
         ../../gradlew :demos:springboot-demo:isvowel-service:bootRun
         
-3. Now, start the `client` by running the following command in a new terminal window:
+3. Now, start the `client` by running the following command in a new terminal window (from this directory):
 
         ../../gradlew :demos:springboot-demo:client:bootRun
         
