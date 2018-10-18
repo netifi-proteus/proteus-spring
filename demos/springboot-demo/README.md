@@ -25,14 +25,35 @@ This example requires that you have a running Proteus broker.
 
 You can pull the latest Proteus Broker from DockerHub using the following command:
 
-        $ docker pull netifi/proteus
+    docker pull netifi/proteus
 
 Start the Proteus Broker by running the following command:
 
-        $ docker run -p 8001:8001 -p 7001:7001 -e BROKER_SERVER_OPTS='-Dnetifi.authentication.0.accessKey=3006839580103245170 -Dnetifi.authentication.0.accessToken=SkOlZxqQcTboZE3fni4OVXVC0e0=' netifi/proteus
+    docker run \
+    -p 8001:8001 \
+    -p 7001:7001 \
+    -e BROKER_SERVER_OPTS="'-Dnetifi.authentication.0.accessKey=9007199254740991'  \
+    '-Dnetifi.authentication.0.accessToken=kTBDVtfRBO4tHOnZzSyY5ym2kfY=' \
+    '-Dnetifi.broker.admin.accessKey=9007199254740991' \
+    '-Dnetifi.broker.admin.accessToken=kTBDVtfRBO4tHOnZzSyY5ym2kfY='" \
+    netifi/proteus
 
 ## Running the Example
-TODO
+Follow the steps below to run the example:
+
+1. Start the `vowelcount-service` by running the following command in a new terminal window:
+
+        ../../gradlew :demos:springboot-demo:vowelcount-service:bootRun
+        
+2. Start the `isvowel-service` by running the following command in a new terminal window:
+
+        ../../gradlew :demos:springboot-demo:isvowel-service:bootRun
+        
+3. Now, start the `client` by running the following command in a new terminal window:
+
+        ../../gradlew :demos:springboot-demo:client:bootRun
+        
+   If successful, you will see the `Total Vowels Found` number increasing in the client terminal.
 
 ## Bugs and Feedback
 For bugs, questions, and discussions please use the [Github Issues](https://github.com/netifi-proteus/proteus-spring/issues).
