@@ -30,9 +30,9 @@ allprojects {
     apply plugin: 'idea'
 
     ext {
-        proteusVersion = '0.9.4'
+        proteusVersion = '1.5.0-RC'
         protobufVersion = '3.6.1'
-        rsocketRpcVersion = '0.2.2'
+        rsocketRpcVersion = '0.2.4'
         springBootDependenciesVersion = '2.0.5.RELEASE'
     }
 
@@ -43,6 +43,13 @@ allprojects {
         }
         maven {
             url  "https://dl.bintray.com/rsocket-admin/RSocket"
+        }
+        maven {
+            url = version.contains('SNAPSHOT') ? 'https://artifactory.netifiinc.com/artifactory/libs-snapshot-local' : 'https://artifactory.netifiinc.com/artifactory/libs-release-local'
+            credentials {
+                username = project.hasProperty('netifiArtifactoryUsername') ? project.property('netifiArtifactoryUsername') : System.getenv('NETIFI_ARTIFACTORY_USERNAME')
+                password = project.hasProperty('netifiArtifactoryPassword') ? project.property('netifiArtifactoryPassword') : System.getenv('NETIFI_ARTIFACTORY_PASSWORD')
+            }
         }
     }
 
