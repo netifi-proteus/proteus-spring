@@ -39,7 +39,7 @@ Start the Proteus Broker by running the following command:
     netifi/proteus
 
 ## Running the Example
-Follow the steps below to run the example:
+Follow the steps below to build and run the example:
 
 1. Start the `vowelcount-service` by running the following command in a new terminal window (from this directory):
 
