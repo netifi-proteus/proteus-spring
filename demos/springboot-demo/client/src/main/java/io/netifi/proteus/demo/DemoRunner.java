@@ -16,6 +16,8 @@
 package io.netifi.proteus.demo;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.netifi.proteus.demo.core.RandomString;
@@ -33,37 +35,29 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DemoRunner implements CommandLineRunner {
-  private static final Logger LOGGER = LoggerFactory.getLogger(DemoRunner.class);
 
-  @Autowired private RandomString randomString;
+  @Autowired
+  private RandomString randomString;
 
   @Group("io.netifi.proteus.demo.vowelcount")
   private VowelCountServiceClient client;
 
   @Override
   public void run(String... args) throws Exception {
-
-    // Generate stream of random strings
-    Flux<VowelCountRequest> requests =
-        Flux.interval(Duration.ofMillis(100))
-            .map(
-                cnt ->
-                    VowelCountRequest.newBuilder()
-                        .setMessage(randomString.next(10, ThreadLocalRandom.current()))
-                        .build());
-
-/*
-    // Send stream of random strings to vowel count service
-    VowelCountResponse response = client.countVowels(requests).block();
-
-    LOGGER.info("Total Vowels: {}", response.getVowelCnt());
-
-    System.exit(0);
- */
+    // Generate stream of 100 ten random character strings
+    Flux<VowelCountRequest> requests = Flux.range(1, 100)
+            .delayElements(Duration.of(100, ChronoUnit.MILLIS))
+            .map(v -> VowelCountRequest.newBuilder()
+                    .setMessage(randomString.next(10, ThreadLocalRandom.current()))
+                    .build());
   
     // Send stream of random strings to vowel count service
-    byte[] byteArray1;
-    client.countVowels(requests, Unpooled.EMPTY_BUFFER).doOnError(Throwable::printStackTrace).subscribe(response -> LOGGER.info("Total Vowels: {}", response.getVowelCnt()));
-  
+    client.countVowels(requests)
+            .doOnError(Throwable::printStackTrace)
+            .doOnComplete(() -> System.exit(0))
+            .subscribe(response -> {
+              System.out.print("\r");
+              System.out.print("Total Vowels Found: " + response.getVowelCnt());
+            });
   }
 }
