@@ -23,38 +23,47 @@ import io.netifi.proteus.spring.core.annotation.Group;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.atomic.AtomicLong;
+
+/**
+ * Service that receives messages and keeps track of the number of vowels found in those messages.
+ */
 @Component
 public class DefaultVowelCountService implements VowelCountService {
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultVowelCountService.class);
 
-  private final IsVowelService isVowelClient;
+  private final IsVowelServiceClient isVowelClient;
 
-  public DefaultVowelCountService(
-        @Group("io.netifi.proteus.demo.isvowel") IsVowelServiceClient client
-  ) {
+  public DefaultVowelCountService(@Group("io.netifi.proteus.demo.isvowel") IsVowelServiceClient client) {
     isVowelClient = client;
   }
 
   @Override
-  public Mono<VowelCountResponse> countVowels(
-      Publisher<VowelCountRequest> messages, ByteBuf metadata) {
+  public Flux<VowelCountResponse> countVowels(Publisher<VowelCountRequest> messages, ByteBuf metadata) {
+    AtomicLong vowelCnt = new AtomicLong(0);
+
     return Flux.from(messages)
-        .flatMap(
-            request ->
-                Flux.fromArray(request.getMessage().split("(?<!^)"))
-                    .flatMap(
-                        s ->
-                            isVowelClient
-                                .isVowel(
-                                      IsVowelRequest.newBuilder().setCharacter(s).build(),
-                                      Unpooled.EMPTY_BUFFER
-                                )
-                                .filter(IsVowelResponse::getIsVowel)))
-        .count()
-        .map(count -> VowelCountResponse.newBuilder().setVowelCnt(count).build());
+            .map(vowelCountRequest -> {
+              LOG.info("Received Message: " + vowelCountRequest.getMessage());
+              return vowelCountRequest.getMessage();
+            })
+            .flatMap(message -> Flux.fromArray(message.split("(?<!^)"))
+                    .flatMap(c -> {
+                      IsVowelRequest vReq = IsVowelRequest.newBuilder()
+                              .setCharacter(c)
+                              .build();
+
+                      return isVowelClient.isVowel(vReq)
+                              .filter(IsVowelResponse::getIsVowel)
+                              .map(vResp -> vowelCnt.incrementAndGet());
+                    })
+                    .map(count -> VowelCountResponse.newBuilder().setVowelCnt(count).build()));
   }
 }

@@ -24,6 +24,9 @@ import reactor.core.publisher.Mono;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Service that receives a character and responds with whether or not that character is a vowel.
+ */
 @Component
 public class DefaultIsVowelService implements IsVowelService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultIsVowelService.class);

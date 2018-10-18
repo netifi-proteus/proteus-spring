@@ -41,6 +41,9 @@ allprojects {
         maven {
             url  "https://dl.bintray.com/netifi/netifi-oss"
         }
+        maven {
+            url  "https://dl.bintray.com/rsocket-admin/RSocket"
+        }
     }
 
     license {
