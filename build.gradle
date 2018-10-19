@@ -15,6 +15,8 @@ plugins {
     id 'java'
     id 'com.gradle.build-scan' version '1.14'
     id 'com.github.hierynomus.license' version '0.14.0'
+    id 'com.jfrog.artifactory' version '4.7.3'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 apply from: "gradle/doc.gradle"
