@@ -21,11 +21,11 @@ plugins {
 
 apply from: "gradle/doc.gradle"
 
-buildScan {
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
-    publishAlways()
-}
+//buildScan {
+//    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+//    termsOfServiceAgree = 'yes'
+//    publishAlways()
+//}
 
 allprojects {
     apply plugin: 'com.github.hierynomus.license'
