@@ -43,5 +43,5 @@ jar {
 //    }
 //}
 
-apply from: '../gradle/artifactory.gradle'
-apply from: '../gradle/bintray.gradle'
+apply from: '../artifactory.gradle'
+apply from: '../bintray.gradle'
