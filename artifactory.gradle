@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-if (project.hasProperty('netifiArtifactoryUsername') && project.hasProperty('netifiArtifactoryPassword')) {
+apply plugin: 'com.jfrog.artifactory'
 
-    subprojects {
-        plugins.withId('com.jfrog.artifactory') {
-            artifactory {
-                publish {
-                    contextUrl = 'artifactory.netifiinc.com'
+artifactory {
+    publish {
+        contextUrl = 'https://artifactory.netifiinc.com/artifactory'
 
-                    repository {
-                        repoKey = version.contains('SNAPSHOT') ? 'libs-snapshot-local' : 'libs-release-local'
+        repository {
+            repoKey = version.contains('SNAPSHOT') ? 'libs-snapshot-local' : 'libs-release-local'
 
-                        // Credentials for oss.jfrog.org are a user's Bintray credentials
-                        username = project.property('netifiArtifactoryUsername')
-                        password = project.property('netifiArtifactoryPassword')
-                    }
+            // Credentials for oss.jfrog.org are a user's Bintray credentials
+            username = project.hasProperty('netifiArtifactoryUsername') ? project.property('netifiArtifactoryUsername') : ''
+            password = project.hasProperty('netifiArtifactoryPassword') ? project.property('netifiArtifactoryPassword') : ''
+        }
 
-                    defaults {
-                        publications('maven')
-                    }
-                }
-            }
+        defaults {
+            publications('maven')
         }
     }
 }

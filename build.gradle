@@ -8,6 +8,7 @@ buildscript {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.2'
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.8'
         classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.+"
     }
 }
 
@@ -15,21 +16,21 @@ plugins {
     id 'java'
     id 'com.gradle.build-scan' version '1.14'
     id 'com.github.hierynomus.license' version '0.14.0'
-    id 'com.jfrog.artifactory' version '4.7.3'
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'net.saliman.properties' version '1.4.6'
 }
 
-apply from: "gradle/doc.gradle"
+apply from: 'gradle/doc.gradle'
 
-//buildScan {
-//    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-//    termsOfServiceAgree = 'yes'
-//    publishAlways()
-//}
+buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+    publishOnFailure()
+}
 
 allprojects {
     apply plugin: 'com.github.hierynomus.license'
     apply plugin: 'idea'
+    apply plugin: 'net.saliman.properties'
 
     ext {
         proteusVersion = '1.5.0-RC'
@@ -37,6 +38,8 @@ allprojects {
         rsocketRpcVersion = '0.2.4'
         springBootDependenciesVersion = '2.0.5.RELEASE'
     }
+
+    project.version += project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ''
 
     repositories {
         jcenter()

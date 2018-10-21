@@ -30,18 +30,3 @@ jar {
     baseName = "${artifactName}"
     version = "${project.version}"
 }
-
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-//            from components.java
-//
-//            artifactId "${artifactName}"
-//            artifact sourcesJar
-//            artifact javadocJar
-//        }
-//    }
-//}
-
-apply from: '../artifactory.gradle'
-apply from: '../bintray.gradle'

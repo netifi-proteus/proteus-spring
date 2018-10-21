@@ -14,37 +14,28 @@
  * limitations under the License.
  */
 
-if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
+apply plugin: 'com.jfrog.bintray'
 
-    subprojects {
-        plugins.withId('com.jfrog.bintray') {
-            bintray {
-                user = project.property('bintrayUser')
-                key = project.property('bintrayKey')
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : ''
+    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : ''
 
-                publications = ['mavenJava']
+    publications = ['maven']
 
-                //dryRun = true
-                publish = (osdetector.os == 'osx')
-                override = true
+    pkg {
+        repo = 'netifi-oss'
+        name = project.name
+        userOrg = 'netifi'
+        desc = "${project.description}"
+        websiteUrl = 'https://github.com/netifi-proteus/proteus-java'
+        issueTrackerUrl = 'https://github.com/netifi-proteus/proteus-java/issues'
+        vcsUrl = 'https://github.com/netifi-proteus/proteus-java.git'
+        licenses = ['Apache-2.0']
+        githubRepo = 'netifi-proteus/proteus-java'
+        githubReleaseNotesFile = 'CHANGELOG.md'
 
-                pkg {
-                    repo = 'netifi-oss'
-                    name = project.name
-                    userOrg = 'netifi'
-                    desc = "${project.description}"
-                    websiteUrl = 'https://github.com/netifi-proteus/proteus-java'
-                    issueTrackerUrl = 'https://github.com/netifi-proteus/proteus-java/issues'
-                    vcsUrl = 'https://github.com/netifi-proteus/proteus-java.git'
-                    licenses = ['Apache-2.0']
-                    githubRepo = 'netifi-proteus/proteus-java'
-                    githubReleaseNotesFile = 'CHANGELOG.md'
-
-                    version {
-                        name = "$project.version".toString()
-                    }
-                }
-            }
+        version {
+            name = "$project.version".toString()
         }
     }
 }

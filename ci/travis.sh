@@ -13,21 +13,21 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 elif [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_TAG" == "" ]; then
     # Develop Branch
     echo -e 'Build Branch with Snapshot => Branch ['$TRAVIS_BRANCH']'
-    export ORG_GRADLE_PROJECT_releaseType=snapshot
-    ./gradlew -PversionSufix=".BUILD-SNAPSHOT" clean build artifactoryPublish --stacktrace
+    ./gradlew -PversionSuffix=".BUILD-SNAPSHOT" clean build artifactoryPublish --stacktrace
+elif [ "$TRAVIS_PULL_REQUEST" == "false" ] && [[ "$TRAVIS_BRANCH" == release/* ]] && [ "$TRAVIS_TAG" == "" ]; then
+    # Release Branch
+    echo -e 'Build Branch for Release => Branch ['$TRAVIS_BRANCH']'
+    ./gradlew -PversionSuffix="-RC" clean build artifactoryPublish --stacktrace
 elif [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
     # Master Branch
     echo -e 'Build Master for Release => Branch ['$TRAVIS_BRANCH']'
-    export ORG_GRADLE_PROJECT_releaseType=release
     ./gradlew clean build --stacktrace
 elif [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_TAG" != "" ]; then
     # Tag
     echo -e 'Build Tag for Release => Tag ['$TRAVIS_TAG']'
-    export ORG_GRADLE_PROJECT_releaseType=release
     ./gradlew clean build bintrayUpload --stacktrace
 else
     # Feature Branch
     echo -e 'Build Branch => Branch ['$TRAVIS_BRANCH']'
-    export ORG_GRADLE_PROJECT_releaseType=snapshot
     ./gradlew clean -PversionSufix=".BUILD-SNAPSHOT" build artifactoryPublish --stacktrace
 fi
