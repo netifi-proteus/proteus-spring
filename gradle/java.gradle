@@ -30,15 +30,3 @@ jar {
     baseName = "${artifactName}"
     version = "${project.version}"
 }
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-
-            artifactId "${artifactName}"
-            artifact sourcesJar
-            artifact javadocJar
-        }
-    }
-}

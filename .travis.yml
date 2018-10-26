@@ -1,7 +1,7 @@
 language: java
 sudo: required
 jdk: oraclejdk8
-script: "./buildtravis.sh"
+script: ci/travis.sh
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
@@ -9,7 +9,3 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.m2"
-env:
-  global:
-  - secure: GxnzMxsbSLtGQS14rJd8Q9OHrpVgxyCL0IcqE+p5Axdj9UQ2/qnFNf59FjCmmFGdRNe0NWSb8iCh06xZ5L/JhRsCvzm0DqZGqJKaBlaMIntKBVCLBt24EPdL4bzIzjv3cs0t2xlE61CjpRBuA3ideKtva/4dUQLwXH5R1phoULCHinP8n4Er6Wpgp+2M+RlIzF+c6cnod4JK6jjCvY1s2xm9g1m5WvnzKp7UvCWILsXte/FUffZvjw7rkIjG+G+44ttdKwtMk0AtAEDwzpjmmflHk9z6Hm5CNQO4019shSjDBAyOO158kHFtFSq0Dj/Gwbc5iLK2eZd7QwQC41SU1LN+/rFPo46oXe7DZA7Tbo+bjrVU+860gN7/9pMx1mgwwd0QMlETbRAqWDLRxVPHbd7clWbd2r5OLYc2jVpWlp5zrWD2mPyaNlTuJUxu/hpn7uhzZivjWjx1dmi1xmUt2CVx4lgHyUQMmSPMUyNG67WAYIGkD4XvSzCdLX2oJFzVfUj/oaiXUOxGGaJMuhYxSZABHSNDkk2zq2mLVQM+FKSDfRM4h3zAT7p4dEEbPmXk4fu5stzTWUNaaj9TKLiecQf4oWejNqy6XKXpsvF1WhW4otGgNqB21H7oOa4Rq/bD2KkjUJWG0BftAJ42WsazsouqfYZn6qAjCSRI237JG8A=
-  - secure: G4xSpAcd9sd24woRwKUBPI/4FXYnVphCVjAfwqwydNwHGfJdEGUNsYZDXPjAadM/QLvA2PiUqDcHA5D2MqKkFsVcvG1hG4G2fLaWv5Jx0Qk9yDY1K+KGCJhox+v7dXPqRCcdLDFbFXiDYFU9wLMX9SZZ+ZaVDYge4soBAg3Dr+CHftiriKkpU5n9BXKJazfuE9bQYSBw74GZ12PFJz7NenmUPh5JYmvR+ABjLtEMtj+BdGrlBfyAhScrBwrA7hsExZAVB3mGO28jsfAYHdEbUjAhcTdEghFiguyl7L+XamEfx5+rdrr5iYsunYZ0K2NCwjRrlXkmHFvo42LYtKmx+UUXvDl2gz9d865GbKvTSed8faHDOb6LdKKG4kuxRlC8ZEQ09PuYsnB3dWfQazcMAnxhi0dC77AiNvfNmI2XX8qYIVPI8mClDt8d+8dKhsbfdFCuZf50ybhTxFp2Vvh1xms8eYyLVGhb3mQWPQvhyYdpEmn3eyFIbUp9pobR9B/JPEiI3HGMNlve/5YEWeUBrTj6QbX8yGKK3fQv5o2KuM0p7bLd1Mn+bsgFyAGgbOq1U3y8TQ9fEjK9ziiX7N3WWUT8lr9F/7byN2gvLHR6PwlurKVHg0aO1o5pqca6YTEiL+0QHNU5o5Yh5Q9pug2Taz26IVHAECyJe/E1aZxx98Q=
