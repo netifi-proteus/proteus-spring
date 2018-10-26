@@ -33,7 +33,7 @@ allprojects {
     apply plugin: 'net.saliman.properties'
 
     ext {
-        proteusVersion = '1.5.0-RC'
+        proteusVersion = '1.5.0'
         protobufVersion = '3.6.1'
         rsocketRpcVersion = '0.2.4'
         springBootDependenciesVersion = '2.0.5.RELEASE'
@@ -48,13 +48,6 @@ allprojects {
         }
         maven {
             url  "https://dl.bintray.com/rsocket-admin/RSocket"
-        }
-        maven {
-            url = version.contains('SNAPSHOT') ? 'https://artifactory.netifiinc.com/artifactory/libs-snapshot-local' : 'https://artifactory.netifiinc.com/artifactory/libs-release-local'
-            credentials {
-                username = project.property('netifiArtifactoryUsername')
-                password = project.property('netifiArtifactoryPassword')
-            }
         }
     }
 
