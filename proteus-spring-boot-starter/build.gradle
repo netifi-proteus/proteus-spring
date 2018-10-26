@@ -1,11 +1,13 @@
 plugins {
     id 'io.spring.dependency-management' version '1.0.6.RELEASE'
+    id 'maven-publish'
 }
 
 ext.artifactName = 'proteus-spring-boot-starter'
 
-apply from: file('../gradle/release.gradle')
-apply from: file('../gradle/java.gradle')
+apply from: "${project.rootProject.projectDir}/gradle/java.gradle"
+apply from: "${project.rootProject.projectDir}/artifactory.gradle"
+apply from: "${project.rootProject.projectDir}/bintray.gradle"
 
 dependencyManagement {
     imports {
@@ -18,4 +20,16 @@ dependencies {
     compile project(':proteus-spring-core')
 
     compile 'org.springframework.boot:spring-boot-starter'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            artifactId "${artifactName}"
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
 }
