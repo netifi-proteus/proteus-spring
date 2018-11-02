@@ -19,6 +19,8 @@ dependencies {
     compile project(":proteus-spring-core")
 
     compile "io.netifi.proteus:proteus-client:${proteusVersion}"
+    compileClasspath "io.netifi.proteus:proteus-metrics-micrometer:${proteusVersion}"
+    compileClasspath "io.netifi.proteus:proteus-tracing-openzipkin:${proteusVersion}"
 
     compile 'org.slf4j:slf4j-api'
     compile 'org.springframework.boot:spring-boot-autoconfigure'
