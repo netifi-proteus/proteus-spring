@@ -18,7 +18,7 @@ package io.netifi.proteus.spring.core;
 import io.rsocket.rpc.AbstractRSocketService;
 
 @javax.annotation.Generated(
-        value = "by RSocket RPC proto compiler (version 0.2.2)",
+        value = "by RSocket RPC proto compiler (version 0.2.10)",
         comments = "Source: isvowel.proto")
 @io.rsocket.rpc.annotations.internal.Generated(
         type = io.rsocket.rpc.annotations.internal.ResourceType.SERVICE,
