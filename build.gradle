@@ -36,7 +36,7 @@ allprojects {
         proteusVersion = '1.5.3-RC'
         protobufVersion = '3.6.1'
         rsocketRpcVersion = '0.2.10'
-        springBootDependenciesVersion = '2.0.5.RELEASE'
+        springBootDependenciesVersion = '2.1.1.RELEASE'
     }
 
     project.version += project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ''
