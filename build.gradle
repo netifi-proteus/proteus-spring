@@ -33,7 +33,7 @@ allprojects {
     apply plugin: 'net.saliman.properties'
 
     ext {
-        proteusVersion = '1.5.2'
+        proteusVersion = '1.5.3-RC'
         protobufVersion = '3.6.1'
         rsocketRpcVersion = '0.2.10'
         springBootDependenciesVersion = '2.0.5.RELEASE'
