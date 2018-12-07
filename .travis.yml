@@ -1,6 +1,6 @@
 language: java
 sudo: required
-jdk: oraclejdk8
+jdk: openjdk11
 script: ci/travis.sh
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
