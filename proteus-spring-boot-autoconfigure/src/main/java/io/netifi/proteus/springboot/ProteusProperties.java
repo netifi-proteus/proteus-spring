@@ -60,6 +60,8 @@ public class ProteusProperties {
     @Valid
     private BrokerProperties broker = new BrokerProperties();
 
+    private MetricsProperties metrics = new MetricsProperties();
+
     public SslProperties getSsl() {
         return ssl;
     }
@@ -70,6 +72,10 @@ public class ProteusProperties {
 
     public BrokerProperties getBroker() {
         return broker;
+    }
+
+    public MetricsProperties getMetrics() {
+        return metrics;
     }
 
     public String getDestination() {
@@ -118,6 +124,29 @@ public class ProteusProperties {
 
         public void setDisabled(Boolean disabled) {
             this.disabled = disabled;
+        }
+    }
+
+    public static final class MetricsProperties {
+
+        private long reportingStepInMillis = 10_000L;
+
+        private boolean export = true;
+
+        public long getReportingStepInMillis() {
+            return reportingStepInMillis;
+        }
+
+        public void setReportingStepInMillis(long reportingStepInMillis) {
+            this.reportingStepInMillis = reportingStepInMillis;
+        }
+
+        public boolean isExport() {
+            return export;
+        }
+
+        public void setExport(boolean export) {
+            this.export = export;
         }
     }
 
