@@ -15,6 +15,7 @@
  */
 package io.netifi.proteus.springboot;
 
+import java.util.List;
 import java.util.Optional;
 
 import io.micrometer.core.instrument.MeterRegistry;
@@ -35,6 +36,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 
 @SpringBootConfiguration
@@ -45,6 +49,28 @@ public class ProteusAutoConfiguration {
     @Bean(name = "internalScanClassPathBeanDefinitionRegistryPostProcessor")
     public BeanDefinitionRegistryPostProcessor scanClassPathBeanDefinitionRegistryPostProcessor(ApplicationContext applicationContext) throws BeansException {
         return new ScanClassPathBeanDefinitionRegistryPostProcessor();
+    }
+
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public ProteusConfigurer propertiesBasedProteusConfigurer(ProteusProperties proteusProperties) {
+        return builder -> {
+            ProteusProperties.SslProperties ssl = proteusProperties.getSsl();
+            ProteusProperties.AccessProperties access = proteusProperties.getAccess();
+            ProteusProperties.BrokerProperties broker = proteusProperties.getBroker();
+
+            if (!StringUtils.isEmpty(proteusProperties.getDestination())) {
+                builder.destination(proteusProperties.getDestination());
+            }
+
+            return builder.sslDisabled(ssl.isDisabled())
+                          .accessKey(access.getKey())
+                          .accessToken(access.getToken())
+                          .group(proteusProperties.getGroup())
+                          .poolSize(proteusProperties.getPoolSize())
+                          .host(broker.getHostname())
+                          .port(broker.getPort());
+        };
     }
 
     @SpringBootConfiguration
@@ -90,8 +116,10 @@ public class ProteusAutoConfiguration {
     public static class NonWebProteusConfiguration {
 
         @Bean
-        public Proteus proteus(ProteusProperties proteusProperties) {
-            Proteus proteus = configureProteus(proteusProperties);
+        public Proteus proteus(
+            List<ProteusConfigurer> configurers
+        ) {
+            Proteus proteus = configureProteus(configurers);
 
             startDaemonAwaitThread(proteus);
 
@@ -119,31 +147,23 @@ public class ProteusAutoConfiguration {
     public static class WebProteusConfiguration {
 
         @Bean
-        public Proteus proteus(ProteusProperties proteusProperties) {
-            return configureProteus(proteusProperties);
+        public Proteus proteus(
+            List<ProteusConfigurer> configurers
+        ) {
+            return configureProteus(configurers);
         }
     }
 
 
-    static Proteus configureProteus(ProteusProperties proteusProperties) {
-        ProteusProperties.SslProperties ssl = proteusProperties.getSsl();
-        ProteusProperties.AccessProperties access = proteusProperties.getAccess();
-        ProteusProperties.BrokerProperties broker = proteusProperties.getBroker();
-
+    static Proteus configureProteus(List<ProteusConfigurer> configurers) {
         Proteus.Builder builder = Proteus.builder();
 
-        if (!StringUtils.isEmpty(proteusProperties.getDestination())) {
-            builder.destination(proteusProperties.getDestination());
+        AnnotationAwareOrderComparator.sort(configurers);
+
+        for (ProteusConfigurer configurer : configurers) {
+            builder = configurer.configure(builder);
         }
 
-        return builder
-                .sslDisabled(ssl.isDisabled())
-                .accessKey(access.getKey())
-                .accessToken(access.getToken())
-                .group(proteusProperties.getGroup())
-                .poolSize(proteusProperties.getPoolSize())
-                .host(broker.getHostname())
-                .port(broker.getPort())
-                .build();
+        return builder.build();
     }
 }
