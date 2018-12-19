@@ -15,13 +15,30 @@
  */
 package io.netifi.proteus.demo.vowelcount;
 
+import io.netifi.proteus.springboot.ProteusConfigurer;
+import io.rsocket.transport.netty.client.TcpClientTransport;
+import reactor.netty.tcp.TcpClient;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Application {
 
     public static void main(String... args) {
         SpringApplication.run(Application.class, args);
+    }
+
+
+    @Bean
+    public ProteusConfigurer proteusConfigurer() {
+        return builder ->
+            builder.clientTransportFactory(address -> {
+                TcpClient client = TcpClient.create()
+                                            .addressSupplier(() -> address);
+                return TcpClientTransport.create(client);
+            });
+
     }
 }
