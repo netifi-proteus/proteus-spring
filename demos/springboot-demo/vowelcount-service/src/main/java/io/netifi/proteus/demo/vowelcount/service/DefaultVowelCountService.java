@@ -15,22 +15,19 @@
  */
 package io.netifi.proteus.demo.vowelcount.service;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import io.netifi.proteus.demo.isvowel.service.IsVowelRequest;
 import io.netifi.proteus.demo.isvowel.service.IsVowelResponse;
-import io.netifi.proteus.demo.isvowel.service.IsVowelService;
 import io.netifi.proteus.demo.isvowel.service.IsVowelServiceClient;
 import io.netifi.proteus.spring.core.annotation.Group;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Service that receives messages and keeps track of the number of vowels found in those messages.
