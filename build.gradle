@@ -33,10 +33,10 @@ allprojects {
     apply plugin: 'net.saliman.properties'
 
     ext {
-        proteusVersion = '1.5.2'
+        proteusVersion = '1.5.3'
         protobufVersion = '3.6.1'
-        rsocketRpcVersion = '0.2.10'
-        springBootDependenciesVersion = '2.0.5.RELEASE'
+        rsocketRpcVersion = '0.2.12'
+        springBootDependenciesVersion = '2.1.1.RELEASE'
     }
 
     project.version += project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ''
@@ -48,6 +48,22 @@ allprojects {
         }
         maven {
             url  "https://dl.bintray.com/rsocket-admin/RSocket"
+        }
+
+        maven {
+            url = 'https://artifactory.netifiinc.com/artifactory/libs-release-local'
+            credentials {
+                username = project.hasProperty('netifiArtifactoryUsername') ? project.property('netifiArtifactoryUsername') : System.getenv('NETIFI_ARTIFACTORY_USERNAME')
+                password = project.hasProperty('netifiArtifactoryPassword') ? project.property('netifiArtifactoryPassword') : System.getenv('NETIFI_ARTIFACTORY_PASSWORD')
+            }
+        }
+
+        maven {
+            url = 'https://artifactory.netifiinc.com/artifactory/libs-snapshot-local'
+            credentials {
+                username = project.hasProperty('netifiArtifactoryUsername') ? project.property('netifiArtifactoryUsername') : System.getenv('NETIFI_ARTIFACTORY_USERNAME')
+                password = project.hasProperty('netifiArtifactoryPassword') ? project.property('netifiArtifactoryPassword') : System.getenv('NETIFI_ARTIFACTORY_PASSWORD')
+            }
         }
     }
 

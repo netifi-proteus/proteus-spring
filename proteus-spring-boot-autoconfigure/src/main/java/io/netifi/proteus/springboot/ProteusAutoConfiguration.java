@@ -85,7 +85,7 @@ public class ProteusAutoConfiguration {
         ) {
             return new ProteusMeterRegistrySupplier(
                 proteus,
-                Optional.of(properties.getGroup()),
+                Optional.of(properties.getMetrics().getGroup()),
                 Optional.of(properties.getMetrics().getReportingStepInMillis()),
                 Optional.of(properties.getMetrics().isExport())
             ).get();
@@ -105,7 +105,7 @@ public class ProteusAutoConfiguration {
         ) {
             return new ProteusTracerSupplier(
                 proteus,
-                Optional.of(properties.getGroup())
+                Optional.of(properties.getTracing().getGroup())
             ).get();
         }
     }
