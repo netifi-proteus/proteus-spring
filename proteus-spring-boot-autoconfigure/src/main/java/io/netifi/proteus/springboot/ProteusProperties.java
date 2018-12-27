@@ -60,6 +60,10 @@ public class ProteusProperties {
     @Valid
     private BrokerProperties broker = new BrokerProperties();
 
+    private MetricsProperties metrics = new MetricsProperties();
+
+    private TracingProperties tracing = new TracingProperties();
+
     public SslProperties getSsl() {
         return ssl;
     }
@@ -70,6 +74,14 @@ public class ProteusProperties {
 
     public BrokerProperties getBroker() {
         return broker;
+    }
+
+    public MetricsProperties getMetrics() {
+        return metrics;
+    }
+
+    public TracingProperties getTracing() {
+        return tracing;
     }
 
     public String getDestination() {
@@ -118,6 +130,53 @@ public class ProteusProperties {
 
         public void setDisabled(Boolean disabled) {
             this.disabled = disabled;
+        }
+    }
+
+    public static final class MetricsProperties {
+        @NotNull
+        private String group = "com.netifi.proteus.metrics";
+
+        private long reportingStepInMillis = 10_000L;
+
+        private boolean export = true;
+
+        public String getGroup() {
+            return group;
+        }
+
+        public void setGroup(String group) {
+            this.group = group;
+        }
+
+        public long getReportingStepInMillis() {
+            return reportingStepInMillis;
+        }
+
+        public void setReportingStepInMillis(long reportingStepInMillis) {
+            this.reportingStepInMillis = reportingStepInMillis;
+        }
+
+        public boolean isExport() {
+            return export;
+        }
+
+        public void setExport(boolean export) {
+            this.export = export;
+        }
+    }
+
+
+    public static final class TracingProperties {
+        @NotNull
+        private String group = "com.netifi.proteus.tracing";
+
+        public String getGroup() {
+            return group;
+        }
+
+        public void setGroup(String group) {
+            this.group = group;
         }
     }
 

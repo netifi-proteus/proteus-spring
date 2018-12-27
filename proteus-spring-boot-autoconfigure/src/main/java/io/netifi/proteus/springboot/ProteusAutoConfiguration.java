@@ -15,24 +15,30 @@
  */
 package io.netifi.proteus.springboot;
 
-import java.util.function.Supplier;
+import java.util.List;
+import java.util.Optional;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.Proteus;
+import io.netifi.proteus.micrometer.ProteusMeterRegistrySupplier;
 import io.netifi.proteus.spring.core.config.ProteusConfiguration;
+import io.netifi.proteus.tracing.ProteusTracerSupplier;
 import io.opentracing.Tracer;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 
 @SpringBootConfiguration
@@ -40,21 +46,68 @@ import org.springframework.util.StringUtils;
 @AutoConfigureBefore(ProteusConfiguration.class)
 public class ProteusAutoConfiguration {
 
-    @Bean
-    @Conditional(MeterRegistrySupplierCondition.class)
-    public MeterRegistry meterRegistry(Supplier<MeterRegistry> supplier) {
-        return supplier.get();
-    }
-
-    @Bean
-    @Conditional(TracerSupplierCondition.class)
-    public Tracer tracer(Supplier<Tracer> supplier) {
-        return supplier.get();
-    }
-
     @Bean(name = "internalScanClassPathBeanDefinitionRegistryPostProcessor")
     public BeanDefinitionRegistryPostProcessor scanClassPathBeanDefinitionRegistryPostProcessor(ApplicationContext applicationContext) throws BeansException {
         return new ScanClassPathBeanDefinitionRegistryPostProcessor();
+    }
+
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public ProteusConfigurer propertiesBasedProteusConfigurer(ProteusProperties proteusProperties) {
+        return builder -> {
+            ProteusProperties.SslProperties ssl = proteusProperties.getSsl();
+            ProteusProperties.AccessProperties access = proteusProperties.getAccess();
+            ProteusProperties.BrokerProperties broker = proteusProperties.getBroker();
+
+            if (!StringUtils.isEmpty(proteusProperties.getDestination())) {
+                builder.destination(proteusProperties.getDestination());
+            }
+
+            return builder.sslDisabled(ssl.isDisabled())
+                          .accessKey(access.getKey())
+                          .accessToken(access.getToken())
+                          .group(proteusProperties.getGroup())
+                          .poolSize(proteusProperties.getPoolSize())
+                          .host(broker.getHostname())
+                          .port(broker.getPort());
+        };
+    }
+
+    @SpringBootConfiguration
+    @ConditionalOnMissingBean(MeterRegistry.class)
+    @ConditionalOnClass(ProteusMeterRegistrySupplier.class)
+    public static class MetricsConfigurations {
+
+        @Bean
+        public MeterRegistry meterRegistry(
+            Proteus proteus,
+            ProteusProperties properties
+        ) {
+            return new ProteusMeterRegistrySupplier(
+                proteus,
+                Optional.of(properties.getMetrics().getGroup()),
+                Optional.of(properties.getMetrics().getReportingStepInMillis()),
+                Optional.of(properties.getMetrics().isExport())
+            ).get();
+        }
+    }
+
+
+    @SpringBootConfiguration
+    @ConditionalOnMissingBean(Tracer.class)
+    @ConditionalOnClass(ProteusTracerSupplier.class)
+    public static class TracingConfigurations {
+
+        @Bean
+        public Tracer tracer(
+            Proteus proteus,
+            ProteusProperties properties
+        ) {
+            return new ProteusTracerSupplier(
+                proteus,
+                Optional.of(properties.getTracing().getGroup())
+            ).get();
+        }
     }
 
     @SpringBootConfiguration
@@ -63,8 +116,10 @@ public class ProteusAutoConfiguration {
     public static class NonWebProteusConfiguration {
 
         @Bean
-        public Proteus proteus(ProteusProperties proteusProperties) {
-            Proteus proteus = configureProteus(proteusProperties);
+        public Proteus proteus(
+            List<ProteusConfigurer> configurers
+        ) {
+            Proteus proteus = configureProteus(configurers);
 
             startDaemonAwaitThread(proteus);
 
@@ -92,31 +147,23 @@ public class ProteusAutoConfiguration {
     public static class WebProteusConfiguration {
 
         @Bean
-        public Proteus proteus(ProteusProperties proteusProperties) {
-            return configureProteus(proteusProperties);
+        public Proteus proteus(
+            List<ProteusConfigurer> configurers
+        ) {
+            return configureProteus(configurers);
         }
     }
 
 
-    static Proteus configureProteus(ProteusProperties proteusProperties) {
-        ProteusProperties.SslProperties ssl = proteusProperties.getSsl();
-        ProteusProperties.AccessProperties access = proteusProperties.getAccess();
-        ProteusProperties.BrokerProperties broker = proteusProperties.getBroker();
-
+    static Proteus configureProteus(List<ProteusConfigurer> configurers) {
         Proteus.Builder builder = Proteus.builder();
 
-        if (!StringUtils.isEmpty(proteusProperties.getDestination())) {
-            builder.destination(proteusProperties.getDestination());
+        AnnotationAwareOrderComparator.sort(configurers);
+
+        for (ProteusConfigurer configurer : configurers) {
+            builder = configurer.configure(builder);
         }
 
-        return builder
-                .sslDisabled(ssl.isDisabled())
-                .accessKey(access.getKey())
-                .accessToken(access.getToken())
-                .group(proteusProperties.getGroup())
-                .poolSize(proteusProperties.getPoolSize())
-                .host(broker.getHostname())
-                .port(broker.getPort())
-                .build();
+        return builder.build();
     }
 }
