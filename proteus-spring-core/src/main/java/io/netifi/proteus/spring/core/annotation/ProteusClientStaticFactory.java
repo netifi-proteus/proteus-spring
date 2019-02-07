@@ -27,7 +27,10 @@ import io.rsocket.RSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.support.AutowireCandidateQualifier;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.Assert;
@@ -133,6 +136,13 @@ public class ProteusClientStaticFactory {
 
             Object newInstance = beanFactory.initializeBean(toRegister, beanName);
             beanFactory.autowireBeanProperties(newInstance, AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, true);
+            AnnotatedGenericBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(clientClass);
+            AutowireCandidateQualifier qualifier = new AutowireCandidateQualifier(Qualifier.class);
+
+            qualifier.setAttribute("value", "client");
+            beanDefinition.addQualifier(qualifier);
+
+            beanFactory.registerBeanDefinition(beanName, beanDefinition);
             beanFactory.registerSingleton(beanName, newInstance);
 
             LOGGER.debug("Bean named '{}' created successfully.", beanName);
