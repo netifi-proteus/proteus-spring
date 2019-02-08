@@ -22,7 +22,6 @@ import io.netifi.proteus.spring.DefaultExternalIdlClient;
 import io.netifi.proteus.spring.core.annotation.Broadcast;
 import io.netifi.proteus.spring.core.annotation.Destination;
 import io.netifi.proteus.spring.core.annotation.Group;
-import io.netifi.proteus.spring.core.config.EnableProteus;
 import io.netifi.proteus.spring.core.config.ProteusConfiguration;
 import io.netifi.proteus.springboot.ProteusAutoConfiguration;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandler;
@@ -30,27 +29,22 @@ import io.rsocket.rpc.metrics.om.MetricsSnapshotHandlerClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = ProteusSpringIntegrationTest.TestConfiguration.class)
+@SpringBootTest()
 @ImportAutoConfiguration({
     ProteusAutoConfiguration.class,
     ProteusConfiguration.class,
-    ProteusSpringIntegrationTest.TestConfiguration.class
 })
+@DirtiesContext
 public class ProteusSpringIntegrationTest {
 
     @Autowired
@@ -74,8 +68,17 @@ public class ProteusSpringIntegrationTest {
     @Destination(group = "test", destination = "test")
     DefaultExternalIdlClient defaultExternalIdlClient;
 
+    @Destination(group = "test", destination = "test")
+    DefaultExternalIdlClient defaultExternalIdlClientSecondsInstance;
+
     @Autowired
     TestIdl serviceImpl;
+
+    @Autowired
+    Proteus proteus;
+
+    @Autowired
+    ConfigurableApplicationContext context;
 
     @Test
     public void shouldFindGeneratedBean() {
@@ -86,15 +89,6 @@ public class ProteusSpringIntegrationTest {
         Assertions.assertEquals(BrokerInfoServiceClient.class, brokerInfoServiceClient.getClass());
         Assertions.assertEquals(TestIdlImpl.class, serviceImpl.getClass());
         Assertions.assertNotNull(defaultExternalIdlClient);
-    }
-
-
-    @org.springframework.boot.test.context.TestConfiguration
-    static class TestConfiguration {
-
-        @Bean
-        public Proteus proteus() {
-            return Mockito.mock(Proteus.class);
-        }
+        Assertions.assertNotNull(defaultExternalIdlClientSecondsInstance);
     }
 }
