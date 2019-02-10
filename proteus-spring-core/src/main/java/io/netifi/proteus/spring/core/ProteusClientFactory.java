@@ -17,10 +17,9 @@ package io.netifi.proteus.spring.core;
 
 import io.netifi.proteus.common.tags.Tags;
 import io.netifi.proteus.spring.core.annotation.ProteusClient;
-import io.rsocket.rpc.AbstractRSocketService;
-import io.rsocket.rpc.RSocketRpcService;
 
 public interface ProteusClientFactory<T> {
+
     T lookup(ProteusClient.Type type, String group, Tags tag);
 
     T lookup(ProteusClient.Type type, String group, String... tags);

@@ -15,11 +15,10 @@
  */
 package io.netifi.proteus.spring.core;
 
-import io.netifi.proteus.spring.core.ProteusClientFactory;
 import io.netifi.proteus.spring.core.annotation.ProteusClient;
 import io.netifi.proteus.common.tags.Tags;
 
-interface DestinationAwareClientFactory<T> extends ProteusClientFactory<T> {
+public interface DestinationAwareClientFactory<T> extends ProteusClientFactory<T> {
     default T destination(){
         return lookup(ProteusClient.Type.DESTINATION);
     }

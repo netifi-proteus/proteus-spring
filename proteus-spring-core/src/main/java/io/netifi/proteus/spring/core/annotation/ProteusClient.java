@@ -15,6 +15,7 @@
  */
 package io.netifi.proteus.spring.core.annotation;
 
+import io.netifi.proteus.spring.core.NoClass;
 import io.netifi.proteus.spring.core.NoTagsSupplier;
 import io.netifi.proteus.spring.core.TagSupplier;
 
@@ -38,6 +39,8 @@ public @interface ProteusClient {
     String destination() default "";
 
     String group() default "";
+
+    Class<?> clientClass() default NoClass.class;
 
     Class<? extends TagSupplier> tagSupplier() default NoTagsSupplier.class;
 

@@ -15,13 +15,11 @@
  */
 package io.netifi.proteus.spring.core;
 
-
-import io.netifi.proteus.spring.core.ProteusClientFactory;
 import io.netifi.proteus.common.tags.Tags;
 import io.netifi.proteus.common.tags.Tag;
 import io.netifi.proteus.spring.core.annotation.ProteusClient;
 
-interface BroadcastAwareClientFactory<T> extends ProteusClientFactory<T> {
+public interface BroadcastAwareClientFactory<T> extends ProteusClientFactory<T> {
 
     default T broadcast(){
         return lookup(ProteusClient.Type.BROADCAST);
