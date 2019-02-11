@@ -33,9 +33,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextStoppedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.Order;
@@ -117,11 +122,21 @@ public class ProteusAutoConfiguration {
 
         @Bean
         public Proteus proteus(
-            List<ProteusConfigurer> configurers
+            List<ProteusConfigurer> configurers,
+            ConfigurableApplicationContext context
         ) {
             Proteus proteus = configureProteus(configurers);
 
             startDaemonAwaitThread(proteus);
+
+            context.addApplicationListener(event -> {
+                if (
+                        event instanceof ContextClosedEvent
+                        || event instanceof ContextStoppedEvent
+                        || event instanceof ApplicationFailedEvent) {
+                    proteus.dispose();
+                }
+            });
 
             return proteus;
         }
