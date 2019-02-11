@@ -209,7 +209,7 @@ public class ProteusClientStaticFactory {
                             suppliedTags,
                             tracer,
                             meterRegistry,
-                            clientClass);
+                            targetClass);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(String.format("Error injecting bean '%s'", targetClass.getSimpleName()), e);

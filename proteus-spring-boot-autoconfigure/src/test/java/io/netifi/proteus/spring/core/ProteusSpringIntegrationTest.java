@@ -22,6 +22,7 @@ import io.netifi.proteus.spring.DefaultExternalIdlClient;
 import io.netifi.proteus.spring.core.annotation.Broadcast;
 import io.netifi.proteus.spring.core.annotation.Destination;
 import io.netifi.proteus.spring.core.annotation.Group;
+import io.netifi.proteus.spring.core.annotation.ProteusClient;
 import io.netifi.proteus.spring.core.config.EnableProteus;
 import io.netifi.proteus.spring.core.config.ProteusConfiguration;
 import io.netifi.proteus.springboot.ProteusAutoConfiguration;
@@ -74,6 +75,15 @@ public class ProteusSpringIntegrationTest {
     @Destination(group = "test", destination = "test")
     DefaultExternalIdlClient defaultExternalIdlClient;
 
+    @ProteusClient(group = "test", destination = "test", clientClass = DefaultExternalIdlClient.class)
+    DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory;
+
+    @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
+    GroupAwareClientFactory<DefaultExternalIdlClient> groupAwareClientFactory;
+
+    @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
+    BroadcastAwareClientFactory<DefaultExternalIdlClient> broadcastAwareClientFactory;
+
     @Autowired
     TestIdl serviceImpl;
 
@@ -86,6 +96,9 @@ public class ProteusSpringIntegrationTest {
         Assertions.assertEquals(BrokerInfoServiceClient.class, brokerInfoServiceClient.getClass());
         Assertions.assertEquals(TestIdlImpl.class, serviceImpl.getClass());
         Assertions.assertNotNull(defaultExternalIdlClient);
+        Assertions.assertNotNull(destinationAwareClientFactory);
+        Assertions.assertNotNull(groupAwareClientFactory);
+        Assertions.assertNotNull(broadcastAwareClientFactory);
     }
 
 
