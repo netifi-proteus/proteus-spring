@@ -19,11 +19,7 @@ import io.netifi.proteus.Proteus;
 import io.netifi.proteus.broker.info.BrokerInfoService;
 import io.netifi.proteus.broker.info.BrokerInfoServiceClient;
 import io.netifi.proteus.spring.DefaultExternalIdlClient;
-import io.netifi.proteus.spring.core.annotation.Broadcast;
-import io.netifi.proteus.spring.core.annotation.Destination;
-import io.netifi.proteus.spring.core.annotation.Group;
-import io.netifi.proteus.spring.core.annotation.ProteusClient;
-import io.netifi.proteus.spring.core.config.EnableProteus;
+import io.netifi.proteus.spring.core.annotation.*;
 import io.netifi.proteus.spring.core.config.ProteusConfiguration;
 import io.netifi.proteus.springboot.ProteusAutoConfiguration;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandler;
@@ -35,14 +31,9 @@ import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -75,12 +66,18 @@ public class ProteusSpringIntegrationTest {
     @Destination(group = "test", destination = "test")
     DefaultExternalIdlClient defaultExternalIdlClient;
 
+    @Autowired
+    @ProteusFactory
     @ProteusClient(group = "test", destination = "test", clientClass = DefaultExternalIdlClient.class)
     DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory;
 
+    @Autowired
+    @ProteusFactory
     @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
     GroupAwareClientFactory<DefaultExternalIdlClient> groupAwareClientFactory;
 
+    @Autowired
+    @ProteusFactory
     @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
     BroadcastAwareClientFactory<DefaultExternalIdlClient> broadcastAwareClientFactory;
 

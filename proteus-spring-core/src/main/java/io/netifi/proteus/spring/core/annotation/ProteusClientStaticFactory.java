@@ -25,6 +25,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.Proteus;
 import io.netifi.proteus.common.tags.Tags;
 import io.netifi.proteus.rsocket.ProteusSocket;
+import io.netifi.proteus.spring.core.ProteusClientFactory;
 import io.netifi.proteus.spring.core.*;
 import io.opentracing.Tracer;
 import io.rsocket.RSocket;
@@ -117,7 +118,7 @@ public class ProteusClientStaticFactory {
                 }
 
                 Class<?> clientClass = proteusClientAnnotation.clientClass();
-                if(targetClass.isAssignableFrom(ProteusClientFactory.class)){
+                if(ProteusClientFactory.class.isAssignableFrom(targetClass)){
 
                     if(clientClass.equals(NoClass.class)){
                         throw new RuntimeException("Instantiating ProteusClientFactory requires target client class");

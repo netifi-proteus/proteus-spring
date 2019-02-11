@@ -83,7 +83,8 @@ public class ProteusBeanDefinitionRegistryPostProcessor implements BeanDefinitio
 
                     Generated generated = descriptor.getDeclaredType().getAnnotation(Generated.class);
 
-                    if (generated != null && generated.type() == ResourceType.CLIENT) {
+                    if ((generated != null && generated.type() == ResourceType.CLIENT) ||
+                            descriptor.getField().getAnnotation(ProteusFactory.class) != null) {
                         return ProteusClientStaticFactory.getBeanInstance(
                             beanFactory,
                             descriptor.getDeclaredType(),
