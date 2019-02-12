@@ -21,6 +21,7 @@ import io.netifi.proteus.spring.DefaultExternalIdlClient;
 import io.netifi.proteus.spring.core.annotation.Broadcast;
 import io.netifi.proteus.spring.core.annotation.Destination;
 import io.netifi.proteus.spring.core.annotation.Group;
+import io.netifi.proteus.spring.core.annotation.ProteusClient;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandler;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandlerClient;
 import org.junit.jupiter.api.Assertions;
@@ -57,6 +58,9 @@ public class AutowireInsideComponentIntegrationTest {
                 testBean.brokerInfoServiceClient.getClass());
         Assertions.assertEquals(TestIdlImpl.class,
                 testBean.serviceImpl.getClass());
+        Assertions.assertNotNull(testBean.destinationAwareClientFactory);
+        Assertions.assertNotNull(testBean.groupAwareClientFactory);
+        Assertions.assertNotNull(testBean.broadcastAwareClientFactory);
         Assertions.assertNotNull(testBean.defaultExternalIdlClient);
     }
 
@@ -84,6 +88,15 @@ public class AutowireInsideComponentIntegrationTest {
             @Destination(group = "test", destination = "test")
             DefaultExternalIdlClient defaultExternalIdlClient,
 
+            @ProteusClient(group = "test", destination = "test", clientClass = DefaultExternalIdlClient.class)
+            DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory,
+
+            @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
+            GroupAwareClientFactory<DefaultExternalIdlClient> groupAwareClientFactory,
+
+            @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
+            BroadcastAwareClientFactory<DefaultExternalIdlClient> broadcastAwareClientFactory,
+
             TestIdl serviceImpl
         ) {
             return new TestBean(broadcastTestIdlClient,
@@ -92,6 +105,9 @@ public class AutowireInsideComponentIntegrationTest {
                     metricsSnapshotHandlerClient,
                     brokerInfoServiceClient,
                     defaultExternalIdlClient,
+                    destinationAwareClientFactory,
+                    groupAwareClientFactory,
+                    broadcastAwareClientFactory,
                     serviceImpl);
         }
     }

@@ -16,12 +16,17 @@
 package io.netifi.proteus.spring.core.annotation;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.Proteus;
+import io.netifi.proteus.common.tags.Tags;
 import io.netifi.proteus.rsocket.ProteusSocket;
+import io.netifi.proteus.spring.core.ProteusClientFactory;
+import io.netifi.proteus.spring.core.*;
 import io.opentracing.Tracer;
 import io.rsocket.RSocket;
 import org.slf4j.Logger;
@@ -46,32 +51,31 @@ public class ProteusClientStaticFactory {
     /**
      * Creates an instance of the correct Proteus client for injection into an annotated field.
      *
-     * @param clientClass proteus client class
+     * @param targetClass proteus client class
      * @return an instance of a Proteus client
      */
     public static Object getBeanInstance(
         final DefaultListableBeanFactory beanFactory,
-        final Class<?> clientClass,
+        final Class<?> targetClass,
         final ProteusClient proteusClientAnnotation
     ) {
-        final String beanName = getBeanName(proteusClientAnnotation, clientClass);
+        final String beanName = getBeanName(proteusClientAnnotation, targetClass);
 
         if (!beanFactory.containsBean(beanName)) {
             Proteus proteus = beanFactory.getBean(Proteus.class);
 
-            // Creating ProteusSocket Instance
-            ProteusSocket proteusSocket = null;
+            //Tags reconciliation
+            TagSupplier tagSupplier = NoTagsSupplier.INSTANCE;
+            if(proteusClientAnnotation.tagSupplier() != null && !proteusClientAnnotation.tagSupplier().equals(NoTagsSupplier.class)){
+                tagSupplier = beanFactory.getBean(proteusClientAnnotation.tagSupplier());
+            }
 
-            switch (proteusClientAnnotation.type()) {
-                case BROADCAST:
-                    proteusSocket = proteus.broadcast(proteusClientAnnotation.group());
-                    break;
-                case GROUP:
-                    proteusSocket = proteus.group(proteusClientAnnotation.group());
-                    break;
-                case DESTINATION:
-                    proteusSocket = proteus.destination(proteusClientAnnotation.destination(), proteusClientAnnotation.group());
-                    break;
+            Tags suppliedTags = tagSupplier.get();
+            for (Tag t :
+                    proteusClientAnnotation.tags()) {
+                if(!suppliedTags.stream().anyMatch(tag -> tag.getKey().equals(t.name()))){
+                    suppliedTags = suppliedTags.and(io.netifi.proteus.common.tags.Tag.of(t.name(), t.value()));
+                }
             }
 
             Object toRegister = null;
@@ -113,30 +117,108 @@ public class ProteusClientStaticFactory {
                     }
                 }
 
-                if (tracer == null && meterRegistry == null) {
-                    // No Tracer or MeterRegistry
-                    Constructor ctor = clientClass.getConstructor(RSocket.class);
-                    toRegister = ctor.newInstance(proteusSocket);
-                } else if (tracer != null && meterRegistry == null) {
-                    // Tracer Only
-                    Constructor ctor = clientClass.getConstructor(RSocket.class, Tracer.class);
-                    toRegister = ctor.newInstance(proteusSocket, tracer);
-                } else if (tracer == null && meterRegistry != null) {
-                    // MeterRegistry Only
-                    Constructor ctor = clientClass.getConstructor(RSocket.class, MeterRegistry.class);
-                    toRegister = ctor.newInstance(proteusSocket, meterRegistry);
+                Class<?> clientClass = proteusClientAnnotation.clientClass();
+                if(ProteusClientFactory.class.isAssignableFrom(targetClass)){
+
+                    if(clientClass.equals(NoClass.class)){
+                        throw new RuntimeException("Instantiating ProteusClientFactory requires target client class");
+                    }
+
+                    ProteusClientFactory baseFactory = createBaseClientFactory(clientClass, proteus,proteusClientAnnotation.type(),
+                            proteusClientAnnotation.group(),
+                            proteusClientAnnotation.destination(),
+                            suppliedTags,
+                            tracer,
+                            meterRegistry);
+
+                    //TODO: Lots of duplication here but I don't know how else to do this
+                    if(targetClass.isAssignableFrom(GroupAwareClientFactory.class)){
+                        toRegister = new GroupAwareClientFactory(){
+                            @Override
+                            public Object lookup(ProteusClient.Type type, String group, Tags tags) {
+                                return baseFactory.lookup(type, group, tags);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type, String group, String... tags) {
+                                return baseFactory.lookup(type, group, tags);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type) {
+                                return baseFactory.lookup(type);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type, Tags tags) {
+                                return baseFactory.lookup(type, tags);
+                            }
+                        };
+                    } else if(targetClass.isAssignableFrom(DestinationAwareClientFactory.class)){
+                        toRegister = new DestinationAwareClientFactory() {
+                            @Override
+                            public Object lookup(ProteusClient.Type type, String group, Tags tags) {
+                                return baseFactory.lookup(type, group, tags);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type, String group, String... tags) {
+                                return baseFactory.lookup(type, group, tags);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type) {
+                                return baseFactory.lookup(type);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type, Tags tags) {
+                                return baseFactory.lookup(type, tags);
+                            }
+                        };
+                    } else if(targetClass.isAssignableFrom(BroadcastAwareClientFactory.class)){
+                        toRegister = new BroadcastAwareClientFactory() {
+                            @Override
+                            public Object lookup(ProteusClient.Type type, String group, Tags tags) {
+                                return baseFactory.lookup(type, group, tags);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type, String group, String... tags) {
+                                return baseFactory.lookup(type, group, tags);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type) {
+                                return baseFactory.lookup(type);
+                            }
+
+                            @Override
+                            public Object lookup(ProteusClient.Type type, Tags tags) {
+                                return baseFactory.lookup(type, tags);
+                            }
+                        };
+                    } else {
+                        toRegister = baseFactory;
+                    }
+
                 } else {
-                    // Both Tracer and MeterRegistry
-                    Constructor ctor = clientClass.getConstructor(RSocket.class, MeterRegistry.class, Tracer.class);
-                    toRegister = ctor.newInstance(proteusSocket, meterRegistry, tracer);
+                    toRegister = createProteusClient(proteus,
+                            proteusClientAnnotation.type(),
+                            proteusClientAnnotation.group(),
+                            proteusClientAnnotation.destination(),
+                            suppliedTags,
+                            tracer,
+                            meterRegistry,
+                            targetClass);
                 }
             } catch (Exception e) {
-                throw new RuntimeException(String.format("Error injecting bean '%s'", clientClass.getSimpleName()), e);
+                throw new RuntimeException(String.format("Error injecting bean '%s'", targetClass.getSimpleName()), e);
             }
 
             Object newInstance = beanFactory.initializeBean(toRegister, beanName);
             beanFactory.autowireBeanProperties(newInstance, AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, true);
-            AnnotatedGenericBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(clientClass);
+            AnnotatedGenericBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(targetClass);
             AutowireCandidateQualifier qualifier = new AutowireCandidateQualifier(Qualifier.class);
 
             qualifier.setAttribute("value", "client");
@@ -157,7 +239,8 @@ public class ProteusClientStaticFactory {
     /**
      * Generates a unique bean name for the field.
      *
-     * @param field field metadata
+     * @param proteusClientAnnotation annotation data
+     * @param clazz target class
      * @return bean name
      */
     private static String getBeanName(
@@ -174,5 +257,109 @@ public class ProteusClientStaticFactory {
         }
 
         return beanName;
+    }
+
+    private static <T> T createProteusClient(Proteus proteus,
+                                              ProteusClient.Type routeType,
+                                              String group,
+                                              String destination,
+                                              Tags tags,
+                                              Tracer tracer,
+                                              MeterRegistry meterRegistry,
+                                              Class<T> clientClass)
+                                              throws NoSuchMethodException,
+                                                     InstantiationException,
+                                                     IllegalAccessException,
+                                                     InvocationTargetException {
+        // Creating default ProteusSocket Instance
+        ProteusSocket proteusSocket = null;
+
+        switch (routeType) {
+            case BROADCAST:
+                proteusSocket = proteus.broadcastServiceSocket(group, tags);
+                break;
+            case GROUP:
+                proteusSocket = proteus.groupServiceSocket(group, tags);
+                break;
+            case DESTINATION:
+                proteusSocket = proteus.groupServiceSocket(group,
+                        tags.and(Tags.of("destination", destination)));
+                break;
+        }
+
+        T toRegister;
+
+        if (tracer == null && meterRegistry == null) {
+            // No Tracer or MeterRegistry
+            Constructor ctor = clientClass.getConstructor(RSocket.class);
+            toRegister = (T)ctor.newInstance(proteusSocket);
+        } else if (tracer != null && meterRegistry == null) {
+            // Tracer Only
+            Constructor ctor = clientClass.getConstructor(RSocket.class, Tracer.class);
+            toRegister = (T)ctor.newInstance(proteusSocket, tracer);
+        } else if (tracer == null && meterRegistry != null) {
+            // MeterRegistry Only
+            Constructor ctor = clientClass.getConstructor(RSocket.class, MeterRegistry.class);
+            toRegister = (T)ctor.newInstance(proteusSocket, meterRegistry);
+        } else {
+            // Both Tracer and MeterRegistry
+            Constructor ctor = clientClass.getConstructor(RSocket.class, MeterRegistry.class, Tracer.class);
+            toRegister = (T)ctor.newInstance(proteusSocket, meterRegistry, tracer);
+        }
+        return toRegister;
+    }
+
+    private static ProteusClientFactory createBaseClientFactory(Class<?> clientClass,
+                                                                Proteus proteus,
+                                                                ProteusClient.Type routeType,
+                                                                String group,
+                                                                String destination,
+                                                                Tags tags,
+                                                                Tracer tracer,
+                                                                MeterRegistry meterRegistry) {
+
+        ProteusClientFactory baseFactory = new ProteusClientFactory(){
+
+            Map<String, Object> instantiatedClients = new HashMap<>();
+
+            @Override
+            public Object lookup(ProteusClient.Type type, String methodGroup, Tags methodTags) {
+                String key = key(type, methodGroup, methodTags);
+                Object client = null;
+                if(instantiatedClients.containsKey(key)){
+                    client = instantiatedClients.get(key);
+                } else {
+                    try {
+                        client = createProteusClient(proteus, routeType, methodGroup, destination, methodTags, tracer, meterRegistry, clientClass);
+                        instantiatedClients.put(key, client);
+                    } catch (Exception e) {
+                        throw new RuntimeException(String.format("Error instantiating Proteus Client for '%s'", clientClass.getSimpleName()), e);
+                    }
+                }
+                return client;
+            }
+
+            @Override
+            public Object lookup(ProteusClient.Type type, String methodGroup, String... methodTags) {
+                return lookup(type, methodGroup, Tags.of(methodTags));
+            }
+
+            @Override
+            public Object lookup(ProteusClient.Type type) {
+                return lookup(type, group, tags);
+            }
+
+            @Override
+            public Object lookup(ProteusClient.Type type, Tags methodTags) {
+                return lookup(type, group, methodTags);
+            }
+
+            //TODO: Do something smarter
+            private String key(ProteusClient.Type type, String group, Tags tags){
+                return type.name() + group + destination + tags.hashCode();
+            }
+        };
+
+        return baseFactory;
     }
 }

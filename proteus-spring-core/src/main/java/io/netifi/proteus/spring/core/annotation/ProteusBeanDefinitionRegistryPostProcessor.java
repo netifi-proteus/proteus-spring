@@ -15,6 +15,7 @@
  */
 package io.netifi.proteus.spring.core.annotation;
 
+import io.netifi.proteus.spring.core.ProteusClientFactory;
 import io.rsocket.rpc.AbstractRSocketService;
 import io.rsocket.rpc.annotations.internal.Generated;
 import io.rsocket.rpc.annotations.internal.ResourceType;
@@ -83,7 +84,8 @@ public class ProteusBeanDefinitionRegistryPostProcessor implements BeanDefinitio
 
                     Generated generated = descriptor.getDeclaredType().getAnnotation(Generated.class);
 
-                    if (generated != null && generated.type() == ResourceType.CLIENT) {
+                    if ((generated != null && generated.type() == ResourceType.CLIENT) ||
+                            ProteusClientFactory.class.isAssignableFrom(descriptor.getDeclaredType())) {
                         return ProteusClientStaticFactory.getBeanInstance(
                             beanFactory,
                             descriptor.getDeclaredType(),

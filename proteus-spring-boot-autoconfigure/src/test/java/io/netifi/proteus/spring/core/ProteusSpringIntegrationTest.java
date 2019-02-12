@@ -19,6 +19,7 @@ import io.netifi.proteus.Proteus;
 import io.netifi.proteus.broker.info.BrokerInfoService;
 import io.netifi.proteus.broker.info.BrokerInfoServiceClient;
 import io.netifi.proteus.spring.DefaultExternalIdlClient;
+import io.netifi.proteus.spring.core.annotation.*;
 import io.netifi.proteus.spring.core.annotation.Broadcast;
 import io.netifi.proteus.spring.core.annotation.Destination;
 import io.netifi.proteus.spring.core.annotation.Group;
@@ -30,10 +31,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -72,6 +75,18 @@ public class ProteusSpringIntegrationTest {
     DefaultExternalIdlClient defaultExternalIdlClientSecondsInstance;
 
     @Autowired
+    @ProteusClient(group = "test", destination = "test", clientClass = DefaultExternalIdlClient.class)
+    DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory;
+
+    @Autowired
+    @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
+    GroupAwareClientFactory<DefaultExternalIdlClient> groupAwareClientFactory;
+
+    @Autowired
+    @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
+    BroadcastAwareClientFactory<DefaultExternalIdlClient> broadcastAwareClientFactory;
+
+    @Autowired
     TestIdl serviceImpl;
 
     @Autowired
@@ -89,6 +104,19 @@ public class ProteusSpringIntegrationTest {
         Assertions.assertEquals(BrokerInfoServiceClient.class, brokerInfoServiceClient.getClass());
         Assertions.assertEquals(TestIdlImpl.class, serviceImpl.getClass());
         Assertions.assertNotNull(defaultExternalIdlClient);
+        Assertions.assertNotNull(destinationAwareClientFactory);
+        Assertions.assertNotNull(groupAwareClientFactory);
+        Assertions.assertNotNull(broadcastAwareClientFactory);
         Assertions.assertNotNull(defaultExternalIdlClientSecondsInstance);
+    }
+
+
+    @org.springframework.boot.test.context.TestConfiguration
+    static class TestConfiguration {
+
+        @Bean
+        public Proteus proteus() {
+            return Mockito.mock(Proteus.class);
+        }
     }
 }

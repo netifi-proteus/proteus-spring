@@ -21,6 +21,7 @@ import io.netifi.proteus.spring.DefaultExternalIdlClient;
 import io.netifi.proteus.spring.core.annotation.Broadcast;
 import io.netifi.proteus.spring.core.annotation.Destination;
 import io.netifi.proteus.spring.core.annotation.Group;
+import io.netifi.proteus.spring.core.annotation.ProteusClient;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandler;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandlerClient;
 import org.junit.jupiter.api.Assertions;
@@ -56,6 +57,9 @@ public class AutowireInsideConfigurationClassIntegrationTest {
                 component.brokerInfoServiceClient.getClass());
         Assertions.assertEquals(TestIdlImpl.class,
                 component.serviceImpl.getClass());
+        Assertions.assertNotNull(component.destinationAwareClientFactory);
+        Assertions.assertNotNull(component.groupAwareClientFactory);
+        Assertions.assertNotNull(component.broadcastAwareClientFactory);
         Assertions.assertNotNull(component.defaultExternalIdlClient);
     }
 
@@ -80,6 +84,18 @@ public class AutowireInsideConfigurationClassIntegrationTest {
 
         @Destination(group = "test", destination = "test")
         DefaultExternalIdlClient defaultExternalIdlClient;
+
+        @Autowired
+        @ProteusClient(group = "test", destination = "test", clientClass = DefaultExternalIdlClient.class)
+        DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory;
+
+        @Autowired
+        @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
+        GroupAwareClientFactory<DefaultExternalIdlClient> groupAwareClientFactory;
+
+        @Autowired
+        @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
+        BroadcastAwareClientFactory<DefaultExternalIdlClient> broadcastAwareClientFactory;
 
         @Autowired
         TestIdl serviceImpl;
