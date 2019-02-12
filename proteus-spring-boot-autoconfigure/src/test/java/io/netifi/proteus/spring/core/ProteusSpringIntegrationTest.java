@@ -20,6 +20,9 @@ import io.netifi.proteus.broker.info.BrokerInfoService;
 import io.netifi.proteus.broker.info.BrokerInfoServiceClient;
 import io.netifi.proteus.spring.DefaultExternalIdlClient;
 import io.netifi.proteus.spring.core.annotation.*;
+import io.netifi.proteus.spring.core.annotation.Broadcast;
+import io.netifi.proteus.spring.core.annotation.Destination;
+import io.netifi.proteus.spring.core.annotation.Group;
 import io.netifi.proteus.spring.core.config.ProteusConfiguration;
 import io.netifi.proteus.springboot.ProteusAutoConfiguration;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandler;
@@ -27,22 +30,24 @@ import io.rsocket.rpc.metrics.om.MetricsSnapshotHandlerClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = ProteusSpringIntegrationTest.TestConfiguration.class)
+@SpringBootTest()
 @ImportAutoConfiguration({
     ProteusAutoConfiguration.class,
     ProteusConfiguration.class,
-    ProteusSpringIntegrationTest.TestConfiguration.class
 })
+@DirtiesContext
 public class ProteusSpringIntegrationTest {
 
     @Autowired
@@ -66,6 +71,9 @@ public class ProteusSpringIntegrationTest {
     @Destination(group = "test", destination = "test")
     DefaultExternalIdlClient defaultExternalIdlClient;
 
+    @Destination(group = "test", destination = "test")
+    DefaultExternalIdlClient defaultExternalIdlClientSecondsInstance;
+
     @Autowired
     @ProteusClient(group = "test", destination = "test", clientClass = DefaultExternalIdlClient.class)
     DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory;
@@ -81,6 +89,12 @@ public class ProteusSpringIntegrationTest {
     @Autowired
     TestIdl serviceImpl;
 
+    @Autowired
+    Proteus proteus;
+
+    @Autowired
+    ConfigurableApplicationContext context;
+
     @Test
     public void shouldFindGeneratedBean() {
         Assertions.assertEquals(DefaultClientTestIdl.class, broadcastTestIdlClient.getClass());
@@ -93,6 +107,7 @@ public class ProteusSpringIntegrationTest {
         Assertions.assertNotNull(destinationAwareClientFactory);
         Assertions.assertNotNull(groupAwareClientFactory);
         Assertions.assertNotNull(broadcastAwareClientFactory);
+        Assertions.assertNotNull(defaultExternalIdlClientSecondsInstance);
     }
 
 
