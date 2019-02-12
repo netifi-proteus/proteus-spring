@@ -67,17 +67,14 @@ public class ProteusSpringIntegrationTest {
     DefaultExternalIdlClient defaultExternalIdlClient;
 
     @Autowired
-    @ProteusFactory
     @ProteusClient(group = "test", destination = "test", clientClass = DefaultExternalIdlClient.class)
     DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory;
 
     @Autowired
-    @ProteusFactory
     @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
     GroupAwareClientFactory<DefaultExternalIdlClient> groupAwareClientFactory;
 
     @Autowired
-    @ProteusFactory
     @ProteusClient(group = "test", clientClass = DefaultExternalIdlClient.class)
     BroadcastAwareClientFactory<DefaultExternalIdlClient> broadcastAwareClientFactory;
 

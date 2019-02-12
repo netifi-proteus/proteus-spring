@@ -17,7 +17,9 @@ package io.netifi.proteus.spring.core;
 
 import io.netifi.proteus.broker.info.BrokerInfoService;
 import io.netifi.proteus.spring.DefaultExternalIdlClient;
+import io.netifi.proteus.spring.core.annotation.ProteusClient;
 import io.rsocket.rpc.metrics.om.MetricsSnapshotHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestBean {
 
@@ -27,6 +29,9 @@ public class TestBean {
     public final MetricsSnapshotHandler metricsSnapshotHandlerClient;
     public final BrokerInfoService brokerInfoServiceClient;
     public final DefaultExternalIdlClient defaultExternalIdlClient;
+    public final DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory;
+    public final GroupAwareClientFactory<DefaultExternalIdlClient> groupAwareClientFactory;
+    public final BroadcastAwareClientFactory<DefaultExternalIdlClient> broadcastAwareClientFactory;
     public final TestIdl serviceImpl;
 
     public TestBean(TestIdl broadcastTestIdlClient,
@@ -35,6 +40,9 @@ public class TestBean {
             MetricsSnapshotHandler metricsSnapshotHandlerClient,
             BrokerInfoService brokerInfoServiceClient,
             DefaultExternalIdlClient defaultExternalIdlClient,
+            DestinationAwareClientFactory<DefaultExternalIdlClient> destinationAwareClientFactory,
+            GroupAwareClientFactory<DefaultExternalIdlClient> groupAwareClientFactory,
+            BroadcastAwareClientFactory<DefaultExternalIdlClient> broadcastAwareClientFactory,
             TestIdl serviceImpl) {
 
         this.broadcastTestIdlClient = broadcastTestIdlClient;
@@ -43,6 +51,9 @@ public class TestBean {
         this.metricsSnapshotHandlerClient = metricsSnapshotHandlerClient;
         this.brokerInfoServiceClient = brokerInfoServiceClient;
         this.defaultExternalIdlClient = defaultExternalIdlClient;
+        this.destinationAwareClientFactory = destinationAwareClientFactory;
+        this.groupAwareClientFactory = groupAwareClientFactory;
+        this.broadcastAwareClientFactory = broadcastAwareClientFactory;
         this.serviceImpl = serviceImpl;
     }
 }

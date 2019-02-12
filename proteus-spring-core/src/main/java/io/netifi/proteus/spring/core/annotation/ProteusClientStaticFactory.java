@@ -65,7 +65,7 @@ public class ProteusClientStaticFactory {
             Proteus proteus = beanFactory.getBean(Proteus.class);
 
             //Tags reconciliation
-            TagSupplier tagSupplier = new NoTagsSupplier();
+            TagSupplier tagSupplier = NoTagsSupplier.INSTANCE;
             if(proteusClientAnnotation.tagSupplier() != null && !proteusClientAnnotation.tagSupplier().equals(NoTagsSupplier.class)){
                 tagSupplier = beanFactory.getBean(proteusClientAnnotation.tagSupplier());
             }

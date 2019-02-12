@@ -18,6 +18,8 @@ package io.netifi.proteus.spring.core;
 import io.netifi.proteus.common.tags.Tags;
 
 public class NoTagsSupplier implements TagSupplier {
+    public static NoTagsSupplier INSTANCE = new NoTagsSupplier();
+
     @Override
     public Tags get() {
         return Tags.empty();
