@@ -250,6 +250,20 @@ public class ProteusProperties {
 
         public String getEnvironment() { return environment; }
 
+        public ConsulProperties getConsulProperties() { return consulProperties; }
+
+        public void setEnvironment(String environment) { this.environment = environment; }
+
+        public void setStaticProperties(StaticProperties staticProperties) { this.staticProperties = staticProperties; }
+
+        public void setEc2Properties(EC2Properties ec2Properties) { this.ec2Properties = ec2Properties; }
+
+        public void setConsulProperties(ConsulProperties consulProperties) { this.consulProperties = consulProperties; }
+
+        public void setKubernetesProperties(KubernetesProperties kubernetesProperties) { this.kubernetesProperties = kubernetesProperties; }
+
+        public KubernetesProperties getKubernetesProperties() { return kubernetesProperties; }
+
         public StaticProperties getStaticProperties() { return staticProperties; }
 
         public EC2Properties getEc2Properties() {  return ec2Properties; }
@@ -270,7 +284,6 @@ public class ProteusProperties {
 
             public void setPort(Integer port) { this.port = port; }
         }
-
 
         public static final class EC2Properties {
 
