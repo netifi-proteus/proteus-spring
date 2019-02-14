@@ -21,6 +21,10 @@ dependencies {
     compile "io.netifi.proteus:proteus-client:${proteusVersion}"
     compileClasspath "io.netifi.proteus:proteus-metrics-micrometer:${proteusVersion}"
     compileClasspath "io.netifi.proteus:proteus-tracing-openzipkin:${proteusVersion}"
+    compile "io.netifi.proteus:proteus-discovery:${proteusVersion}"
+    compileClasspath "io.netifi.proteus:proteus-discovery-aws:${proteusVersion}"
+    compileClasspath "io.netifi.proteus:proteus-discovery-consul:${proteusVersion}"
+    compileClasspath "io.netifi.proteus:proteus-discovery-kubernetes:${proteusVersion}"
 
     compile 'org.slf4j:slf4j-api'
     compile 'org.springframework.boot:spring-boot-autoconfigure'
