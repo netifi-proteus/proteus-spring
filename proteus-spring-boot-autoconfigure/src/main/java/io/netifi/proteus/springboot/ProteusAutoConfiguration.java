@@ -15,16 +15,23 @@
  */
 package io.netifi.proteus.springboot;
 
-import java.util.List;
-import java.util.Optional;
-
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netifi.proteus.Proteus;
+import io.netifi.proteus.discovery.ConsulDiscoveryConfig;
+import io.netifi.proteus.discovery.DiscoveryStrategy;
+import io.netifi.proteus.discovery.EC2TagsDiscoveryConfig;
+import io.netifi.proteus.discovery.KubernetesDiscoveryConfig;
+import io.netifi.proteus.discovery.StaticListDiscoveryConfig;
 import io.netifi.proteus.micrometer.ProteusMeterRegistrySupplier;
 import io.netifi.proteus.spring.core.config.ProteusConfiguration;
+import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.ConsulProperties;
+import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.EC2Properties;
+import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.KubernetesProperties;
+import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.StaticProperties;
 import io.netifi.proteus.tracing.ProteusTracerSupplier;
 import io.opentracing.Tracer;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.SpringBootConfiguration;
@@ -36,7 +43,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.event.ApplicationFailedEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
@@ -63,18 +69,53 @@ public class ProteusAutoConfiguration {
             ProteusProperties.SslProperties ssl = proteusProperties.getSsl();
             ProteusProperties.AccessProperties access = proteusProperties.getAccess();
             ProteusProperties.BrokerProperties broker = proteusProperties.getBroker();
+            ProteusProperties.DiscoveryProperties discovery = proteusProperties.getDiscovery();
 
             if (!StringUtils.isEmpty(proteusProperties.getDestination())) {
                 builder.destination(proteusProperties.getDestination());
+            }
+
+            if (!StringUtils.isEmpty(broker.getHostname())) {
+                // support the legacy usecase first
+                builder.host(broker.getHostname());
+                builder.port(broker.getPort());
+            } else if(!StringUtils.isEmpty(discovery.getEnvironment())) {
+                // if not legacy, then we're propbably using the new discovery api.
+                DiscoveryStrategy discoveryStrategy;
+                switch(discovery.getEnvironment()) {
+                    case "static":
+                        StaticProperties staticProperties = discovery.getStaticProperties();
+                        StaticListDiscoveryConfig staticListDiscoveryConfig = new StaticListDiscoveryConfig( staticProperties.getPort(), staticProperties.getAddresses());
+                        discoveryStrategy = DiscoveryStrategy.getInstance(staticListDiscoveryConfig);
+                        break;
+                    case "ec2":
+                        EC2Properties ec2Properties = discovery.getEc2Properties();
+                        EC2TagsDiscoveryConfig ec2TagsDiscoveryConfig = new EC2TagsDiscoveryConfig(ec2Properties.getTagName(), ec2Properties.getTagValue(), ec2Properties.getPort());
+                        discoveryStrategy = DiscoveryStrategy.getInstance(ec2TagsDiscoveryConfig);
+                        break;
+                    case "consul":
+                        ConsulProperties consulProperties = new ConsulProperties();
+                        ConsulDiscoveryConfig consulDiscoveryConfig = new ConsulDiscoveryConfig( consulProperties.getConsulURL(), consulProperties.getServiceName());
+                        discoveryStrategy = DiscoveryStrategy.getInstance(consulDiscoveryConfig);
+                        break;
+                    case "kubernetes":
+                        KubernetesProperties kubernetesProperties = new KubernetesProperties();
+                        KubernetesDiscoveryConfig kubernetesDiscoveryConfig = new KubernetesDiscoveryConfig(kubernetesProperties.getNamespace(), kubernetesProperties.getDeploymentName(), kubernetesProperties.getPortName());
+                        discoveryStrategy = DiscoveryStrategy.getInstance(kubernetesDiscoveryConfig);
+                        break;
+                    default:
+                        throw new RuntimeException("unsupported discovery strategy " + discovery.getEnvironment());
+                }
+                builder.discoveryStrategy(discoveryStrategy);
+            } else {
+                throw new RuntimeException("discovery not configured and required");
             }
 
             return builder.sslDisabled(ssl.isDisabled())
                           .accessKey(access.getKey())
                           .accessToken(access.getToken())
                           .group(proteusProperties.getGroup())
-                          .poolSize(proteusProperties.getPoolSize())
-                          .host(broker.getHostname())
-                          .port(broker.getPort());
+                          .poolSize(proteusProperties.getPoolSize());
         };
     }
 
