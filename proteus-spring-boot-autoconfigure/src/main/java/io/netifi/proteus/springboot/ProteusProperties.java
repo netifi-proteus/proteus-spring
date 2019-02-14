@@ -213,7 +213,7 @@ public class ProteusProperties {
 
     public static final class BrokerProperties {
 
-        private String hostname = "localhost";
+        private String hostname;
 
         @Min(value = 0)
         @Max(value = 65_535)
@@ -250,7 +250,13 @@ public class ProteusProperties {
 
         public String getEnvironment() { return environment; }
 
+        public StaticProperties getStaticProperties() { return staticProperties; }
+
+        public EC2Properties getEc2Properties() {  return ec2Properties; }
+
         public ConsulProperties getConsulProperties() { return consulProperties; }
+
+        public KubernetesProperties getKubernetesProperties() { return kubernetesProperties; }
 
         public void setEnvironment(String environment) { this.environment = environment; }
 
@@ -261,12 +267,6 @@ public class ProteusProperties {
         public void setConsulProperties(ConsulProperties consulProperties) { this.consulProperties = consulProperties; }
 
         public void setKubernetesProperties(KubernetesProperties kubernetesProperties) { this.kubernetesProperties = kubernetesProperties; }
-
-        public KubernetesProperties getKubernetesProperties() { return kubernetesProperties; }
-
-        public StaticProperties getStaticProperties() { return staticProperties; }
-
-        public EC2Properties getEc2Properties() {  return ec2Properties; }
 
         public static final class StaticProperties {
 
