@@ -16,7 +16,7 @@
 package io.netifi.proteus.spring.core.annotation;
 
 import io.netifi.proteus.spring.core.ProteusClientFactory;
-import io.rsocket.rpc.AbstractRSocketService;
+import io.rsocket.rpc.RSocketRpcService;
 import io.rsocket.rpc.annotations.internal.Generated;
 import io.rsocket.rpc.annotations.internal.ResourceType;
 import org.slf4j.Logger;
@@ -133,7 +133,7 @@ public class ProteusBeanDefinitionRegistryPostProcessor implements BeanDefinitio
     }
 
     private static void processRSocketServiceBeanDefinitions(DefaultListableBeanFactory beanFactory) {
-        for (String serviceServerBeanName : beanFactory.getBeanNamesForType(AbstractRSocketService.class)) {
+        for (String serviceServerBeanName : beanFactory.getBeanNamesForType(RSocketRpcService.class)) {
             try {
                 BeanDefinition beanDefinition = beanFactory.getBeanDefinition(serviceServerBeanName);
                 Class<?> clazz = resolveClass(beanDefinition);

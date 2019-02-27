@@ -18,8 +18,8 @@ package io.netifi.proteus.spring.core;
 import java.util.Map;
 
 import io.netifi.proteus.Proteus;
-import io.rsocket.rpc.AbstractRSocketService;
 
+import io.rsocket.rpc.RSocketRpcService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -33,10 +33,10 @@ public class ProteusApplicationEventListener {
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
         ApplicationContext context = event.getApplicationContext();
-        Map<String, AbstractRSocketService> abstractRSocketServiceMap =
-            context.getBeansOfType(AbstractRSocketService.class);
+        Map<String, RSocketRpcService> rSocketServiceMap =
+            context.getBeansOfType(RSocketRpcService.class);
 
-        abstractRSocketServiceMap.values()
-                                 .forEach(proteus::addService);
+        rSocketServiceMap.values()
+            .forEach(proteus::addService);
     }
 }
