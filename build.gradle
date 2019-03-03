@@ -35,7 +35,7 @@ allprojects {
     ext {
         proteusVersion = '1.6.0-RC'
         protobufVersion = '3.6.1'
-        rsocketRpcVersion = '0.2.12'
+        rsocketRpcVersion = '0.2.13'
         springBootDependenciesVersion = '2.1.2.RELEASE'
     }
 
