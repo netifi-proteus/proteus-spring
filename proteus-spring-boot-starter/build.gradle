@@ -1,5 +1,5 @@
 plugins {
-    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'maven-publish'
 }
 
@@ -12,6 +12,8 @@ apply from: "${project.rootProject.projectDir}/bintray.gradle"
 dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}"
+        mavenBom "io.netifi.proteus:proteus-bom:${proteusVersion}"
+        mavenBom "io.netifi.proteus:proteus-common-dependencies:${proteusCommonDependenciesVersion}"
     }
 }
 
