@@ -11,7 +11,7 @@ Please see the included [demo projects](demos) for examples on how to configure 
 For bugs, questions, and discussions please use the [Github Issues](https://github.com/netifi-proteus/proteus-spring/issues).
 
 ## License
-Copyright 2018 [Netifi Inc.](https://www.netifi.com)
+Copyright 2019 [Netifi Inc.](https://www.netifi.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

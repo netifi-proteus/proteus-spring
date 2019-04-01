@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Netifi Inc.
+ * Copyright 2019 Netifi Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,14 +31,14 @@ public class Application {
     }
 
 
-    @Bean
-    public ProteusConfigurer proteusConfigurer() {
-        return builder ->
-            builder.clientTransportFactory(address -> {
-                TcpClient client = TcpClient.create()
-                                            .addressSupplier(() -> address);
-                return TcpClientTransport.create(client);
-            });
-
-    }
+//    @Bean
+//    public ProteusConfigurer proteusConfigurer() {
+//        return builder ->
+//            builder.clientTransportFactory(address -> {
+//                TcpClient client = TcpClient.create()
+//                                            .addressSupplier(() -> address);
+//                return TcpClientTransport.create(client);
+//            });
+//
+//    }
 }

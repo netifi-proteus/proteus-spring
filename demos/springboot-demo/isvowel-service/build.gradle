@@ -21,8 +21,9 @@ dependencies {
     compile project(':proteus-spring-boot-starter')
 
     // These can be turned on to show integration with Prometheus and OpenTracing
-    //compile "io.netifi.proteus:proteus-metrics-micrometer:${proteusVersion}"
-    //compile "io.netifi.proteus:proteus-tracing:${proteusVersion}"
+    compile "io.netifi.proteus:proteus-metrics-prometheus"
+    compile "io.netifi.proteus:proteus-metrics-micrometer"
+//    compile "io.netifi.proteus:proteus-tracing"
 }
 
 configurations.all {
