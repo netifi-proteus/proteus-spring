@@ -19,6 +19,8 @@ dependencyManagement {
 dependencies {
     compile project(':demos:springboot-demo:vowelcount-idl')
     compile project(':proteus-spring-boot-starter')
+    compile "io.netifi.proteus:proteus-metrics-prometheus"
+    compile "io.netifi.proteus:proteus-metrics-micrometer"
 }
 
 configurations.all {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Netifi Inc.
+ * Copyright 2019 Netifi Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,6 +125,10 @@ public class ProteusProperties {
         this.poolSize = poolSize;
     }
 
+    public enum ConnectionType {
+        TCP, WS, CUSTOMIZABLE
+    }
+
     public static final class SslProperties {
         @NotNull
         private Boolean disabled = false;
@@ -219,6 +223,8 @@ public class ProteusProperties {
         @Max(value = 65_535)
         private Integer port = 8001;
 
+        private ConnectionType connectionType = ConnectionType.TCP;
+
         public String getHostname() {
             return hostname;
         }
@@ -227,12 +233,20 @@ public class ProteusProperties {
             return port;
         }
 
+        public ConnectionType getConnectionType() {
+            return connectionType;
+        }
+
         public void setHostname(String hostname) {
             this.hostname = hostname;
         }
 
         public void setPort(Integer port) {
             this.port = port;
+        }
+
+        public void setConnectionType(ConnectionType connectionType) {
+            this.connectionType = connectionType;
         }
     }
 
@@ -276,13 +290,25 @@ public class ProteusProperties {
             @Max(value = 65_535)
             private Integer port = 8001;
 
+            private ConnectionType connectionType = ConnectionType.TCP;
+
             public String[] getAddresses() { return addresses; }
+
+            public ConnectionType getConnectionType() {
+                return connectionType;
+            }
 
             public Integer getPort() { return port; }
 
             public void setAddresses(String[] addresses) { this.addresses = addresses; }
 
+            public void setConnectionType(ConnectionType connectionType) {
+                this.connectionType = connectionType;
+            }
+
             public void setPort(Integer port) { this.port = port; }
+
+
         }
 
         public static final class EC2Properties {
@@ -295,11 +321,21 @@ public class ProteusProperties {
             @Max(value = 65_535)
             private Integer port = 8001;
 
+            private ConnectionType connectionType = ConnectionType.TCP;
+
+            public ConnectionType getConnectionType() {
+                return connectionType;
+            }
+
             public String getTagName() { return tagName; }
 
             public String getTagValue() { return tagValue; }
 
             public Integer getPort() { return port; }
+
+            public void setConnectionType(ConnectionType connectionType) {
+                this.connectionType = connectionType;
+            }
 
             public void setTagName(String tagName) { this.tagName = tagName; }
 
@@ -322,7 +358,17 @@ public class ProteusProperties {
 
             private String serviceName = "netifi-proteus-broker";
 
+            private ConnectionType connectionType = ConnectionType.TCP;
+
+            public ConnectionType getConnectionType() {
+                return connectionType;
+            }
+
             public URL getConsulURL() { return consulURL; }
+
+            public void setConnectionType(ConnectionType connectionType) {
+                this.connectionType = connectionType;
+            }
 
             public void setConsulURL(URL consulURL) { this.consulURL = consulURL; }
 
@@ -339,7 +385,17 @@ public class ProteusProperties {
 
             private String portName = "tcp";
 
+            private ConnectionType connectionType = ConnectionType.TCP;
+
+            public ConnectionType getConnectionType() {
+                return connectionType;
+            }
+
             public String getNamespace() { return namespace; }
+
+            public void setConnectionType(ConnectionType connectionType) {
+                this.connectionType = connectionType;
+            }
 
             public void setNamespace(String namespace) { this.namespace = namespace; }
 
