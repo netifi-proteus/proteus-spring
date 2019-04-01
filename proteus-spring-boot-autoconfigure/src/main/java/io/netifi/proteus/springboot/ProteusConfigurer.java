@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Netifi Inc.
+ * Copyright 2019 Netifi Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,19 @@ package io.netifi.proteus.springboot;
 
 import io.netifi.proteus.Proteus;
 
+/**
+ * @deprecated in favour of {@link io.netifi.proteus.springboot.support.ProteusConfigurer}
+ */
 @FunctionalInterface
-public interface ProteusConfigurer {
+@Deprecated
+public interface ProteusConfigurer extends io.netifi.proteus.springboot.support.ProteusConfigurer {
 
+    @Override
+    default Proteus.CustomizableBuilder configure(Proteus.CustomizableBuilder builder) {
+        return this.configure(Proteus.Builder.fromCustomizableBuilder(builder))
+                   .toCustomizableBuilder();
+    }
+
+    @Deprecated
     Proteus.Builder configure(Proteus.Builder builder);
 }

@@ -15,4 +15,19 @@
  */
 package io.netifi.proteus.spring.core;
 
-public class TestIdlImpl implements TestIdl { }
+import io.netifi.proteus.spring.core.annotation.ProteusClient;
+import io.netifi.proteus.common.tags.Tags;
+
+public interface DestinationAwareClientFactory<T> extends ProteusClientFactory<T> {
+    default T destination(){
+        return lookup(ProteusClient.Type.DESTINATION);
+    }
+
+    default T destination(String destination){
+        return lookup(ProteusClient.Type.DESTINATION, Tags.of("destination", destination));
+    }
+
+    default T destination(String destination, String group){
+        return lookup(ProteusClient.Type.DESTINATION, group, Tags.of("destination", destination));
+    }
+}
