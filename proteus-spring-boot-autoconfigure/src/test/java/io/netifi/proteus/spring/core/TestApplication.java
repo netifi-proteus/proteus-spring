@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Netifi Inc.
+ * Copyright 2019 Netifi Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TestApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ProteusSpringIntegrationTest.TestConfiguration.class, args);
+        SpringApplication.run(TestApplication.class, args);
     }
 }

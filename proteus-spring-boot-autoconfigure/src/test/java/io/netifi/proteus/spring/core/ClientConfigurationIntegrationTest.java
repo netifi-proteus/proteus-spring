@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Netifi Inc.
+ * Copyright 2019 Netifi Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,14 +44,22 @@ import static org.mockito.ArgumentMatchers.any;
 public class ClientConfigurationIntegrationTest {
 
     @Autowired
-    @Qualifier("mock")
-    ProteusConfigurer configurer;
+    @Qualifier("mock1")
+    ProteusConfigurer deprecatedConfigurer;
+
+    @Autowired
+    @Qualifier("mock2")
+    io.netifi.proteus.springboot.support.ProteusConfigurer configurer;
 
     @Test
     public void testThatConfigurerWorks() {
-        ArgumentCaptor<Proteus.Builder> captor = ArgumentCaptor.forClass(Proteus.Builder.class);
+        ArgumentCaptor<Proteus.Builder> deprecatedCaptor = ArgumentCaptor.forClass(Proteus.Builder.class);
+        ArgumentCaptor<Proteus.CustomizableBuilder> captor = ArgumentCaptor.forClass(Proteus.CustomizableBuilder.class);
 
+        Mockito.verify(deprecatedConfigurer).configure(deprecatedCaptor.capture());
         Mockito.verify(configurer).configure(captor.capture());
+
+        Assertions.assertNotNull(deprecatedCaptor.getValue());
         Assertions.assertNotNull(captor.getValue());
     }
 
@@ -59,11 +67,24 @@ public class ClientConfigurationIntegrationTest {
     static class TestConfiguration {
 
         @Bean
-        @Qualifier("mock")
-        public ProteusConfigurer testProteusConfigurer() {
+        @Qualifier("mock1")
+        public ProteusConfigurer testDeprecatedProteusConfigurer() {
             ProteusConfigurer configurer = Mockito.mock(ProteusConfigurer.class);
 
+            Mockito.when(configurer.configure(any(Proteus.CustomizableBuilder.class))).thenCallRealMethod();
+
             Mockito.when(configurer.configure(any(Proteus.Builder.class)))
+                   .then(a -> a.getArgument(0));
+
+            return configurer;
+        }
+
+        @Bean
+        @Qualifier("mock2")
+        public io.netifi.proteus.springboot.support.ProteusConfigurer testProteusConfigurer() {
+            io.netifi.proteus.springboot.support.ProteusConfigurer configurer = Mockito.mock(io.netifi.proteus.springboot.support.ProteusConfigurer.class);
+
+            Mockito.when(configurer.configure(any(Proteus.CustomizableBuilder.class)))
                    .then(a -> a.getArgument(0));
 
             return configurer;

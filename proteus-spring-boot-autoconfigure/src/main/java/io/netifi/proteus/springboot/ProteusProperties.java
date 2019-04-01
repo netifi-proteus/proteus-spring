@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Netifi Inc.
+ * Copyright 2019 Netifi Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
  */
 package io.netifi.proteus.springboot;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -64,6 +65,8 @@ public class ProteusProperties {
 
     private TracingProperties tracing = new TracingProperties();
 
+    private DiscoveryProperties discovery = new DiscoveryProperties();
+
     public SslProperties getSsl() {
         return ssl;
     }
@@ -83,6 +86,8 @@ public class ProteusProperties {
     public TracingProperties getTracing() {
         return tracing;
     }
+
+    public DiscoveryProperties getDiscovery() { return discovery; }
 
     public String getDestination() {
         return destination;
@@ -118,6 +123,10 @@ public class ProteusProperties {
 
     public void setPoolSize(Integer poolSize) {
         this.poolSize = poolSize;
+    }
+
+    public enum ConnectionType {
+        TCP, WS, CUSTOMIZABLE
     }
 
     public static final class SslProperties {
@@ -208,13 +217,13 @@ public class ProteusProperties {
 
     public static final class BrokerProperties {
 
-        @NotEmpty
-        @NotNull
-        private String hostname = "localhost";
+        private String hostname;
 
         @Min(value = 0)
         @Max(value = 65_535)
         private Integer port = 8001;
+
+        private ConnectionType connectionType = ConnectionType.TCP;
 
         public String getHostname() {
             return hostname;
@@ -224,12 +233,179 @@ public class ProteusProperties {
             return port;
         }
 
+        public ConnectionType getConnectionType() {
+            return connectionType;
+        }
+
         public void setHostname(String hostname) {
             this.hostname = hostname;
         }
 
         public void setPort(Integer port) {
             this.port = port;
+        }
+
+        public void setConnectionType(ConnectionType connectionType) {
+            this.connectionType = connectionType;
+        }
+    }
+
+    public static final class DiscoveryProperties {
+
+        private String environment = "static";
+
+        private StaticProperties staticProperties = new StaticProperties();
+
+        private EC2Properties ec2Properties = new EC2Properties();
+
+        private ConsulProperties consulProperties = new ConsulProperties();
+
+        private KubernetesProperties kubernetesProperties = new KubernetesProperties();
+
+        public String getEnvironment() { return environment; }
+
+        public StaticProperties getStaticProperties() { return staticProperties; }
+
+        public EC2Properties getEc2Properties() {  return ec2Properties; }
+
+        public ConsulProperties getConsulProperties() { return consulProperties; }
+
+        public KubernetesProperties getKubernetesProperties() { return kubernetesProperties; }
+
+        public void setEnvironment(String environment) { this.environment = environment; }
+
+        public void setStaticProperties(StaticProperties staticProperties) { this.staticProperties = staticProperties; }
+
+        public void setEc2Properties(EC2Properties ec2Properties) { this.ec2Properties = ec2Properties; }
+
+        public void setConsulProperties(ConsulProperties consulProperties) { this.consulProperties = consulProperties; }
+
+        public void setKubernetesProperties(KubernetesProperties kubernetesProperties) { this.kubernetesProperties = kubernetesProperties; }
+
+        public static final class StaticProperties {
+
+            private String[] addresses = new String[]{"localhost"};
+
+            @Min(value = 0)
+            @Max(value = 65_535)
+            private Integer port = 8001;
+
+            private ConnectionType connectionType = ConnectionType.TCP;
+
+            public String[] getAddresses() { return addresses; }
+
+            public ConnectionType getConnectionType() {
+                return connectionType;
+            }
+
+            public Integer getPort() { return port; }
+
+            public void setAddresses(String[] addresses) { this.addresses = addresses; }
+
+            public void setConnectionType(ConnectionType connectionType) {
+                this.connectionType = connectionType;
+            }
+
+            public void setPort(Integer port) { this.port = port; }
+
+
+        }
+
+        public static final class EC2Properties {
+
+            private String tagName = "service";
+
+            private String tagValue = "netifi-proteus-broker";
+
+            @Min(value = 0)
+            @Max(value = 65_535)
+            private Integer port = 8001;
+
+            private ConnectionType connectionType = ConnectionType.TCP;
+
+            public ConnectionType getConnectionType() {
+                return connectionType;
+            }
+
+            public String getTagName() { return tagName; }
+
+            public String getTagValue() { return tagValue; }
+
+            public Integer getPort() { return port; }
+
+            public void setConnectionType(ConnectionType connectionType) {
+                this.connectionType = connectionType;
+            }
+
+            public void setTagName(String tagName) { this.tagName = tagName; }
+
+            public void setTagValue(String tagValue) { this.tagValue = tagValue; }
+
+            public void setPort(Integer port) { this.port = port; }
+        }
+
+        public static final class ConsulProperties {
+
+            private URL consulURL;
+            {
+                try {
+                    consulURL =
+                        new URL("http", "localhost", 8500, "");
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("static code of default consul url is broken.");
+                }
+            }
+
+            private String serviceName = "netifi-proteus-broker";
+
+            private ConnectionType connectionType = ConnectionType.TCP;
+
+            public ConnectionType getConnectionType() {
+                return connectionType;
+            }
+
+            public URL getConsulURL() { return consulURL; }
+
+            public void setConnectionType(ConnectionType connectionType) {
+                this.connectionType = connectionType;
+            }
+
+            public void setConsulURL(URL consulURL) { this.consulURL = consulURL; }
+
+            public String getServiceName() { return serviceName; }
+
+            public void setServiceName(String serviceName) { this.serviceName = serviceName; }
+        }
+
+        public static final class KubernetesProperties {
+
+            private String namespace = "default";
+
+            private String deploymentName = "netifi-proteus-broker";
+
+            private String portName = "tcp";
+
+            private ConnectionType connectionType = ConnectionType.TCP;
+
+            public ConnectionType getConnectionType() {
+                return connectionType;
+            }
+
+            public String getNamespace() { return namespace; }
+
+            public void setConnectionType(ConnectionType connectionType) {
+                this.connectionType = connectionType;
+            }
+
+            public void setNamespace(String namespace) { this.namespace = namespace; }
+
+            public String getDeploymentName() { return deploymentName; }
+
+            public void setDeploymentName(String deploymentName) { this.deploymentName = deploymentName; }
+
+            public String getPortName() { return portName; }
+
+            public void setPortName(String portName) { this.portName = portName; }
         }
     }
 }

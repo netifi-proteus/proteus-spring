@@ -1,25 +1,34 @@
 plugins {
     id 'java'
-    id 'com.google.protobuf' version '0.8.5'
+    id 'com.google.protobuf' version '0.8.8'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
 }
 
 sourceCompatibility = 1.8
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}"
+        mavenBom "io.netifi.proteus:proteus-bom:${proteusVersion}"
+        mavenBom "io.netifi.proteus:proteus-common-dependencies:${proteusCommonDependenciesVersion}"
+    }
+}
+
 dependencies {
-    compile "io.rsocket.rpc:rsocket-rpc-core:${rsocketRpcVersion}"
-    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+    compile "io.rsocket.rpc:rsocket-rpc-core"
+    compile "com.google.protobuf:protobuf-java"
 }
 
 protobuf {
     generatedFilesBaseDir = "${projectDir}/src/generated"
 
     protoc {
-        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+        artifact = "com.google.protobuf:protoc"
     }
     
     plugins {
         rsocketRpc {
-            artifact = "io.rsocket.rpc:rsocket-rpc-protobuf:${rsocketRpcVersion}"
+            artifact = "io.rsocket.rpc:rsocket-rpc-protobuf"
         }
         generateProtoTasks {
             ofSourceSet('main')*.plugins {

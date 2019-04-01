@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Netifi Inc.
+ * Copyright 2019 Netifi Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@
  */
 package io.netifi.proteus.demo.vowelcount;
 
-import io.netifi.proteus.springboot.ProteusConfigurer;
-import io.rsocket.transport.netty.client.TcpClientTransport;
-import reactor.netty.tcp.TcpClient;
+import io.netifi.proteus.springboot.support.ProteusConfigurer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,15 +28,11 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-
+    /**
+     * Demo showcase how we can customize Proteus configuration
+     */
     @Bean
     public ProteusConfigurer proteusConfigurer() {
-        return builder ->
-            builder.clientTransportFactory(address -> {
-                TcpClient client = TcpClient.create()
-                                            .addressSupplier(() -> address);
-                return TcpClientTransport.create(client);
-            });
-
+        return builder -> builder.missedAcks(100);
     }
 }
