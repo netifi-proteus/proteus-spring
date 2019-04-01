@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.netifi.proteus.springboot;
+package io.netifi.proteus.springboot.support;
 
 import io.netifi.proteus.Proteus;
 
-/**
- * @deprecated in favour of {@link io.netifi.proteus.springboot.support.ProteusConfigurer}
- */
 @FunctionalInterface
-@Deprecated
-public interface ProteusConfigurer extends io.netifi.proteus.springboot.support.ProteusConfigurer {
+public interface ProteusConfigurer {
 
-    @Override
-    default Proteus.CustomizableBuilder configure(Proteus.CustomizableBuilder builder) {
-        return this.configure(Proteus.Builder.fromCustomizableBuilder(builder))
-                   .toCustomizableBuilder();
-    }
-
-    @Deprecated
-    Proteus.Builder configure(Proteus.Builder builder);
+    Proteus.CustomizableBuilder configure(Proteus.CustomizableBuilder builder);
 }

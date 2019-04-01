@@ -29,7 +29,16 @@ import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.EC2Pro
 import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.KubernetesProperties;
 import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.StaticProperties;
 import io.netifi.proteus.tracing.ProteusTracerSupplier;
+import io.netty.handler.ssl.OpenSsl;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.opentracing.Tracer;
+import io.rsocket.transport.netty.client.TcpClientTransport;
+import io.rsocket.transport.netty.client.WebsocketClientTransport;
+import reactor.core.Exceptions;
+import reactor.netty.tcp.TcpClient;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.BeansException;
@@ -64,7 +73,7 @@ public class ProteusAutoConfiguration {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public ProteusConfigurer propertiesBasedProteusConfigurer(ProteusProperties proteusProperties) {
+    public io.netifi.proteus.springboot.support.ProteusConfigurer propertiesBasedProteusConfigurer(ProteusProperties proteusProperties) {
         return builder -> {
             ProteusProperties.SslProperties ssl = proteusProperties.getSsl();
             ProteusProperties.AccessProperties access = proteusProperties.getAccess();
@@ -75,11 +84,16 @@ public class ProteusAutoConfiguration {
                 builder.destination(proteusProperties.getDestination());
             }
 
+            ProteusProperties.ConnectionType connectionType;
+
             if (!StringUtils.isEmpty(broker.getHostname())) {
                 // support the legacy usecase first
                 builder.host(broker.getHostname());
                 builder.port(broker.getPort());
-            } else if(!StringUtils.isEmpty(discovery.getEnvironment())) {
+
+                connectionType = broker.getConnectionType();
+
+            } else if (!StringUtils.isEmpty(discovery.getEnvironment())) {
                 // if not legacy, then we're propbably using the new discovery api.
                 DiscoveryStrategy discoveryStrategy;
                 switch(discovery.getEnvironment()) {
@@ -87,21 +101,25 @@ public class ProteusAutoConfiguration {
                         StaticProperties staticProperties = discovery.getStaticProperties();
                         StaticListDiscoveryConfig staticListDiscoveryConfig = new StaticListDiscoveryConfig( staticProperties.getPort(), staticProperties.getAddresses());
                         discoveryStrategy = DiscoveryStrategy.getInstance(staticListDiscoveryConfig);
+                        connectionType = staticProperties.getConnectionType();
                         break;
                     case "ec2":
                         EC2Properties ec2Properties = discovery.getEc2Properties();
                         EC2TagsDiscoveryConfig ec2TagsDiscoveryConfig = new EC2TagsDiscoveryConfig(ec2Properties.getTagName(), ec2Properties.getTagValue(), ec2Properties.getPort());
                         discoveryStrategy = DiscoveryStrategy.getInstance(ec2TagsDiscoveryConfig);
+                        connectionType = ec2Properties.getConnectionType();
                         break;
                     case "consul":
                         ConsulProperties consulProperties = new ConsulProperties();
                         ConsulDiscoveryConfig consulDiscoveryConfig = new ConsulDiscoveryConfig( consulProperties.getConsulURL(), consulProperties.getServiceName());
                         discoveryStrategy = DiscoveryStrategy.getInstance(consulDiscoveryConfig);
+                        connectionType = consulProperties.getConnectionType();
                         break;
                     case "kubernetes":
                         KubernetesProperties kubernetesProperties = new KubernetesProperties();
                         KubernetesDiscoveryConfig kubernetesDiscoveryConfig = new KubernetesDiscoveryConfig(kubernetesProperties.getNamespace(), kubernetesProperties.getDeploymentName(), kubernetesProperties.getPortName());
                         discoveryStrategy = DiscoveryStrategy.getInstance(kubernetesDiscoveryConfig);
+                        connectionType = kubernetesProperties.getConnectionType();
                         break;
                     default:
                         throw new RuntimeException("unsupported discovery strategy " + discovery.getEnvironment());
@@ -111,7 +129,76 @@ public class ProteusAutoConfiguration {
                 throw new RuntimeException("discovery not configured and required");
             }
 
-            return builder.sslDisabled(ssl.isDisabled())
+            boolean sslDisabled = proteusProperties.getSsl().isDisabled();
+
+            if (connectionType == ProteusProperties.ConnectionType.TCP) {
+                builder.clientTransportFactory(address -> {
+                    if (sslDisabled) {
+                        TcpClient client = TcpClient.create().addressSupplier(() -> address);
+                        return TcpClientTransport.create(client);
+                    } else {
+                        TcpClient client =
+                            TcpClient.create()
+                                     .addressSupplier(() -> address)
+                                     .secure(spec -> {
+                                         final SslProvider sslProvider;
+                                         if (OpenSsl.isAvailable()) {
+                                             sslProvider = SslProvider.OPENSSL_REFCNT;
+                                         } else {
+                                             sslProvider = SslProvider.JDK;
+                                         }
+
+                                         try {
+                                             spec.sslContext(
+                                                 SslContextBuilder
+                                                     .forClient()
+                                                     .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                                                     .sslProvider(sslProvider)
+                                                     .build()
+                                             );
+                                         } catch (Exception sslException) {
+                                             throw Exceptions.propagate(sslException);
+                                         }
+                                     });
+
+                        return TcpClientTransport.create(client);
+                    }
+                });
+            } else if(connectionType == ProteusProperties.ConnectionType.WS) {
+                builder.clientTransportFactory(address -> {
+                    if (sslDisabled) {
+                        TcpClient client = TcpClient.create().addressSupplier(() -> address);
+                        return WebsocketClientTransport.create(client);
+                    } else {
+                        TcpClient client =
+                            TcpClient.create()
+                                     .addressSupplier(() -> address)
+                                     .secure(spec -> {
+                                         final SslProvider sslProvider;
+                                         if (OpenSsl.isAvailable()) {
+                                             sslProvider = SslProvider.OPENSSL_REFCNT;
+                                         } else {
+                                             sslProvider = SslProvider.JDK;
+                                         }
+
+                                         try {
+                                             spec.sslContext(
+                                                 SslContextBuilder
+                                                     .forClient()
+                                                     .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                                                     .sslProvider(sslProvider)
+                                                     .build()
+                                             );
+                                         } catch (Exception sslException) {
+                                             throw Exceptions.propagate(sslException);
+                                         }
+                                     });
+                        return WebsocketClientTransport.create(client);
+                    }
+                });
+            }
+
+            return builder
                           .accessKey(access.getKey())
                           .accessToken(access.getToken())
                           .group(proteusProperties.getGroup())
@@ -163,7 +250,7 @@ public class ProteusAutoConfiguration {
 
         @Bean
         public Proteus proteus(
-            List<ProteusConfigurer> configurers,
+            List<? extends io.netifi.proteus.springboot.support.ProteusConfigurer> configurers,
             ConfigurableApplicationContext context
         ) {
             Proteus proteus = configureProteus(configurers);
@@ -204,19 +291,21 @@ public class ProteusAutoConfiguration {
 
         @Bean
         public Proteus proteus(
-            List<ProteusConfigurer> configurers
+            List<? extends io.netifi.proteus.springboot.support.ProteusConfigurer> configurers
         ) {
             return configureProteus(configurers);
         }
     }
 
 
-    static Proteus configureProteus(List<ProteusConfigurer> configurers) {
-        Proteus.Builder builder = Proteus.builder();
+    static Proteus configureProteus(
+        List<? extends io.netifi.proteus.springboot.support.ProteusConfigurer> configurers
+    ) {
+        Proteus.CustomizableBuilder builder = Proteus.customizable();
 
         AnnotationAwareOrderComparator.sort(configurers);
 
-        for (ProteusConfigurer configurer : configurers) {
+        for (io.netifi.proteus.springboot.support.ProteusConfigurer configurer : configurers) {
             builder = configurer.configure(builder);
         }
 
