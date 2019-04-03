@@ -23,6 +23,7 @@ import io.netifi.proteus.discovery.EC2TagsDiscoveryConfig;
 import io.netifi.proteus.discovery.KubernetesDiscoveryConfig;
 import io.netifi.proteus.discovery.StaticListDiscoveryConfig;
 import io.netifi.proteus.micrometer.ProteusMeterRegistrySupplier;
+import io.netifi.proteus.rsocket.transport.BrokerAddressSelectors;
 import io.netifi.proteus.spring.core.config.ProteusConfiguration;
 import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.ConsulProperties;
 import io.netifi.proteus.springboot.ProteusProperties.DiscoveryProperties.EC2Properties;
@@ -132,6 +133,7 @@ public class ProteusAutoConfiguration {
             boolean sslDisabled = proteusProperties.getSsl().isDisabled();
 
             if (connectionType == ProteusProperties.ConnectionType.TCP) {
+                builder.addressSelector(BrokerAddressSelectors.TCP_ADDRESS);
                 builder.clientTransportFactory(address -> {
                     if (sslDisabled) {
                         TcpClient client = TcpClient.create().addressSupplier(() -> address);
@@ -165,6 +167,7 @@ public class ProteusAutoConfiguration {
                     }
                 });
             } else if(connectionType == ProteusProperties.ConnectionType.WS) {
+                builder.addressSelector(BrokerAddressSelectors.WEBSOCKET_ADDRESS);
                 builder.clientTransportFactory(address -> {
                     if (sslDisabled) {
                         TcpClient client = TcpClient.create().addressSupplier(() -> address);
