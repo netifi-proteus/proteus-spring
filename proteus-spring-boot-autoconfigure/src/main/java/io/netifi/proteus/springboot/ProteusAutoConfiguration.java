@@ -111,13 +111,13 @@ public class ProteusAutoConfiguration {
                         connectionType = ec2Properties.getConnectionType();
                         break;
                     case "consul":
-                        ConsulProperties consulProperties = new ConsulProperties();
+                        ConsulProperties consulProperties = discovery.getConsulProperties();
                         ConsulDiscoveryConfig consulDiscoveryConfig = new ConsulDiscoveryConfig( consulProperties.getConsulURL(), consulProperties.getServiceName());
                         discoveryStrategy = DiscoveryStrategy.getInstance(consulDiscoveryConfig);
                         connectionType = consulProperties.getConnectionType();
                         break;
                     case "kubernetes":
-                        KubernetesProperties kubernetesProperties = new KubernetesProperties();
+                        KubernetesProperties kubernetesProperties = discovery.getKubernetesProperties();
                         KubernetesDiscoveryConfig kubernetesDiscoveryConfig = new KubernetesDiscoveryConfig(kubernetesProperties.getNamespace(), kubernetesProperties.getDeploymentName(), kubernetesProperties.getPortName());
                         discoveryStrategy = DiscoveryStrategy.getInstance(kubernetesDiscoveryConfig);
                         connectionType = kubernetesProperties.getConnectionType();
