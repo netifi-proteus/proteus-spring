@@ -33,8 +33,8 @@ allprojects {
     apply plugin: 'net.saliman.properties'
 
     ext {
-        proteusVersion = '1.6.1.BUILD-SNAPSHOT'
-        springBootDependenciesVersion = '2.1.3.RELEASE'
+        proteusVersion = '1.6.1'
+        springBootDependenciesVersion = '2.1.4.RELEASE'
     }
 
     project.version += project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ''
