@@ -17,8 +17,8 @@
 apply plugin: 'com.jfrog.bintray'
 
 bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : ''
-    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : ''
+    user = "${bintrayUser}"
+    key = "${bintrayKey}"
 
     publications = ['maven']
 
@@ -27,11 +27,11 @@ bintray {
         name = project.name
         userOrg = 'netifi'
         desc = "${project.description}"
-        websiteUrl = 'https://github.com/netifi-proteus/proteus-java'
-        issueTrackerUrl = 'https://github.com/netifi-proteus/proteus-java/issues'
-        vcsUrl = 'https://github.com/netifi-proteus/proteus-java.git'
+        websiteUrl = 'https://github.com/netifi-proteus/proteus-spring'
+        issueTrackerUrl = 'https://github.com/netifi-proteus/proteus-spring/issues'
+        vcsUrl = 'https://github.com/netifi-proteus/proteus-spring.git'
         licenses = ['Apache-2.0']
-        githubRepo = 'netifi-proteus/proteus-java'
+        githubRepo = 'netifi-proteus/proteus-spring'
         githubReleaseNotesFile = 'CHANGELOG.md'
 
         version {

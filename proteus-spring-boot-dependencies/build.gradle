@@ -1,23 +1,11 @@
-buildscript {
-    repositories {
-        maven { url "https://repo.spring.io/plugins-release" }
-    }
-    dependencies {
-        classpath 'io.spring.gradle:propdeps-plugin:0.0.9.RELEASE'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.9.3'
-    }
-}
-
 plugins {
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'maven-publish'
 }
 
-ext.artifactName = 'proteus-spring-boot-starter'
+ext.description = "Netifi Proteus Spring Dependencies"
+ext.artifactName = 'proteus-spring-boot-dependencies'
 
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.artifactory'
 
@@ -30,83 +18,53 @@ dependencyManagement {
         mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}"
         mavenBom "io.netifi.proteus:proteus-bom:${proteusVersion}"
     }
-}
-
-dependencies {
-    compile 'org.springframework.boot:spring-boot-starter'
-
-    compile project(':proteus-spring-boot-starter')
-    compile project(':proteus-spring-boot-autoconfigure')
-    compile project(':proteus-spring-core')
-}
-
-
-configurations.archives.artifacts.clear()
-
-
-build.doLast {
-    pom {
-        customizePom(it, project)
+    dependencies {
+        dependency "io.netifi.proteus:proteus-spring-core:${project.version}"
+        dependency "io.netifi.proteus:proteus-spring-boot-autoconfigure:${project.version}"
     }
 }
 
-def customizePom(generatedPom, gradleProject) {
-    //make sure that dependencies are under <dependencyManagement>
-    generatedPom.withXml {
-        println(gradleProject.dependencyManagement)
-        if (generatedPom.generatedDependencies.size > 0) {
-            asNode().appendNode('dependencyManagement', asNode().dependencies)
-            asNode().dependencies.replaceNode {}
-        }
-    }
-
-    generatedPom.project {
-        name = 'Proteus-Java Release Train - BOM'
-        description = gradleProject.description
-        url = 'https://www.netifi.com'
-        groupId = group
-
-        packaging = "pom"
-
-        organization {
-            name = 'Netifi, Inc.'
-            url = 'https://www.netifi.com'
-        }
-
-        licenses {
-            license {
-                name 'The Apache Software License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                distribution 'repo'
-            }
-        }
-
-        scm {
-            url = 'https://github.com/netifi-proteus/proteus-java'
-            connection = 'scm:git:git://github.com/netifi-proteus/proteus-java'
-            developerConnection = 'scm:git:git://github.com/netifi-proteus/proteus-java'
-        }
-
-        issueManagement {
-            system = "GitHub Issues"
-            url = "https://github.com/netifi-proteus"
-        }
-    }
-
-    generatedPom.writeTo("$buildDir/poms/proteus-spring-boot-dependencies-${version}.xml")
+tasks.withType(GenerateMavenPom) {
+    it.dependsOn ":proteus-spring-boot-autoconfigure:publishToMavenLocal"
+    it.dependsOn ":proteus-spring-core:publishToMavenLocal"
 }
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            pom.withXml {
-                def sb = asString()
-                sb.setLength 0
-                sb.append  file( """$buildDir/poms/proteus-spring-boot-dependencies-${version}.xml""" ).text
-                println( sb.toString() )
+        maven(MavenPublication) {
+            pom {
+                name = 'Netifi Proteus Spring Dependencies'
+                description = 'A bill of materials for Netifi Spring applications'
+                url = 'https://www.netifi.com'
+
+                organization {
+                    name = 'Netifi, Inc.'
+                    url = 'https://www.netifi.com'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+
+                scm {
+                    url = 'https://github.com/netifi-proteus/proteus-spring'
+                    connection = 'scm:git:git://github.com/netifi-proteus/proteus-spring'
+                    developerConnection = 'scm:git:git://github.com/netifi-proteus/proteus-spring'
+                }
+
+                issueManagement {
+                    system = "GitHub Issues"
+                    url = "https://github.com/netifi-proteus/proteus-spring/issues"
+                }
             }
         }
     }
 }
 
 publish.dependsOn("build")
+
+// TODO: really shouldn't be publishing an empty jar

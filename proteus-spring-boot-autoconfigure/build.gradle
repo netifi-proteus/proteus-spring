@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
+ext.description = 'Netifi Proteus Spring Autoconfigure'
 ext.artifactName = 'proteus-spring-boot-autoconfigure'
 
 apply from: "${project.rootProject.projectDir}/gradle/java.gradle"

@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
+ext.description = "Netifi Proteus Spring Core support"
 ext.artifactName = 'proteus-spring-core'
 
 apply from: "${project.rootProject.projectDir}/gradle/java.gradle"
