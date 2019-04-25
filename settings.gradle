@@ -1,3 +1,15 @@
+pluginManagement {
+    repositories {
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/netifi-plugin-group/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+    }
+}
+
 rootProject.name = 'proteus-spring'
 
 // Dynamically includes all Gradle projects found within the root project

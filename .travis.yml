@@ -1,6 +1,6 @@
 language: java
 sudo: required
-jdk: openjdk11
+jdk: openjdk8
 script: ci/travis.sh
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -9,3 +9,6 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.m2"
+notifications:
+  slack:
+    secure: HcTylI5K+bXFiaGaVOQNrU/f0YaKzUFuh9HvOPa/gB7Xkw2WgJ8Eep5hbGL84VGO2K6Yz6jxsZkN9krgCHHu2NoscvmsIp5SwChdiRt+Sig8ra912jF93FcqdRyAYB5R9V/8FyL/XKA85Imrm8x88TVz5P1YWfTi94RVeagIvSHQ5XUiSBlGHNrUDZoyFPXBlgIndear+ikW9455AI/KVWIA/4Zco5Ycn2SlSwqJ7BezhmBvLyp0UR9GkM3Ev5kR+bs1LyCu6CsnUUZhYj8wkcEPqWgPp45A9ShNo1PZwiSzweIh5YGul+crET5QCAi53uNxDHxbO+ebBnRdoMV/UDkSSpnm3fF6Dl7lZyPhrdcAd5ukqKdUGkQIg3Bzip/rtEQJ80e1zbh+fTQ0MIbmgBT7EuKKk0lJhoVd+O0EcrYXiZpeK5x1jNu77aWyj15B41HNVgSbxaOyfJVgrj5SdUVFNUO9epHO5qVxAqelEkK+scRKkV6Mu3PBGasCPSRRkRmRyyzgwIrvnQnYr6fMUKwfIK/7oYp+awTml4qCK04p9INvyjL8hbHeUnWx49B/tFMMUXEW//Rp71v3+cBxawBxPpd/igWoc4CqXsuDWeAwTZHYrb65tr/wGXDm09UuiBDEyZ9MuwxKHQNXH8zbwXmGq3lpjckOrAMyI5ML/6U=

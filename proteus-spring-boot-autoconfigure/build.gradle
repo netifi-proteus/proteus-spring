@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
+ext.description = 'Netifi Proteus Spring Autoconfigure'
 ext.artifactName = 'proteus-spring-boot-autoconfigure'
 
 apply from: "${project.rootProject.projectDir}/gradle/java.gradle"
@@ -13,7 +14,6 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}"
         mavenBom "io.netifi.proteus:proteus-bom:${proteusVersion}"
-        mavenBom "io.netifi.proteus:proteus-common-dependencies:${proteusCommonDependenciesVersion}"
     }
 }
 

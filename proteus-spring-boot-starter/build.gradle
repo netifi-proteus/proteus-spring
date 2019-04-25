@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
+ext.description = "Netifi Proteus Spring Starter"
 ext.artifactName = 'proteus-spring-boot-starter'
 
 apply from: "${project.rootProject.projectDir}/gradle/java.gradle"
@@ -11,11 +12,14 @@ apply from: "${project.rootProject.projectDir}/bintray.gradle"
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}"
-        mavenBom "io.netifi.proteus:proteus-bom:${proteusVersion}"
-        mavenBom "io.netifi.proteus:proteus-common-dependencies:${proteusCommonDependenciesVersion}"
+        mavenBom "io.netifi.proteus:proteus-spring-boot-dependencies:${project.version}"
     }
 }
+
+// https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/164
+// To get around this we simply publish the spring-boot-dependencies locally, then we have
+// No problem sourcing it in our POM
+tasks.withType(GenerateMavenPom) { it.dependsOn ":proteus-spring-boot-dependencies:publishToMavenLocal" }
 
 dependencies {
     compile project(':proteus-spring-boot-autoconfigure')
@@ -28,10 +32,35 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+            pom {
+                name = 'Netifi Proteus Spring Starter'
+                description = 'A bill of materials for Netifi Spring applications'
+                url = 'https://www.netifi.com'
 
-            artifactId "${artifactName}"
-            artifact sourcesJar
-            artifact javadocJar
+                organization {
+                    name = 'Netifi, Inc.'
+                    url = 'https://www.netifi.com'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+
+                scm {
+                    url = 'https://github.com/netifi-proteus/proteus-spring'
+                    connection = 'scm:git:git://github.com/netifi-proteus/proteus-spring'
+                    developerConnection = 'scm:git:git://github.com/netifi-proteus/proteus-spring'
+                }
+
+                issueManagement {
+                    system = "GitHub Issues"
+                    url = "https://github.com/netifi-proteus/proteus-spring/issues"
+                }
+            }
         }
     }
 }

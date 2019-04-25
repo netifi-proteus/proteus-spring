@@ -1,9 +1,13 @@
 buildscript {
     repositories {
-        jcenter()
-        mavenCentral()
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/netifi-plugin-group/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
     }
-
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.2'
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.8'
@@ -33,35 +37,47 @@ allprojects {
     apply plugin: 'net.saliman.properties'
 
     ext {
-        proteusVersion = '1.6.0'
-        springBootDependenciesVersion = '2.1.3.RELEASE'
-        proteusCommonDependenciesVersion = '1.6.0'
+        proteusVersion = '1.6.1'
+        springBootDependenciesVersion = '2.1.4.RELEASE'
     }
 
     project.version += project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ''
 
     repositories {
-        jcenter()
+        mavenLocal()
         maven {
-            url  "https://dl.bintray.com/netifi/netifi-oss"
-        }
-        maven {
-            url  "https://dl.bintray.com/rsocket-admin/RSocket"
-        }
-
-        maven {
-            url = 'https://artifactory.netifiinc.com/artifactory/libs-release-local'
+            url 'https://sonatype.netifiinc.com/repository/maven-central/'
             credentials {
-                username = project.hasProperty('netifiArtifactoryUsername') ? project.property('netifiArtifactoryUsername') : System.getenv('NETIFI_ARTIFACTORY_USERNAME')
-                password = project.hasProperty('netifiArtifactoryPassword') ? project.property('netifiArtifactoryPassword') : System.getenv('NETIFI_ARTIFACTORY_PASSWORD')
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
             }
         }
-
         maven {
-            url = 'https://artifactory.netifiinc.com/artifactory/libs-snapshot-local'
+            url 'https://sonatype.netifiinc.com/repository/jcenter/'
             credentials {
-                username = project.hasProperty('netifiArtifactoryUsername') ? project.property('netifiArtifactoryUsername') : System.getenv('NETIFI_ARTIFACTORY_USERNAME')
-                password = project.hasProperty('netifiArtifactoryPassword') ? project.property('netifiArtifactoryPassword') : System.getenv('NETIFI_ARTIFACTORY_PASSWORD')
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/netifi-oss/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/netifi-artifactory-libs-release-local/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/netifi-artifactory-libs-snapshot-local/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
             }
         }
     }
