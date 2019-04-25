@@ -12,10 +12,14 @@ apply from: "${project.rootProject.projectDir}/bintray.gradle"
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}"
-        mavenBom "io.netifi.proteus:proteus-bom:${proteusVersion}"
+        mavenBom "io.netifi.proteus:proteus-spring-boot-dependencies:${project.version}"
     }
 }
+
+// https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/164
+// To get around this we simply publish the spring-boot-dependencies locally, then we have
+// No problem sourcing it in our POM
+tasks.withType(GenerateMavenPom) { it.dependsOn ":proteus-spring-boot-dependencies:publishToMavenLocal" }
 
 dependencies {
     compile project(':proteus-spring-boot-autoconfigure')

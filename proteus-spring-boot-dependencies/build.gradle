@@ -19,18 +19,15 @@ dependencyManagement {
         mavenBom "io.netifi.proteus:proteus-bom:${proteusVersion}"
     }
     dependencies {
-        dependency "org.springframework.boot:spring-boot-starter:${springBootDependenciesVersion}"
         dependency "io.netifi.proteus:proteus-spring-core:${project.version}"
         dependency "io.netifi.proteus:proteus-spring-boot-autoconfigure:${project.version}"
     }
 }
 
-dependencies {
-    compile project(':proteus-spring-boot-autoconfigure')
-    compile project(':proteus-spring-core')
+tasks.withType(GenerateMavenPom) {
+    it.dependsOn ":proteus-spring-boot-autoconfigure:publishToMavenLocal"
+    it.dependsOn ":proteus-spring-core:publishToMavenLocal"
 }
-
-configurations.archives.artifacts.clear()
 
 publishing {
     publications {
@@ -69,3 +66,5 @@ publishing {
 }
 
 publish.dependsOn("build")
+
+// TODO: really shouldn't be publishing an empty jar

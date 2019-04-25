@@ -44,6 +44,7 @@ allprojects {
     project.version += project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ''
 
     repositories {
+        mavenLocal()
         maven {
             url 'https://sonatype.netifiinc.com/repository/maven-central/'
             credentials {
