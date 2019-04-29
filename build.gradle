@@ -21,6 +21,7 @@ plugins {
     id 'com.gradle.build-scan' version '2.1'
     id 'com.github.hierynomus.license' version '0.15.0'
     id 'net.saliman.properties' version '1.4.6'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE' apply false
 }
 
 apply from: 'gradle/doc.gradle'
@@ -32,26 +33,18 @@ buildScan {
 }
 
 allprojects {
+    apply plugin: 'maven'
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
     apply plugin: 'com.github.hierynomus.license'
     apply plugin: 'idea'
     apply plugin: 'net.saliman.properties'
 
     ext {
-        proteusVersion = '1.6.1'
         springBootDependenciesVersion = '2.1.4.RELEASE'
     }
 
-    project.version += project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ''
-
     repositories {
-        mavenLocal()
-        maven {
-            url 'https://sonatype.netifiinc.com/repository/maven-central/'
-            credentials {
-                username = "${netifiReadOnlyUsername}"
-                password = "${netifiReadOnlyPassword}"
-            }
-        }
         maven {
             url 'https://sonatype.netifiinc.com/repository/jcenter/'
             credentials {
@@ -60,7 +53,28 @@ allprojects {
             }
         }
         maven {
+            url 'https://sonatype.netifiinc.com/repository/maven-central/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+        maven {
             url 'https://sonatype.netifiinc.com/repository/netifi-oss/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/netifi-maven-releases/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/netifi-maven-snapshots/'
             credentials {
                 username = "${netifiReadOnlyUsername}"
                 password = "${netifiReadOnlyPassword}"
@@ -80,12 +94,115 @@ allprojects {
                 password = "${netifiReadOnlyPassword}"
             }
         }
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/spring-libs-snapshot/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/jcenter-oss-snapshot/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+        maven {
+            url 'https://sonatype.netifiinc.com/repository/jcenter-oss-release/'
+            credentials {
+                username = "${netifiReadOnlyUsername}"
+                password = "${netifiReadOnlyPassword}"
+            }
+        }
+    }
+
+    compileJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    // Build Source Jars
+    def sourcesJarMap = [name: 'sourcesJar', type: Jar, dependsOn: classes]
+    project.tasks.create(sourcesJarMap, {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+        version = "${project.version}"
+    })
+
+    // Build Javadoc Jars
+    def javadocJarMap = [name: 'javadocJar', type: Jar, dependsOn: javadoc]
+    project.tasks.create(javadocJarMap, {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+        version = "${project.version}"
+    })
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
+
+    jar {
+        baseName = "${project.name}"
+        version = "${project.version}"
+    }
+
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+                pom {
+                    name = project.name
+                    description = project.description
+                    url = 'https://www.netifi.com'
+
+                    organization {
+                        name = 'Netifi, Inc.'
+                        url = 'https://www.netifi.com'
+                    }
+
+                    licenses {
+                        license {
+                            name = 'The Apache Software License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution = 'repo'
+                        }
+                    }
+
+                    scm {
+                        url = 'https://github.com/netifi/netifi-spring'
+                        connection = 'scm:git:git://github.com/netifi/netifi-spring'
+                        developerConnection = 'scm:git:git://github.com/netifi/netifi-spring'
+                    }
+
+                    issueManagement {
+                        system = "GitHub Issues"
+                        url = "https://github.com/netifi/netifi-spring/issues"
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                url 'https://sonatype.netifiinc.com/repository/netifi-maven-snapshots/'
+                credentials {
+                    username = "${netifiPublishUsername}"
+                    password = "${netifiPublishPassword}"
+                }
+            }
+        }
     }
 
     license {
         header rootProject.file('codequality/HEADER')
         strictCheck true
+        excludes(["**/*.xml", "**/*.json"])
     }
+    license.mapping('java', 'SLASHSTAR_STYLE')
+
+    task allDeps(type: DependencyReportTask) {}
 
     test {
         testLogging {

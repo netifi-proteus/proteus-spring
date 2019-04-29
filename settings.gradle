@@ -10,7 +10,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'proteus-spring'
+rootProject.name = 'netifi-spring'
 
 // Dynamically includes all Gradle projects found within the root project
 fileTree('.') {

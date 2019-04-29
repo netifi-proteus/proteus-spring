@@ -1,14 +1,13 @@
-# proteus-spring
+# netifi-spring
 [![Join the chat at https://gitter.im/netifi/general](https://badges.gitter.im/netifi/general.svg)](https://gitter.im/netifi/general)
- [![Build Status](https://travis-ci.org/netifi-proteus/proteus-spring.svg?branch=master)](https://travis-ci.org/netifi-proteus/proteus-spring)
 
-A simple and easy mechanism for integrating the power of [Netifi Proteus](https://www.netifi.com) into your [Spring Boot](https://spring.io/projects/spring-boot) applications.
+A simple and easy mechanism for integrating the power of [Netifi](https://www.netifi.com) into your [Spring Boot](https://spring.io/projects/spring-boot) applications.
 
 ## Examples
-Please see the included [demo projects](demos) for examples on how to configure and use Proteus with Spring applications.
+Please see the included [demo projects](demos) for examples on how to configure and use Netifi Broker Clinet with Spring applications.
 
 ## Bugs and Feedback
-For bugs, questions, and discussions please use the [Github Issues](https://github.com/netifi-proteus/proteus-spring/issues).
+For bugs, questions, and discussions please use the [Github Issues](https://github.com/netifi/netifi-spring/issues).
 
 ## License
 Copyright 2019 [Netifi Inc.](https://www.netifi.com)

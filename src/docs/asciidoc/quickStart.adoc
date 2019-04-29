@@ -1,7 +1,7 @@
-= Quick Start with Proteus Spring module
+= Quick Start with Netifi Spring module
 
 
-In this section we are going to learn how to bootstrap Proteus Spring Boot Application.
+In this section we are going to learn how to bootstrap Netifi Spring Boot Application.
 
 == Set up dependencies
 
@@ -9,7 +9,7 @@ As the first step of any applications setup is generating the base application. 
 that purpose we may use http://start.spring.io[start.spring.io].
 
 Once the base application is generated or there is an existing one, use the following
-dependency on the Proteus Spring Boot Starter:
+dependency on the Netifi Spring Boot Starter:
 
 [subs=attributes+]
 [source,groovy]
@@ -17,7 +17,7 @@ dependency on the Proteus Spring Boot Starter:
 ----
 dependencies {
    ...
-   compile "io.netifi.proteus:proteus-spring-boot-starter:{appversion}"
+   compile "io.netifi:netifi-spring-boot-starter:{appversion}"
 }
 ----
 
@@ -31,8 +31,8 @@ In the case of the Maven build-tool, the dependency on the starter is the follow
 .pom.xml
 ----
 <dependency>
-    <groupId>io.netifi.proteus</groupId>
-    <artifactId>proteus-spring-boot-starter</artifactId>
+    <groupId>io.netifi</groupId>
+    <artifactId>netifi-spring-boot-starter</artifactId>
     <version>{appversion}</version>
 </dependency>
 ----
@@ -40,28 +40,28 @@ In the case of the Maven build-tool, the dependency on the starter is the follow
 == Set up required properties
 
 Once the dependency is set up, we have to configure mandated properties in order to
-access Proteus Broker. The following shows how we may do that in `application.properties`
+access Netifi Broker. The following shows how we may do that in `application.properties`
 file:
 
 [source,properties]
 .application.properties
 ----
-netifi.proteus.broker.hostname=localhost // <1>
-netifi.proteus.broker.port=8001 // <1>
+netifi.client.broker.hostname=localhost // <1>
+netifi.client.broker.port=8001 // <1>
 
-netifi.proteus.access.key=9007199254740991 // <2>
-netifi.proteus.access.token=kTBDVtfRBO4tHOnZzSyY5ym2kfY= // <2>
+netifi.client.access.key=9007199254740991 // <2>
+netifi.client.access.token=kTBDVtfRBO4tHOnZzSyY5ym2kfY= // <2>
 
-netifi.proteus.group=quickstart.clients // <3>
+netifi.client.group=quickstart.clients // <3>
 ----
-<1> This is configurations of the Proteus Broker host and port.
+<1> This is configurations of the Netifi Broker host and port.
 <2> This is configurations of access key and token
 <3> This is a configuration of current application group name
 
 The `application.properties` file above demonstrates a mandatory properties of every
 Spring Boot application.
 
-NOTE: Proteus Spring Boot Starter brings all required autoconfigurations, so the
+NOTE: Netifi Spring Boot Starter brings all required autoconfigurations, so the
 above is a minimal set up in order to bring all required functionality into the
 application
 

@@ -1,4 +1,0 @@
-# Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.netifi.proteus.springboot.ProteusAutoConfiguration,\
-  io.netifi.proteus.spring.core.config.ProteusConfiguration

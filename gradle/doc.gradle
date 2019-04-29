@@ -18,14 +18,7 @@ configure(rootProject) {
 			   'source-highlighter': 'coderay'
 
 	doLast {
-	  file("$outputDir/pdf/index.pdf").renameTo ("$outputDir/pdf/reactor-core-reference-guide-${version}.pdf")
+	  file("$outputDir/pdf/index.pdf").renameTo("$outputDir/pdf/netifi-spring-reference-guide-${version}.pdf")
 	}
   }
-
-//  task docsZip(type: Zip, dependsOn: asciidoctor) {
-//	baseName = 'reactor-core-docs'
-//	from("$buildDir/reactor-code/build/asciidoc/pdf/reactor-core-reference-guide-${version}.pdf") { into ("docs/") }
-//	from("$buildDir/reactor-code/build/asciidoc/html5/index.html") { into("docs/") }
-//	from("$buildDir/reactor-code/build/asciidoc/html5/images") { into("images/") }
-//  }
 }

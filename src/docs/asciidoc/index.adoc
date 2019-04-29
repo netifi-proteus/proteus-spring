@@ -1,4 +1,4 @@
-= Proteus-Spring Reference Guide
+= Netifi-Spring Reference Guide
 Oleh Dokuka <https://twitter.com/OlehDokuka[@OlehDokuka]>;
 :appversion: 0.4.2
 ifndef::host-github[:ext-relative: {outfilesuffix}]

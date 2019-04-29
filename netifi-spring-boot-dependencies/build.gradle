@@ -1,0 +1,98 @@
+plugins {
+    id 'io.spring.dependency-management'
+}
+
+project.description = "Netifi Spring Dependencies"
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}"
+        mavenBom "com.netifi:netifi-bom:${project.version}"
+    }
+    dependencies {
+        dependency "com.netifi:netifi-spring-core:${project.version}"
+        dependency "com.netifi:netifi-spring-boot-autoconfigure:${project.version}"
+    }
+}
+
+dependencies {
+    compile platform("org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}")
+    compile platform("com.netifi:netifi-bom:${project.version}")
+    
+    compile project(':netifi-spring-core')
+    compile project(':netifi-spring-boot-autoconfigure')
+    compile project(':netifi-spring-boot-starter')
+}
+
+
+configurations.archives.artifacts.clear()
+
+build.doLast {
+    pom {
+        customizePom(it, project)
+    }
+}
+
+def customizePom(generatedPom, gradleProject) {
+    //make sure that dependencies are under <dependencyManagement>
+    generatedPom.withXml {
+        if (generatedPom.generatedDependencies.size > 0) {
+            asNode().appendNode('dependencyManagement', asNode().dependencies)
+            asNode().dependencies.replaceNode {}
+        }
+    }
+
+    generatedPom.project {
+        name = 'Netifi-Spring Release Train - BOM'
+        description = gradleProject.description
+        url = 'https://www.netifi.com'
+        groupId = group
+
+        packaging = "pom"
+
+        organization {
+            name = 'Netifi, Inc.'
+            url = 'https://www.netifi.com'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        scm {
+            url = 'https://github.com/netifi/netifi-spring'
+            connection = 'scm:git:git://github.com/netifi/netifi-spring'
+            developerConnection = 'scm:git:git://github.com/netifi/netifi-spring'
+        }
+
+        issueManagement {
+            system = "GitHub Issues"
+            url = "https://github.com/netifi"
+        }
+    }
+
+    generatedPom.writeTo("$buildDir/poms/netifi-spring-boot-bom-${version}.xml")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom.withXml {
+                def sb = asString()
+                sb.setLength 0
+                sb.append  file("$buildDir/poms/netifi-spring-boot-bom-${version}.xml").text
+                println( sb.toString() )
+            }
+        }
+    }
+}
+
+publish.dependsOn("build")
+publishMavenPublicationToMavenLocal.dependsOn("build")
+publishToMavenLocal.dependsOn("build")
+
+// TODO: really shouldn't be publishing an empty jar
